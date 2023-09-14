@@ -50,14 +50,11 @@ class CountrySuggestionList {
         this.countryInput.value = this.list[index].name
         this.container.innerHTML = "";
         this.currentFocusIndex = 0;
+        this.list = []
     }
 
     ToggleFocus(countryNode, setOn) {
         setOn ? countryNode.classList.add("suggestionFocus") : countryNode.classList.remove("suggestionFocus")
-    }
-
-    IsNewIndexOut(index) {
-        return index >= this.list.length || index < 0
     }
 
     UnfocusCurrent() {
@@ -69,27 +66,26 @@ class CountrySuggestionList {
 
     SetNewFocus(newIndex) {
         this.UnfocusCurrent();
-        if(this.IsNewIndexOut(newIndex)) {
-            this.currentFocusIndex = 0
-            this.countryInput.focus()
-            return
-        }
-        else {
-            let newCountryNode = this.container.childNodes[newIndex]
-            this.ToggleFocus(newCountryNode, true)
-            this.countryInput.value = newCountryNode.innerText
-            this.countryInput.setSelectionRange(newCountryNode.innerText.length, newCountryNode.innerText.length)
-            this.container.childNodes[newIndex].scrollIntoViewIfNeeded(false)
-        }
+        let newCountryNode = this.container.childNodes[newIndex]
+        this.ToggleFocus(newCountryNode, true)
+        this.countryInput.value = newCountryNode.innerText
+        this.container.childNodes[newIndex].scrollIntoViewIfNeeded(false)
         this.currentFocusIndex = newIndex
     }
 
     UpdateFocused(event) {
+        if(this.list.length === 0) {
+            return
+        }
         if(event.keyCode === 40){//down
-            this.SetNewFocus(this.currentFocusIndex + 1)
+            event.preventDefault()
+            let newIndex = this.currentFocusIndex + 1 >= this.list.length ? 0 : this.currentFocusIndex + 1
+            this.SetNewFocus(newIndex)
         }
         else if(event.keyCode === 38){//up
-            this.SetNewFocus(this.currentFocusIndex - 1)
+            event.preventDefault()
+            let newIndex = this.currentFocusIndex - 1 < 0 ? this.list.length - 1 : this.currentFocusIndex - 1
+            this.SetNewFocus(newIndex)
         } else if(event.key === "Enter") {
             this.SelectCountry(this.currentFocusIndex)
         }

@@ -21,8 +21,6 @@ function GetCountriesBySuggestion(suggestion) {
 
 function UpdateSuggestions() {
   const searchText = countryInput.value.trim();
-  console.log("s", searchText)
-  console.log(GetCountriesBySuggestion(searchText))
   countrySuggestionList.Show(GetCountriesBySuggestion(searchText), searchText)
 }
 
