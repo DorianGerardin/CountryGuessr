@@ -44,7 +44,7 @@ function SetAllCountries() {
         let continent = countryData.continents[0];
         let language = Object.values(countryData.languages)[0]
         let populationCount= countryData.population.toLocaleString()
-        let currency = countryData.currencies ? "No Currency" : Object.values(countryData.currencies)[0].name
+        let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
         let bordersCount = countryData.borders.length
         let area= countryData.area.toLocaleString()
 
