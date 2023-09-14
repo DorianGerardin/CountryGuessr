@@ -1,6 +1,7 @@
 class Country {
-	constructor(code, continent, language, populationCount, currency, borderCount, area, gdp) {
+	constructor(code, name, continent, language, populationCount, currency, borderCount, area, gdp) {
 		this.code = code;
+		this.name = name;
 	    this.continent = continent;
 	    this.language = language;
 	    this.populationCount = populationCount;
