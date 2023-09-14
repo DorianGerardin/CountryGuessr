@@ -46,8 +46,7 @@ main {
 }
 
 #countryForm {
-	display: flex;
-	visibility: hidden;
+	display: none;
 }
 
 #countrySubmit {
@@ -119,7 +118,8 @@ input[type=text]:focus {
 }
 
 #suggestions {
-	visibility: hidden;
+	display: none;
+	flex-direction: column;
 	max-height: 30vh;
 	height: fit-content;
 	border: 1px solid #F4EEE0;

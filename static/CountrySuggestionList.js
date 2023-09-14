@@ -12,13 +12,13 @@ class CountrySuggestionList {
     Show(suggestionList) {
         this.currentFocusIndex = 0
         this.container.innerHTML = '';
-        this.container.style.visibility = "visible";
+        this.container.style.display = "flex";
         this.UpdateCountrySuggestionList(suggestionList)
     }
 
     Hide() {
         this.currentFocusIndex = 0
-        this.container.style.visibility = "hidden";
+        this.container.style.display = "none";
         this.container.innerHTML = '';
     }
 
@@ -57,7 +57,7 @@ class CountrySuggestionList {
     }
 
     SelectCountry(index) {
-        this.container.style.visibility = "hidden"
+        this.container.style.display = "none"
         this.countryInput.value = this.list[index].name
         currentCountry = this.list[index].code
         this.container.innerHTML = "";

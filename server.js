@@ -52,6 +52,15 @@ function SetAllCountries() {
     });
 }
 
+function GetCountryData(countryCode) {
+    for (let i = 0; i < countries.length; i++) {
+        if (countries[i].code === countryCode) {
+            return countries[i];
+        }
+    }
+    return null
+}
+
 function GetCountriesBySuggestion(suggestion) {
     let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
     return countries.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(regExpSuggestion));
@@ -64,6 +73,10 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 
 app.get('/guess', function (req, res) {
   res.header("Content-Type",'application/json');
+    let guessCode = req.query.code
+    console.log(guessCode)
+    let country = GetCountryData(guessCode)
+    res.json(JSON.stringify(country))
 })
 
 app.get('/type', function (req, res) {
