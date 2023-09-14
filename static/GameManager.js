@@ -1,12 +1,16 @@
 const countryInput = document.getElementById('countryInput');
+const countryForm = document.getElementById('countryForm');
+const countrySubmit = document.getElementById('countrySubmit');
 const suggestions = document.getElementById('suggestions');
 
+let currentCountry = null
 let countrySuggestionList
 let countriesName = [];
 GetAllCountriesName()
 
-countryInput.addEventListener('input', UpdateSuggestions)
-countryInput.addEventListener('click', UpdateSuggestions)
+countrySubmit.addEventListener('click', SubmitCountry)
+countryInput.addEventListener('input', (e) => UpdateSuggestions(e))
+countryInput.addEventListener('click', (e) => UpdateSuggestions(e))
 document.body.addEventListener("click", (e) => {
   if(countryInput.style.visibility === "hidden" || e.target === countryInput) {
     return
@@ -14,7 +18,10 @@ document.body.addEventListener("click", (e) => {
   countrySuggestionList.Hide()
 })
 
-function UpdateSuggestions() {
+function UpdateSuggestions(event) {
+  if(event.type === "input" && currentCountry !== null) {
+    currentCountry = null
+  }
   const searchText = countryInput.value.trim();
   fetch(`/type?input=${searchText}`)
     .then(response => response.json())
@@ -34,8 +41,12 @@ function GetAllCountriesName() {
       } else {
         countriesName = JSON.parse(data)
         countrySuggestionList = new CountrySuggestionList(countriesName, suggestions, countryInput)
-        countryInput.style.visibility = "visible"
+        countryForm.style.visibility = "visible"
       }
     });
+}
+
+function SubmitCountry() {
+  console.log(currentCountry)
 }
 

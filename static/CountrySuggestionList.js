@@ -59,6 +59,7 @@ class CountrySuggestionList {
     SelectCountry(index) {
         this.container.style.visibility = "hidden"
         this.countryInput.value = this.list[index].name
+        currentCountry = this.list[index].code
         this.container.innerHTML = "";
         this.currentFocusIndex = 0;
         this.list = []

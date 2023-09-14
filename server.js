@@ -67,7 +67,6 @@ app.get('/guess', function (req, res) {
 })
 
 app.get('/type', function (req, res) {
-
     res.header("Content-Type",'application/json');
     let input = req.query.input
     let suggestedCountries= GetCountriesBySuggestion(input).map(c => ({name:c.name, code: c.code, flag:c.flag}))
@@ -75,7 +74,6 @@ app.get('/type', function (req, res) {
 })
 
 app.get('/AllCountriesName', function (req, res) {
-
     res.header("Content-Type",'application/json');
     let countriesName= countries.map(c => ({name:c.name, code: c.code, flag:c.flag}))
     res.json(JSON.stringify(countriesName))
