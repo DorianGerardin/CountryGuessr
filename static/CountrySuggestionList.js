@@ -23,8 +23,8 @@ class CountrySuggestionList {
         this.container.innerHTML = '';
     }
 
-    UpdateCountrySuggestionList(suggestionList) {
-        this.list = suggestionList.length === 0 ? this.allCountriesList : suggestionList
+    UpdateCountrySuggestionList(suggestionList, searchText) {
+        this.list = this.countryInput.value.length === 0 ? this.allCountriesList : suggestionList
         for(let i = 0; i < this.list.length; i++) {
             let countryNode= document.createElement("div");
             countryNode.innerHTML = this.list[i].name
@@ -41,6 +41,10 @@ class CountrySuggestionList {
                 this.ToggleFocus(countryNode, false)
             })
             this.container.appendChild(countryNode)
+        }
+        if(this.list.length === 0) {
+            this.Hide()
+            return
         }
         this.ToggleFocus(this.container.childNodes[0], true)
     }
