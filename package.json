@@ -1,0 +1,16 @@
+{
+  "name": "countryguessr",
+  "version": "1.0.0",
+  "description": "Small videogame to guess countries based on their caracteristics",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Dorian Gerardin",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "scroll-into-view-if-needed": "^3.0.10"
+  }
+}

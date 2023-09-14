@@ -1,0 +1,129 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+a {
+	text-decoration: none;
+	color:#efd5ff;
+}
+
+#container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 30rem;
+	height: 100%;
+}
+
+body {
+	height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background: #393646;
+	font-size: 16px;
+	color : #F4EEE0;
+	font-family: 'Prompt', sans-serif;
+}
+
+h1 {
+	font-size: 2em;
+	text-align: center;
+	padding: 0.5em 1em 0.35em 1em;
+}
+
+header {
+	width: 100%;
+	border-bottom: 2px solid #F4EEE0;
+}
+
+main {
+	margin-top: 3em;
+	width: 100%;
+}
+
+input[type=text]{
+  width: 100%;
+  padding: 12px 20px;
+  display: inline-block;
+  border: 0.5px solid grey;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color:transparent;
+  font-family: 'Prompt', sans-serif;
+  color : #F4EEE0;
+}
+
+input[type=text]:focus {
+	caret-color: #F4EEE0;
+	color : #F4EEE0;
+	font-family: 'Prompt', sans-serif;
+	outline:none
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #F4EEE0; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #F4EEE0; 
+}
+
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+#suggestions {
+	visibility: hidden;
+	max-height: 20vw;
+	height: fit-content;
+	border: 1px solid #F4EEE0;
+	overflow: scroll;
+	overflow-x: hidden;
+}
+
+.suggestion {
+	padding: 0.5em 0.2em 0.5em 1em;
+}
+
+.suggestionFocus {
+	cursor: pointer;
+	background-color: #4F4557;
+}
+
+
+@keyframes slideDown {
+    0%, 100% { top: -25vh; }
+    10%, 95% { top: 2vh; }
+}
+
+@media screen and (max-width: 621px) {
+	#container {
+		width:85%;
+	}
+	h1 {
+		font-size: 1.75em;
+		padding: 0.5em 1em 0.35em 1em;
+	}
+}
