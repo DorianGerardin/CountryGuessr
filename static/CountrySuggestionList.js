@@ -26,8 +26,16 @@ class CountrySuggestionList {
         this.list = this.countryInput.value.length === 0 ? this.allCountriesList : suggestionList
         for(let i = 0; i < this.list.length; i++) {
             let countryNode= document.createElement("div");
-            countryNode.innerHTML = this.list[i].name
             countryNode.classList.add("suggestion")
+
+            let countryFlag= document.createElement("img");
+            countryFlag.classList.add("flagList")
+            countryFlag.src = this.list[i].flag
+            let countryText= document.createElement("div");
+            countryText.innerHTML = this.list[i].name
+            countryNode.appendChild(countryFlag)
+            countryNode.appendChild(countryText)
+
             countryNode.addEventListener("click", () => {
                 this.SelectCountry(i)
             })

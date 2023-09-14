@@ -5,20 +5,22 @@
   ____) | |____| | \ \  \  /  | |____| | \ \ 
  |_____/|______|_|  \_\  \/   |______|_|  \_\  */
 
-const https = require("https");
-const fs = require("fs");
-
-const express = require('express'); //Import the express dependency
+import path from 'path';
+import { fileURLToPath } from 'url';
+import express from 'express'; //Import the express dependency
 const app = express();              //Instantiate an express app, the main work horse of this server
-const port = process.env.PORT || 8080;                  //Save the port number where your server will be listening
-const Country = require('./static/Country.js')
+const port = process.env.PORT || 8080;
+import Country from './static/Country.js'//Save the port number where your server will be listening
 //Idiomatic expression in express to route and respond to a client request
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let countries = [];
 SetAllCountries();
 
 async function WaitForAllCountriesData() {
-    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,continents,languages,population,currencies,borders,area`
+    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags`
     const response = await fetch(apiURL);
     return await response.json();
 }
@@ -40,13 +42,13 @@ function SetAllCountries() {
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
                 let bordersCount = countryData.borders.length
                 let area= countryData.area.toLocaleString()
+                let flag = Object.values(countryData.flags)[1]
 
-                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area)
+                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag)
                 countries.push(country)
             }
         }
         countries.sort((c1, c2) => c1.name.localeCompare(c2.name))
-        //console.log(countries)
     });
 }
 
@@ -68,14 +70,14 @@ app.get('/type', function (req, res) {
 
     res.header("Content-Type",'application/json');
     let input = req.query.input
-    let suggestedCountries= GetCountriesBySuggestion(input).map(c => ({name:c.name}))
+    let suggestedCountries= GetCountriesBySuggestion(input).map(c => ({name:c.name, code: c.code, flag:c.flag}))
     res.json(JSON.stringify(suggestedCountries))
 })
 
 app.get('/AllCountriesName', function (req, res) {
 
     res.header("Content-Type",'application/json');
-    let countriesName= countries.map(c => ({name:c.name}))
+    let countriesName= countries.map(c => ({name:c.name, code: c.code, flag:c.flag}))
     res.json(JSON.stringify(countriesName))
 })
 
