@@ -7,7 +7,6 @@ class CountrySuggestionList {
         this.currentFocusIndex = 0
 
         this.countryInput.addEventListener("keydown", (e) => this.UpdateFocused(e))
-        //this.countryInput.addEventListener("click", () => this.currentFocusIndex = 0)
     }
 
     Show(suggestionList) {
@@ -23,7 +22,7 @@ class CountrySuggestionList {
         this.container.innerHTML = '';
     }
 
-    UpdateCountrySuggestionList(suggestionList, searchText) {
+    UpdateCountrySuggestionList(suggestionList) {
         this.list = this.countryInput.value.length === 0 ? this.allCountriesList : suggestionList
         for(let i = 0; i < this.list.length; i++) {
             let countryNode= document.createElement("div");

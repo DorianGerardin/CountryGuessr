@@ -1,58 +1,48 @@
 const countryInput = document.getElementById('countryInput');
 const suggestions = document.getElementById('suggestions');
 
-let countries = [];
-SetAllCountries();
+let countrySuggestionList
+let countriesName = [];
+GetAllCountriesName()
 
 countryInput.addEventListener('input', UpdateSuggestions)
 countryInput.addEventListener('click', UpdateSuggestions)
-let countrySuggestionList = new CountrySuggestionList(countries, suggestions, countryInput)
 document.body.addEventListener("click", (e) => {
-  if(e.target === countryInput) {
+  if(countryInput.style.visibility === "hidden" || e.target === countryInput) {
     return
   }
   countrySuggestionList.Hide()
 })
 
-function GetCountriesBySuggestion(suggestion) {
-  let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
-  return countries.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(regExpSuggestion));
-}
-
 function UpdateSuggestions() {
   const searchText = countryInput.value.trim();
-  countrySuggestionList.Show(GetCountriesBySuggestion(searchText), searchText)
+  fetch(`/type?input=${searchText}`)
+    .then(response => response.json())
+    .then(suggestion => {
+      //console.log("server data", suggestion);
+      countrySuggestionList.Show(JSON.parse(suggestion))
+    })
+    .catch(error => {
+      console.error('Une erreur s\'est produite :', error);
+    });
 }
 
-async function WaitForAllCountriesData() {
-  const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,continents,languages,population,currencies,borders,area`
+async function WaitForAllCountriesNames() {
+  const apiURL = `/AllCountriesName`
   const response = await fetch(apiURL);
   return await response.json();
 }
 
-function SetAllCountries() {
-  WaitForAllCountriesData()
+function GetAllCountriesName() {
+  WaitForAllCountriesNames()
   .then(data => {
     if (data.status === 404) {
         console.log("aucun pays trouvé");
     } else {
-      const countryCount = data.length;
-      for(let i = 0; i < countryCount; i++) {
-        let countryData = data[i]
-        let code = countryData.cca3;
-        let name = countryData.translations.fra.common;
-        let continent = countryData.continents[0];
-        let language = Object.values(countryData.languages)[0]
-        let populationCount= countryData.population.toLocaleString()
-        let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
-        let bordersCount = countryData.borders.length
-        let area= countryData.area.toLocaleString()
-
-        let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area)
-        countries.push(country)
-      }
+      countriesName = JSON.parse(data)
+      countrySuggestionList = new CountrySuggestionList(countriesName, suggestions, countryInput)
+      countryInput.style.visibility = "visible"
     }
-  countries.sort((c1, c2) => c1.name.localeCompare(c2.name))
   });
 }
 

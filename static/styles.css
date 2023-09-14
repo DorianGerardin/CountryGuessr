@@ -45,6 +45,10 @@ main {
 	width: 100%;
 }
 
+.countryInput {
+	visibility: hidden;
+}
+
 input[type=text]{
   width: 100%;
   padding: 12px 20px;
@@ -96,7 +100,7 @@ input[type=text]:focus {
 
 #suggestions {
 	visibility: hidden;
-	max-height: 20vw;
+	max-height: 30vh;
 	height: fit-content;
 	border: 1px solid #F4EEE0;
 	overflow: scroll;

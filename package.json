@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Small videogame to guess countries based on their caracteristics",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
