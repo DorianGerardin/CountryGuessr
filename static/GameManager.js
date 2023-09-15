@@ -12,7 +12,7 @@ let countriesName = [];
 GetAllCountriesName()
 
 countrySubmit.addEventListener('click', SubmitCountry)
-countryInput.addEventListener('keydown', (e) => TrySubmitCountry(e))
+document.body.addEventListener('keydown', (e) => TrySubmitCountry(e))
 countryInput.addEventListener('input', (e) => UpdateSuggestions(e))
 countryInput.addEventListener('click', (e) => UpdateSuggestions(e))
 document.body.addEventListener("click", (e) => {
@@ -68,6 +68,8 @@ function SubmitCountry() {
           if(!hasAlreadyAnswered) {
               answersContainer.style.display = "flex"
           }
+          countryInput.value = ""
+          currentCountry = null
           hasAlreadyAnswered = true
           let country = JSON.parse(countryData)
           createAnswer(country)
@@ -84,14 +86,10 @@ function createAnswer(country) {
     let nameNode = document.createElement("div");
     nameNode.classList.add("answer")
     let flagBG = document.createElement("div");
-    let textNode = document.createElement("div");
-    nameNode.classList.add("backgroundFlag")
-    nameNode.style.backgroundImage = `url(${country.flag})`
+    flagBG.classList.add("backgroundFlag")
+    flagBG.style.backgroundImage = `url(${country.flag})`
     nameNode.innerText = country.name
-    nameNode.style.textShadow = "2px 2px 5px rgba(0, 0, 0, 1)"
-    //textNode.style.zIndex = "1"
-    //nameNode.appendChild(flagBG)
-    //nameNode.appendChild(textNode)
+    nameNode.appendChild(flagBG)
     answerRow.appendChild(nameNode)
 
     let continentNode = document.createElement("div");
