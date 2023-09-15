@@ -9,6 +9,10 @@ class CountrySuggestionList {
         this.countryInput.addEventListener("keydown", (e) => this.UpdateFocused(e))
     }
 
+    IsEmpty() {
+        return this.list.length === 0
+    }
+
     Show(suggestionList) {
         this.currentFocusIndex = 0
         this.container.innerHTML = '';
@@ -54,6 +58,7 @@ class CountrySuggestionList {
             return
         }
         this.ToggleFocus(this.container.childNodes[0], true)
+        this.container.childNodes[0].scrollIntoViewIfNeeded(false)
     }
 
     SelectCountry(index) {

@@ -9,11 +9,28 @@ a {
 	color:#efd5ff;
 }
 
+/* Track */
+::-webkit-scrollbar-track {
+	background: transparent;
+	border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #F4EEE0;
+	border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #F4EEE0;
+}
+
 #container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 30rem;
+	width: 45em;
 	height: 100%;
 }
 
@@ -36,17 +53,21 @@ h1 {
 }
 
 header {
-	width: 100%;
+	width: 60%;
 	border-bottom: 2px solid #F4EEE0;
 }
 
 main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	margin-top: 3em;
 	width: 100%;
 }
 
 #countryForm {
 	display: none;
+	width: 60%;
 }
 
 #countrySubmit {
@@ -92,23 +113,6 @@ input[type=text]:focus {
   width: 5px;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: transparent; 
-  border-radius: 10px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #F4EEE0; 
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #F4EEE0; 
-}
-
 .center {
 	display: flex;
 	justify-content: center;
@@ -120,6 +124,7 @@ input[type=text]:focus {
 #suggestions {
 	display: none;
 	flex-direction: column;
+	width: 60%;
 	max-height: 30vh;
 	height: fit-content;
 	border: 1px solid #F4EEE0;
@@ -130,7 +135,7 @@ input[type=text]:focus {
 .suggestion {
 	display: flex;
 	align-items: center;
-	padding: 0.5em 0.2em 0.5em 1em;
+	padding: 0.5em 0.25em 0.5em 1em;
 }
 
 .flagList {
@@ -143,20 +148,135 @@ input[type=text]:focus {
 .suggestionFocus {
 	cursor: pointer;
 	background-color: #4F4557;
+	border: 0.1em solid #F4EEE0;
+	padding: 0.4375em 0.1875em 0.4375em 0.9375em;
 }
 
+#answersContainer {
+	display: none;
+	flex-direction: column;
+	width: 100%;
+	margin-top: 5em;
+	font-size: 14px;
+}
+
+#answersCategories {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1.5em;
+	column-gap: 0.5em;
+}
+.category {
+	display: flex;
+	flex-direction: column;
+	height: 4em;
+	width: 6em;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	border-bottom: 0.2em solid #F4EEE0;
+}
+
+#answersGrid {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+}
+
+.answerRow {
+	display: flex;
+	justify-content: space-between;
+	column-gap: 0.5em;
+}
+
+.answer {
+	display: flex;
+	height: 5em;
+	width: 6em;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	border: 0.1em solid #F4EEE0;
+	background-color: #4F4557;
+}
 
 @keyframes slideDown {
     0%, 100% { top: -25vh; }
     10%, 95% { top: 2vh; }
 }
 
-@media screen and (max-width: 621px) {
+@media screen and (min-width: 601px) and (max-width: 768px) {
+	body {
+		/*font-size: 14px;*/
+	}
 	#container {
-		width:85%;
+		width:90%;
+	}
+	header {
+		width: 100%;
+		font-size: 16px;
+	}
+	#countryForm {
+		display: none;
+		width: 100%;
+	}
+	#suggestions {
+		width: 100%;
+	}
+	#answersContainer{
+		font-size: 12px;
+	}
+	.category {
+		width: 6em;
+		height: 3.5em;
 	}
 	h1 {
 		font-size: 1.75em;
 		padding: 0.5em 1em 0.35em 1em;
+	}
+}
+
+
+@media screen and (min-width: 481px) and (max-width: 600px) {
+	#container {
+		width:90%;
+	}
+	header {
+		width: 100%;
+		font-size: 16px;
+	}
+	#countryForm {
+		width: 100%;
+	}
+	#answersContainer{
+		font-size: 10px;
+	}
+	.category {
+		width: 5.5em;
+		height: 3.5em;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	#container {
+		width:90%;
+	}
+	header {
+		width: 100%;
+		font-size: 16px;
+	}
+	#countryForm {
+		width: 100%;
+	}
+	#answersContainer{
+		font-size: 8px;
+	}
+	h1 {
+		font-size: 1.75em;
+		padding: 0.5em 1em 0.35em 1em;
+	}
+	.category {
+		height: 5.5em;
+		width: 5.5em;
 	}
 }
