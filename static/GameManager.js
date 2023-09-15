@@ -12,7 +12,7 @@ let countriesName = [];
 GetAllCountriesName()
 
 countrySubmit.addEventListener('click', SubmitCountry)
-document.body.addEventListener('keydown', (e) => TrySubmitCountry(e))
+countryInput.addEventListener('keydown', (e) => TrySubmitCountry(e))
 countryInput.addEventListener('input', (e) => UpdateSuggestions(e))
 countryInput.addEventListener('click', (e) => UpdateSuggestions(e))
 document.body.addEventListener("click", (e) => {
@@ -72,7 +72,6 @@ function SubmitCountry() {
           currentCountry = null
           hasAlreadyAnswered = true
           let countryData = JSON.parse(data)
-          console.log(countryData)
           createAnswer(countryData)
       })
       .catch(error => {
