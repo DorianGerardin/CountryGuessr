@@ -157,6 +157,7 @@ input[type=text]:focus {
 	flex-direction: column;
 	width: 100%;
 	margin-top: 5em;
+	margin-bottom: 5em;
 	font-size: 14px;
 }
 
@@ -198,6 +199,18 @@ input[type=text]:focus {
 	text-align: center;
 	border: 0.1em solid #F4EEE0;
 	background-color: #4F4557;
+	overflow-wrap: break-word;
+	border-radius: 0.25em;
+}
+
+.backgroundFlag {
+	/*position: absolute;*/
+	background-size: cover;
+	background-position: center;
+	/*filter: brightness(40%);*/
+	/*height: 100%;
+	width: 100%;*/
+	border-radius: 0.25em;
 }
 
 @keyframes slideDown {
@@ -245,6 +258,9 @@ input[type=text]:focus {
 		width: 100%;
 		font-size: 16px;
 	}
+	#suggestions {
+		width: 100%;
+	}
 	#countryForm {
 		width: 100%;
 	}
@@ -264,6 +280,9 @@ input[type=text]:focus {
 	header {
 		width: 100%;
 		font-size: 16px;
+	}
+	#suggestions {
+		width: 100%;
 	}
 	#countryForm {
 		width: 100%;

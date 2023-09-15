@@ -83,7 +83,15 @@ function createAnswer(country) {
 
     let nameNode = document.createElement("div");
     nameNode.classList.add("answer")
+    let flagBG = document.createElement("div");
+    let textNode = document.createElement("div");
+    nameNode.classList.add("backgroundFlag")
+    nameNode.style.backgroundImage = `url(${country.flag})`
     nameNode.innerText = country.name
+    nameNode.style.textShadow = "2px 2px 5px rgba(0, 0, 0, 1)"
+    //textNode.style.zIndex = "1"
+    //nameNode.appendChild(flagBG)
+    //nameNode.appendChild(textNode)
     answerRow.appendChild(nameNode)
 
     let continentNode = document.createElement("div");
@@ -118,4 +126,6 @@ function createAnswer(country) {
 
     answersGrid.prepend(answerRow)
 }
+
+
 
