@@ -6,18 +6,24 @@
  |_____/|______|_|  \_\  \/   |______|_|  \_\  */
 
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 import express from 'express'; //Import the express dependency
+import Country from './static/Country.js' //Save the port number where your server will be listening
 const app = express();              //Instantiate an express app, the main work horse of this server
 const port = process.env.PORT || 8080;
-import Country from './static/Country.js'//Save the port number where your server will be listening
 //Idiomatic expression in express to route and respond to a client request
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 let countries = [];
+let countryToGuess = null
 SetAllCountries();
+
+
+function SelectCountry() {
+    return countries[Math.floor(Math.random()*countries.length)];
+}
 
 async function WaitForAllCountriesData() {
     const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags`
@@ -37,11 +43,11 @@ function SetAllCountries() {
                 let code = countryData.cca3;
                 let name = countryData.translations.fra.common;
                 let continent = countryData.continents[0];
-                let language = Object.values(countryData.languages)[0]
-                let populationCount= countryData.population.toLocaleString()
+                let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages)[0] : "No language"
+                let populationCount= countryData.population
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
                 let bordersCount = countryData.borders.length
-                let area= countryData.area.toLocaleString()
+                let area= countryData.area
                 let flag = Object.values(countryData.flags)[1]
 
                 let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag)
@@ -49,6 +55,8 @@ function SetAllCountries() {
             }
         }
         countries.sort((c1, c2) => c1.name.localeCompare(c2.name))
+        countryToGuess = SelectCountry()
+        console.log(countryToGuess.name)
     });
 }
 
@@ -66,6 +74,42 @@ function GetCountriesBySuggestion(suggestion) {
     return countries.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(regExpSuggestion));
 }
 
+function CreateCountryData(country) {
+    let populationCompare = country.populationCount > countryToGuess.populationCount ? "-" : country.populationCount < countryToGuess.populationCount ? "+" : "="
+    let borderCompare = country.borderCount > countryToGuess.borderCount ? "-" : country.borderCount < countryToGuess.borderCount ? "+" : "="
+    let areaCompare = country.area > countryToGuess.area ? "-" : country.area < countryToGuess.area ? "+" : "="
+
+    return {
+        name: country.name,
+        code: country.code,
+        flag : country.flag,
+        continent: {
+            value: country.continent,
+            equals: country.continent === countryToGuess.continent
+        },
+        language: {
+            value: country.language,
+            equals: country.language === countryToGuess.language
+        },
+        populationCount: {
+            value: country.populationCount,
+            equals: populationCompare
+        },
+        currency: {
+            value: country.currency,
+            equals: country.currency === countryToGuess.currency
+        },
+        borderCount: {
+            value: country.borderCount,
+            equals: borderCompare
+        },
+        area: {
+            value: country.area,
+            equals: areaCompare
+        }
+    }
+}
+
 app.get('/', (req, res) => {        //get requests to the root ("/") will route here
     res.sendFile('index.html', {root: __dirname});      //server responds by sending the index.html file to the client's browser
                                                         //the .sendFile method needs the absolute path to the file, see: https://expressjs.com/en/4x/api.html#res.sendFile 
@@ -74,9 +118,9 @@ app.get('/', (req, res) => {        //get requests to the root ("/") will route 
 app.get('/guess', function (req, res) {
   res.header("Content-Type",'application/json');
     let guessCode = req.query.code
-    console.log(guessCode)
     let country = GetCountryData(guessCode)
-    res.json(JSON.stringify(country))
+    let countryData = CreateCountryData(country)
+    res.json(JSON.stringify(countryData))
 })
 
 app.get('/type', function (req, res) {

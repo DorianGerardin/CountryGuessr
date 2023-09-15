@@ -64,22 +64,26 @@ function SubmitCountry() {
   }
   fetch(`/guess?code=${currentCountry}`)
       .then(response => response.json())
-      .then(countryData => {
+      .then(data => {
           if(!hasAlreadyAnswered) {
               answersContainer.style.display = "flex"
           }
           countryInput.value = ""
           currentCountry = null
           hasAlreadyAnswered = true
-          let country = JSON.parse(countryData)
-          createAnswer(country)
+          let countryData = JSON.parse(data)
+          console.log(countryData)
+          createAnswer(countryData)
       })
       .catch(error => {
         console.error('Une erreur s\'est produite :', error);
       });
 }
 
-function createAnswer(country) {
+function createAnswer(countryData) {
+    let goodAnswerClass = "goodAnswer"
+    let badAnswerClass = "badAnswer"
+
     let answerRow= document.createElement("div");
     answerRow.classList.add("answerRow")
 
@@ -87,43 +91,76 @@ function createAnswer(country) {
     nameNode.classList.add("answer")
     let flagBG = document.createElement("div");
     flagBG.classList.add("backgroundFlag")
-    flagBG.style.backgroundImage = `url(${country.flag})`
-    nameNode.innerText = country.name
+    flagBG.style.backgroundImage = `url(${countryData.flag})`
+    nameNode.innerText = countryData.name
     nameNode.appendChild(flagBG)
     answerRow.appendChild(nameNode)
 
     let continentNode = document.createElement("div");
     continentNode.classList.add("answer")
-    continentNode.innerText = country.continent
+    let continentAnswerClass = countryData.continent.equals ? goodAnswerClass : badAnswerClass
+    continentNode.innerText = countryData.continent.value
+    continentNode.classList.add(continentAnswerClass)
     answerRow.appendChild(continentNode)
 
     let languageNode = document.createElement("div");
     languageNode.classList.add("answer")
-    languageNode.innerText = country.language
+    let languageAnswerClass = countryData.language.equals ? goodAnswerClass : badAnswerClass
+    languageNode.innerText = countryData.language.value
+    languageNode.classList.add(languageAnswerClass)
     answerRow.appendChild(languageNode)
 
     let populationNode = document.createElement("div");
     populationNode.classList.add("answer")
-    populationNode.innerText = country.populationCount
+    let populationAnswerClass = countryData.populationCount.equals === "=" ? goodAnswerClass : badAnswerClass
+    populationNode.innerText = numberWithSpaces(countryData.populationCount.value)
+    populationNode.classList.add(populationAnswerClass)
+    AddArrowIndicator(countryData.populationCount.equals, populationNode)
     answerRow.appendChild(populationNode)
 
     let currencyNode = document.createElement("div");
     currencyNode.classList.add("answer")
-    currencyNode.innerText = country.currency
+    let currencyAnswerClass = countryData.currency.equals ? goodAnswerClass : badAnswerClass
+    currencyNode.innerText = countryData.currency.value
+    currencyNode.classList.add(currencyAnswerClass)
     answerRow.appendChild(currencyNode)
 
     let borderNode = document.createElement("div");
     borderNode.classList.add("answer")
-    borderNode.innerText = country.borderCount
+    let borderAnswerClass = countryData.borderCount.equals === "=" ? goodAnswerClass : badAnswerClass
+    borderNode.innerText = numberWithSpaces(countryData.borderCount.value)
+    borderNode.classList.add(borderAnswerClass)
+    AddArrowIndicator(countryData.borderCount.equals, borderNode)
     answerRow.appendChild(borderNode)
 
     let areaNode = document.createElement("div");
     areaNode.classList.add("answer")
-    areaNode.innerText = country.area
+    let areaAnswerClass = countryData.area.equals === "=" ? goodAnswerClass : badAnswerClass
+    areaNode.innerText = numberWithSpaces(countryData.area.value)
+    areaNode.classList.add(areaAnswerClass)
+    AddArrowIndicator(countryData.area.equals, areaNode)
     answerRow.appendChild(areaNode)
 
     answersGrid.prepend(answerRow)
 }
 
+function numberWithSpaces(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+function AddArrowIndicator(value, node) {
+    let upArrow = document.createElement("div");
+    upArrow.classList.add("backgroundArrow")
+    upArrow.style.backgroundImage = `url("./static/images/up_arrow.png")`
+
+    let downArrow = document.createElement("div");
+    downArrow.classList.add("backgroundArrow")
+    downArrow.style.backgroundImage = `url("./static/images/down_arrow.png")`
+
+    if(value === "=") {
+        return
+    }
+    node.appendChild(value === "+" ? upArrow : downArrow)
+}
 
 

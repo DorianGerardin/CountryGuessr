@@ -213,10 +213,19 @@ input[type=text]:focus {
 	z-index: 1;
 }
 
+.badAnswer {
+	background-color: #FF5757;
+}
+
+.goodAnswer {
+	background-color: #17D345;
+}
+
 .backgroundFlag {
 	position: absolute;
 	background-size: cover;
 	background-position: center;
+	background-repeat: no-repeat;
 	filter: brightness(52%);
 	height: 100%;
 	width: 100%;
@@ -224,6 +233,19 @@ input[type=text]:focus {
 	left: 0;
 	z-index: -1;
 	border-radius: 0.25em;
+}
+
+.backgroundArrow {
+	position: absolute;
+	background-size: 75%;
+	background-repeat: no-repeat;
+	background-position: center;
+	opacity: 35%;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: -1;
 }
 
 @keyframes slideDown {
@@ -254,7 +276,7 @@ input[type=text]:focus {
 	}
 	.category {
 		width: 6em;
-		height: 3.5em;
+		height: 6em;
 	}
 	h1 {
 		font-size: 1.75em;
@@ -282,11 +304,15 @@ input[type=text]:focus {
 	}
 	.category {
 		width: 5.5em;
-		height: 3.5em;
+		height: 5.5em;
+	}
+	.answer {
+		width: 5.5em;
+		height: 5em;
 	}
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (min-width: 334px) and (max-width: 480px) {
 	#container {
 		width:90%;
 	}
@@ -309,6 +335,41 @@ input[type=text]:focus {
 	}
 	.category {
 		height: 5.5em;
-		width: 5.5em;
+		width: 5em;
+	}
+	.answer {
+		width: 5em;
+		height: 5em;
+	}
+}
+
+@media screen and (max-width: 333px) {
+	#container {
+		width:90%;
+	}
+	header {
+		width: 100%;
+		font-size: 16px;
+	}
+	#suggestions {
+		width: 100%;
+	}
+	#countryForm {
+		width: 100%;
+	}
+	#answersContainer{
+		font-size: 8px;
+	}
+	h1 {
+		font-size: 1.75em;
+		padding: 0.5em 1em 0.35em 1em;
+	}
+	.category {
+		height: 5em;
+		width: 4em;
+	}
+	.answer {
+		width: 4em;
+		height: 4em;
 	}
 }
