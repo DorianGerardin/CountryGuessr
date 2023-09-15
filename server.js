@@ -48,7 +48,8 @@ function SetAllCountries() {
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
                 let bordersCount = countryData.borders.length
                 let area= countryData.area
-                let flag = Object.values(countryData.flags)[1]
+                //let flag = Object.values(countryData.flags)[1]
+                let flag = `https://flagicons.lipis.dev/flags/4x3/${countryData.cca2.toLowerCase()}.svg`
 
                 let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag)
                 countries.push(country)
