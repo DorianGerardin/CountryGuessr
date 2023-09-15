@@ -92,6 +92,7 @@ class CountrySuggestionList {
 
     UpdateFocused(event) {
         if(this.list.length === 0) {
+            this.Show(this.list)
             return
         }
         if(event.keyCode === 40){//down
