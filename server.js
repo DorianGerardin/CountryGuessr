@@ -71,8 +71,15 @@ function GetCountryData(countryCode) {
 }
 
 function ComputeRatio(tryValue, valueToGuess) {
-    if(tryValue >= valueToGuess * 2 || tryValue <= 0) {
-        return 0
+    if(valueToGuess !== 0) {
+        if(tryValue >= valueToGuess * 2 || tryValue <= 0) {
+            return 0
+        }
+    } else {
+        if(tryValue >= 4 || tryValue <= 0) {
+            return 0
+        }
+        return (Math.abs(tryValue - 4) / 4)
     }
     return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)
 }

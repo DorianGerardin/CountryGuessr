@@ -134,6 +134,9 @@ input[type=text]:focus {
 	overflow-x: hidden;
 	background-color: #393646;
 	z-index: 999;
+	border-color: #5D5D5D;
+	border-style: solid;
+	border-width: 0 1px 1px 1px;
 	box-shadow: 0 10px 25px -7px #00000075;
 	border-radius: 0 0 0.5em 0.5em;
 }
