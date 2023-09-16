@@ -22,20 +22,19 @@ document.body.addEventListener("click", (e) => {
   countrySuggestionList.Hide()
 })
 
-function UpdateSuggestions(event) {
-  if(event.type === "input" && currentCountry !== null) {
-    currentCountry = null
-  }
-  const searchText = countryInput.value.trim();
-  fetch(`/type?input=${searchText}`)
-    .then(response => response.json())
-    .then(suggestion => {
-      countrySuggestionList.Show(JSON.parse(suggestion))
-    })
-    .catch(error => {
-      console.error('Une erreur s\'est produite :', error);
-    });
+function GetCountriesBySuggestion(suggestion) {
+    let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
+    return countriesName.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(regExpSuggestion));
 }
+
+function UpdateSuggestions(event) {
+    if(event.type === "input" && currentCountry !== null) {
+        currentCountry = null
+    }
+    const searchText = countryInput.value.trim();
+    countrySuggestionList.Show(GetCountriesBySuggestion(searchText))
+}
+
 function GetAllCountriesName() {
   fetch(`/AllCountriesName`)
     .then(response => response.json())
@@ -111,10 +110,8 @@ function createAnswer(countryData) {
 
     let populationNode = document.createElement("div");
     populationNode.classList.add("answer")
-    let populationAnswerClass = countryData.populationCount.equals === "=" ? goodAnswerClass : badAnswerClass
     populationNode.innerText = numberWithSpaces(countryData.populationCount.value)
-    populationNode.classList.add(populationAnswerClass)
-    AddArrowIndicator(countryData.populationCount.equals, populationNode)
+    AddArrowIndicator(countryData.populationCount.equals, populationNode, countryData.populationCount.ratio)
     answerRow.appendChild(populationNode)
 
     let currencyNode = document.createElement("div");
@@ -126,18 +123,14 @@ function createAnswer(countryData) {
 
     let borderNode = document.createElement("div");
     borderNode.classList.add("answer")
-    let borderAnswerClass = countryData.borderCount.equals === "=" ? goodAnswerClass : badAnswerClass
     borderNode.innerText = numberWithSpaces(countryData.borderCount.value)
-    borderNode.classList.add(borderAnswerClass)
-    AddArrowIndicator(countryData.borderCount.equals, borderNode)
+    AddArrowIndicator(countryData.borderCount.equals, borderNode, countryData.borderCount.ratio)
     answerRow.appendChild(borderNode)
 
     let areaNode = document.createElement("div");
     areaNode.classList.add("answer")
-    let areaAnswerClass = countryData.area.equals === "=" ? goodAnswerClass : badAnswerClass
     areaNode.innerText = numberWithSpaces(countryData.area.value)
-    areaNode.classList.add(areaAnswerClass)
-    AddArrowIndicator(countryData.area.equals, areaNode)
+    AddArrowIndicator(countryData.area.equals, areaNode, countryData.area.ratio)
     answerRow.appendChild(areaNode)
 
     answersGrid.prepend(answerRow)
@@ -147,7 +140,9 @@ function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
-function AddArrowIndicator(value, node) {
+function AddArrowIndicator(value, node, ratio) {
+    let answerColorClass = ratio < 0.25 ? "badAnswer" : ratio < 0.5 ? "answerPercent25_50" : ratio < 0.75 ? "answerPercent50_75" : "goodAnswer"
+
     let upArrow = document.createElement("div");
     upArrow.classList.add("backgroundArrow")
     upArrow.style.backgroundImage = `url("./static/images/up_arrow.png")`
@@ -157,8 +152,10 @@ function AddArrowIndicator(value, node) {
     downArrow.style.backgroundImage = `url("./static/images/down_arrow.png")`
 
     if(value === "=") {
+        node.classList.add("goodAnswer")
         return
     }
+    node.classList.add(answerColorClass)
     node.appendChild(value === "+" ? upArrow : downArrow)
 }
 

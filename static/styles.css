@@ -216,6 +216,14 @@ input[type=text]:focus {
 	background-color: #FF5757;
 }
 
+.answerPercent25_50 {
+	background-color: #F3870D;
+}
+
+.answerPercent50_75 {
+	background-color: #F3DA0D;
+}
+
 .goodAnswer {
 	background-color: #17D345;
 }

@@ -44,7 +44,7 @@ function SetAllCountries() {
                 let name = countryData.translations.fra.common;
                 let continent = countryData.continents[0];
                 let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages)[0] : "No language"
-                let populationCount= countryData.population
+                let populationCount = countryData.population
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
                 let bordersCount = countryData.borders.length
                 let area= countryData.area
@@ -70,9 +70,11 @@ function GetCountryData(countryCode) {
     return null
 }
 
-function GetCountriesBySuggestion(suggestion) {
-    let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
-    return countries.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(regExpSuggestion));
+function ComputeRatio(tryValue, valueToGuess) {
+    if(tryValue >= valueToGuess * 2 || tryValue <= 0) {
+        return 0
+    }
+    return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)
 }
 
 function CreateCountryData(country) {
@@ -94,6 +96,7 @@ function CreateCountryData(country) {
         },
         populationCount: {
             value: country.populationCount,
+            ratio: ComputeRatio(country.populationCount, countryToGuess.populationCount),
             equals: populationCompare
         },
         currency: {
@@ -102,10 +105,12 @@ function CreateCountryData(country) {
         },
         borderCount: {
             value: country.borderCount,
+            ratio: ComputeRatio(country.borderCount, countryToGuess.borderCount),
             equals: borderCompare
         },
         area: {
             value: country.area,
+            ratio: ComputeRatio(country.area, countryToGuess.area),
             equals: areaCompare
         }
     }
@@ -122,13 +127,6 @@ app.get('/guess', function (req, res) {
     let country = GetCountryData(guessCode)
     let countryData = CreateCountryData(country)
     res.json(JSON.stringify(countryData))
-})
-
-app.get('/type', function (req, res) {
-    res.header("Content-Type",'application/json');
-    let input = req.query.input
-    let suggestedCountries= GetCountriesBySuggestion(input).map(c => ({name:c.name, code: c.code, flag:c.flag}))
-    res.json(JSON.stringify(suggestedCountries))
 })
 
 app.get('/AllCountriesName', function (req, res) {
