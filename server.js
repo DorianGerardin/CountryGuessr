@@ -26,7 +26,7 @@ function SelectCountry() {
 }
 
 async function WaitForAllCountriesData() {
-    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags,latlng`
+    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags,latlng,maps`
     const response = await fetch(apiURL);
     return await response.json();
 }
@@ -51,8 +51,9 @@ function SetAllCountries() {
                 //let flag = Object.values(countryData.flags)[1]
                 let flag = `https://flagicons.lipis.dev/flags/4x3/${countryData.cca2.toLowerCase()}.svg`
                 let latlng = countryData.latlng
+                let maps = countryData.maps.googleMaps
 
-                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag, latlng)
+                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag, latlng, maps)
                 countries.push(country)
             }
         }
@@ -125,6 +126,7 @@ function CreateCountryData(country) {
         name: country.name,
         code: country.code,
         flag : country.flag,
+        maps : country.maps,
         continent: {
             value: country.continent,
             equals: country.continent === countryToGuess.continent

@@ -86,6 +86,10 @@ function createAnswer(countryData) {
     answerRow.classList.add("answerRow")
 
     let nameNode = document.createElement("div");
+    nameNode.style.cursor = "pointer"
+    nameNode.addEventListener("click", () => {
+        window.open(countryData.maps, "_blank");
+    })
     nameNode.classList.add("answer")
     let flagBG = document.createElement("div");
     flagBG.classList.add("backgroundFlag")
