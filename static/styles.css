@@ -380,6 +380,6 @@ input[type=text]:focus {
 	}
 	.answer {
 		width: 4em;
-		height: 4em;
+		height: 3.5em;
 	}
 }

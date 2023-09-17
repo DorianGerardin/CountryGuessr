@@ -26,7 +26,7 @@ function SelectCountry() {
 }
 
 async function WaitForAllCountriesData() {
-    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags`
+    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags,latlng`
     const response = await fetch(apiURL);
     return await response.json();
 }
@@ -47,11 +47,12 @@ function SetAllCountries() {
                 let populationCount = countryData.population
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
                 let bordersCount = countryData.borders.length
-                let area= countryData.area
+                let area = countryData.area
                 //let flag = Object.values(countryData.flags)[1]
                 let flag = `https://flagicons.lipis.dev/flags/4x3/${countryData.cca2.toLowerCase()}.svg`
+                let latlng = countryData.latlng
 
-                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag)
+                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag, latlng)
                 countries.push(country)
             }
         }
@@ -84,10 +85,41 @@ function ComputeRatio(tryValue, valueToGuess) {
     return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)
 }
 
+function getDistance(lat1, lon1, lat2, lon2) {
+    // Rayon de la Terre en mètres
+    const earthRadius = 6371000;
+
+    // Conversion des latitudes et longitudes en radians
+    const radLat1 = (Math.PI * lat1) / 180;
+    const radLon1 = (Math.PI * lon1) / 180;
+    const radLat2 = (Math.PI * lat2) / 180;
+    const radLon2 = (Math.PI * lon2) / 180;
+
+    // Différences de latitudes et de longitudes en radians
+    const dLat = radLat2 - radLat1;
+    const dLon = radLon2 - radLon1;
+
+    // Formule Haversine
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(radLat1) * Math.cos(radLat2) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    // Distance en km
+    return Math.round((earthRadius * c) / 1000);
+}
+
+function getProximityPercent(distance) {
+    let halfEarthCircumference = 20037
+    return (1 - (distance / halfEarthCircumference)).toFixed(2)
+}
+
 function CreateCountryData(country) {
     let populationCompare = country.populationCount > countryToGuess.populationCount ? "-" : country.populationCount < countryToGuess.populationCount ? "+" : "="
     let borderCompare = country.borderCount > countryToGuess.borderCount ? "-" : country.borderCount < countryToGuess.borderCount ? "+" : "="
     let areaCompare = country.area > countryToGuess.area ? "-" : country.area < countryToGuess.area ? "+" : "="
+    let distance = getDistance(country.latlng[0], country.latlng[1], countryToGuess.latlng[0], countryToGuess.latlng[1])
 
     return {
         name: country.name,
@@ -119,6 +151,10 @@ function CreateCountryData(country) {
             value: country.area,
             ratio: ComputeRatio(country.area, countryToGuess.area),
             equals: areaCompare
+        },
+        distance: {
+            value: distance,
+            ratio: getProximityPercent(distance)
         }
     }
 }

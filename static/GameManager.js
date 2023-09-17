@@ -96,42 +96,48 @@ function createAnswer(countryData) {
 
     let continentNode = document.createElement("div");
     continentNode.classList.add("answer")
-    let continentAnswerClass = countryData.continent.equals ? goodAnswerClass : badAnswerClass
     continentNode.innerText = countryData.continent.value
-    continentNode.classList.add(continentAnswerClass)
+    PickColor(continentNode, countryData.continent.equals ? 1 : 0)
     answerRow.appendChild(continentNode)
 
     let languageNode = document.createElement("div");
     languageNode.classList.add("answer")
-    let languageAnswerClass = countryData.language.equals ? goodAnswerClass : badAnswerClass
     languageNode.innerText = countryData.language.value
-    languageNode.classList.add(languageAnswerClass)
+    PickColor(languageNode, countryData.language.equals ? 1 : 0)
     answerRow.appendChild(languageNode)
 
     let populationNode = document.createElement("div");
     populationNode.classList.add("answer")
     populationNode.innerText = numberWithSpaces(countryData.populationCount.value)
-    AddArrowIndicator(countryData.populationCount.equals, populationNode, countryData.populationCount.ratio)
+    AddArrowIndicator(countryData.populationCount.equals, populationNode)
+    PickColor(populationNode, countryData.populationCount.ratio)
     answerRow.appendChild(populationNode)
 
     let currencyNode = document.createElement("div");
     currencyNode.classList.add("answer")
-    let currencyAnswerClass = countryData.currency.equals ? goodAnswerClass : badAnswerClass
     currencyNode.innerText = countryData.currency.value
-    currencyNode.classList.add(currencyAnswerClass)
+    PickColor(currencyNode, countryData.currency.equals ? 1 : 0)
     answerRow.appendChild(currencyNode)
 
     let borderNode = document.createElement("div");
     borderNode.classList.add("answer")
     borderNode.innerText = numberWithSpaces(countryData.borderCount.value)
-    AddArrowIndicator(countryData.borderCount.equals, borderNode, countryData.borderCount.ratio)
+    AddArrowIndicator(countryData.borderCount.equals, borderNode)
+    PickColor(borderNode, countryData.borderCount.ratio)
     answerRow.appendChild(borderNode)
 
     let areaNode = document.createElement("div");
     areaNode.classList.add("answer")
     areaNode.innerText = numberWithSpaces(countryData.area.value)
-    AddArrowIndicator(countryData.area.equals, areaNode, countryData.area.ratio)
+    AddArrowIndicator(countryData.area.equals, areaNode)
+    PickColor(areaNode, countryData.area.ratio)
     answerRow.appendChild(areaNode)
+
+    let distanceNode = document.createElement("div");
+    distanceNode.classList.add("answer")
+    distanceNode.innerText = `${numberWithSpaces(countryData.distance.value)} km`
+    PickColor(distanceNode, countryData.distance.ratio)
+    answerRow.appendChild(distanceNode)
 
     answersGrid.prepend(answerRow)
 }
@@ -140,9 +146,7 @@ function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
-function AddArrowIndicator(value, node, ratio) {
-    let answerColorClass = ratio < 0.25 ? "badAnswer" : ratio < 0.5 ? "answerPercent25_50" : ratio < 0.75 ? "answerPercent50_75" : "goodAnswer"
-
+function AddArrowIndicator(value, node) {
     let upArrow = document.createElement("div");
     upArrow.classList.add("backgroundArrow")
     upArrow.style.backgroundImage = `url("./static/images/up_arrow.png")`
@@ -155,8 +159,12 @@ function AddArrowIndicator(value, node, ratio) {
         node.classList.add("goodAnswer")
         return
     }
-    node.classList.add(answerColorClass)
     node.appendChild(value === "+" ? upArrow : downArrow)
+}
+
+function PickColor(node, ratio) {
+    let answerColorClass = ratio < 0.25 ? "badAnswer" : ratio < 0.5 ? "answerPercent25_50" : ratio < 0.75 ? "answerPercent50_75" : "goodAnswer"
+    node.classList.add(answerColorClass)
 }
 
 
