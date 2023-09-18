@@ -40,7 +40,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	background: #393646;
+	background: rgba(32, 33, 35, 1);
 	font-size: 16px;
 	color : #F4EEE0;
 	font-family: 'Prompt', sans-serif;
@@ -92,7 +92,7 @@ input[type=text]{
 	width: 100%;
 	padding: 12px 20px;
 	display: inline-block;
-	border-color: #5D5D5D;
+	border-color: rgba(93, 93, 93, 0.5);
 	border-style: solid;
 	border-width: 1px 0 1px 1px;
 	border-radius: 0.3em 0 0 0.3em;
@@ -132,9 +132,9 @@ input[type=text]:focus {
 	height: fit-content;
 	overflow: scroll;
 	overflow-x: hidden;
-	background-color: #393646;
+	background-color: rgba(32, 33, 35, 1);
 	z-index: 999;
-	border-color: #5D5D5D;
+	border-color: rgba(93, 93, 93, 0.5);
 	border-style: solid;
 	border-width: 0 1px 1px 1px;
 	box-shadow: 0 10px 25px -7px #00000075;
@@ -171,15 +171,14 @@ input[type=text]:focus {
 
 #answersCategories {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	margin-bottom: 1.5em;
-	column-gap: 0.5em;
 }
 .category {
 	display: flex;
 	flex-direction: column;
 	height: 4em;
-	width: 6em;
+	width: 11.5%;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
@@ -194,8 +193,7 @@ input[type=text]:focus {
 
 .answerRow {
 	display: flex;
-	justify-content: space-between;
-	column-gap: 0.5em;
+	justify-content: space-around;
 }
 
 .answer {
@@ -203,7 +201,7 @@ input[type=text]:focus {
 	padding: 0.2em;
 	display: flex;
 	height: 5em;
-	width: 6em;
+	width: 11.5%;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
@@ -264,9 +262,6 @@ input[type=text]:focus {
 }
 
 @media screen and (min-width: 601px) and (max-width: 768px) {
-	body {
-		/*font-size: 14px;*/
-	}
 	#container {
 		width:90%;
 	}
@@ -285,7 +280,6 @@ input[type=text]:focus {
 		font-size: 12px;
 	}
 	.category {
-		width: 6em;
 		height: 6em;
 	}
 	h1 {
@@ -313,11 +307,9 @@ input[type=text]:focus {
 		font-size: 10px;
 	}
 	.category {
-		width: 5.5em;
 		height: 5.5em;
 	}
 	.answer {
-		width: 5.5em;
 		height: 5em;
 	}
 }
@@ -344,12 +336,10 @@ input[type=text]:focus {
 		padding: 0.5em 1em 0.35em 1em;
 	}
 	.category {
-		height: 5.5em;
-		width: 5em;
+		height: 5em;
 	}
 	.answer {
-		width: 5em;
-		height: 5em;
+		height: 4.5em;
 	}
 }
 
@@ -376,10 +366,8 @@ input[type=text]:focus {
 	}
 	.category {
 		height: 5em;
-		width: 4em;
 	}
 	.answer {
-		width: 4em;
 		height: 3.5em;
 	}
 }
