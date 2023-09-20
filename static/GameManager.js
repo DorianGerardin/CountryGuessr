@@ -140,7 +140,7 @@ function createAnswer(countryData) {
     let distanceNode = document.createElement("div");
     distanceNode.classList.add("answer")
     distanceNode.innerText = `${numberWithSpaces(countryData.distance.value)} km`
-    PickColor(distanceNode, countryData.distance.ratio)
+    PickColorDistance(distanceNode, countryData.distance.ratio)
     answerRow.appendChild(distanceNode)
 
     answersGrid.prepend(answerRow)
@@ -168,6 +168,11 @@ function AddArrowIndicator(value, node) {
 
 function PickColor(node, ratio) {
     let answerColorClass = ratio < 0.25 ? "badAnswer" : ratio < 0.5 ? "answerPercent25_50" : ratio < 0.75 ? "answerPercent50_75" : "goodAnswer"
+    node.classList.add(answerColorClass)
+}
+
+function PickColorDistance(node, ratio) {
+    let answerColorClass = ratio < 0.575 ? "badAnswer" : ratio < 0.75 ? "answerPercent25_50" : ratio < 0.85 ? "answerPercent50_75" : "goodAnswer"
     node.classList.add(answerColorClass)
 }
 

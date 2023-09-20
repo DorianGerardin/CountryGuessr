@@ -170,6 +170,10 @@ app.get('/guess', function (req, res) {
   res.header("Content-Type",'application/json');
     let guessCode = req.query.code
     let country = GetCountryData(guessCode)
+    if(!country) {
+        res.status(404).json({error: "Country not found"});
+        return
+    }
     let countryData = CreateCountryData(country)
     res.json(JSON.stringify(countryData))
 })

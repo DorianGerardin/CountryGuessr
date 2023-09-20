@@ -26,6 +26,11 @@ a {
 	background: #F4EEE0;
 }
 
+/* width */
+::-webkit-scrollbar {
+	width: 0.2em;
+}
+
 #container {
 	display: flex;
 	flex-direction: column;
@@ -109,11 +114,6 @@ input[type=text]:focus {
 	outline:none
 }
 
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
 .center {
 	display: flex;
 	justify-content: center;
@@ -156,7 +156,8 @@ input[type=text]:focus {
 .suggestionFocus {
 	cursor: pointer;
 	background-color: #4F4557;
-	border: 0.1em solid #F4EEE0;
+	border: 0.1em solid rgb(244 238 224 / 40%);
+	border-radius: 0.3em;
 	padding: 0.4375em 0.1875em 0.4375em 0.9375em;
 }
 
@@ -263,7 +264,7 @@ input[type=text]:focus {
 
 @media screen and (min-width: 601px) and (max-width: 768px) {
 	#container {
-		width:90%;
+		width:95%;
 	}
 	header {
 		width: 100%;
@@ -291,7 +292,7 @@ input[type=text]:focus {
 
 @media screen and (min-width: 481px) and (max-width: 600px) {
 	#container {
-		width:90%;
+		width:95%;
 	}
 	header {
 		width: 100%;
@@ -316,7 +317,7 @@ input[type=text]:focus {
 
 @media screen and (min-width: 334px) and (max-width: 480px) {
 	#container {
-		width:90%;
+		width:95%;
 	}
 	header {
 		width: 100%;
@@ -341,11 +342,14 @@ input[type=text]:focus {
 	.answer {
 		height: 4.5em;
 	}
+	/*::-webkit-scrollbar {
+		width: 3px;
+	}*/
 }
 
 @media screen and (max-width: 333px) {
 	#container {
-		width:90%;
+		width:95%;
 	}
 	header {
 		width: 100%;
@@ -370,4 +374,7 @@ input[type=text]:focus {
 	.answer {
 		height: 3.5em;
 	}
+	/*::-webkit-scrollbar {
+		width: 3px;
+	}*/
 }
