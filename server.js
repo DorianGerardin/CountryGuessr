@@ -5,6 +5,8 @@
   ____) | |____| | \ \  \  /  | |____| | \ \ 
  |_____/|______|_|  \_\  \/   |______|_|  \_\  */
 
+import Fs from 'fs'
+import Https from 'https'
 import path from 'path';
 import {fileURLToPath} from 'url';
 import express from 'express'; //Import the express dependency
@@ -38,7 +40,7 @@ function SetAllCountries() {
             console.log("aucun pays trouvé");
         } else {
             const countryCount = data.length;
-            for(let i = 0; i < countryCount; i++) {
+            for (let i = 0; i < countryCount; i++) {
                 let countryData = data[i]
                 let code = countryData.cca3;
                 let name = countryData.translations.fra.common;
@@ -48,12 +50,10 @@ function SetAllCountries() {
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
                 let bordersCount = countryData.borders.length
                 let area = countryData.area
-                //let flag = Object.values(countryData.flags)[1]
-                let flag = `https://flagicons.lipis.dev/flags/4x3/${countryData.cca2.toLowerCase()}.svg`
                 let latlng = countryData.latlng
                 let maps = countryData.maps.googleMaps
 
-                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, flag, latlng, maps)
+                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, latlng, maps)
                 countries.push(country)
             }
         }
@@ -125,7 +125,6 @@ function CreateCountryData(country) {
     return {
         name: country.name,
         code: country.code,
-        flag : country.flag,
         maps : country.maps,
         continent: {
             value: country.continent,

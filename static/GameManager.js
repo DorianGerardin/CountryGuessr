@@ -15,13 +15,13 @@ let countrySuggestionList
 let countriesName = [];
 GetAllCountriesName()
 
+
 countrySubmit.addEventListener('click', SubmitCountry)
 countryInput.addEventListener('keydown', (e) => TrySubmitCountry(e))
 countryInput.addEventListener('input', (e) => UpdateSuggestions(e))
 countryInput.addEventListener('click', (e) => UpdateSuggestions(e))
 document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => {
-        console.log("resize")
         adjustTextSize()
         if(window.innerWidth > 480) {
             HideZoomButton()
@@ -83,6 +83,7 @@ function SubmitCountry() {
   fetch(`/guess?code=${currentCountry}`)
       .then(response => response.json())
       .then(data => {
+          console.log("fetched");
           if(!hasAlreadyAnswered) {
               answersContainer.style.display = "flex"
           }
@@ -145,7 +146,7 @@ function CreateAnswerRow(countryData) {
     nameContentNode.classList.add("answerContent")
     let flagBG = document.createElement("div");
     flagBG.classList.add("backgroundFlag")
-    flagBG.style.backgroundImage = `url(${countryData.flag})`
+    flagBG.style.backgroundImage = `url(./static/images/flags/${countryData.code}.svg)`
     nameContentNode.innerText = countryData.name
     nameContentNode.appendChild(flagBG)
     nameNode.appendChild(nameContentNode)
@@ -210,13 +211,12 @@ function PickColorDistance(node, ratio) {
 }
 
 function adjustTextSize(answerRow) {
-    /*let containers = answerRow !== undefined ? answerRow.querySelectorAll('.answerSquare') : document.getElementsByClassName("answerSquare");
+    let containers = answerRow !== undefined ? answerRow.querySelectorAll('.answerSquare') : document.getElementsByClassName("answerSquare");
     for (const answerSquare of containers) {
         if(!answerSquare.classList.contains("answer0") && !answerSquare.classList.contains("answer1") && !answerSquare.classList.contains("answer2")
             && !answerSquare.classList.contains("answer3") && !answerSquare.classList.contains("answer4") && !answerSquare.classList.contains("answer6")) {
             continue
         }
-        console.log("adjust")
         answerSquare.style.removeProperty('fontSize');
         let defaultFontSize = parseFloat(getComputedStyle(document.getElementById("answersContainer")).fontSize);
         let containerWidth = answerSquare.clientWidth
@@ -226,7 +226,7 @@ function adjustTextSize(answerRow) {
         let currentFontSize = parseFloat(getComputedStyle(answerContent).fontSize)
         let newFontSize = containerWidth * 3 / textWidth * currentFontSize
         answerContent.style.fontSize = Math.min(newFontSize, defaultFontSize) + "px";
-    }*/
+    }
 }
 
 function measureTextWidth(text, font) {
