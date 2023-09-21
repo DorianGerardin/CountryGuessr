@@ -29,6 +29,7 @@ a {
 /* width */
 ::-webkit-scrollbar {
 	width: 0.2em;
+	height: 0.4em;
 }
 
 #container {
@@ -168,6 +169,7 @@ input[type=text]:focus {
 	margin-top: 5em;
 	margin-bottom: 5em;
 	font-size: 14px;
+	overflow-x: scroll;
 }
 
 #answersCategories {
@@ -197,21 +199,29 @@ input[type=text]:focus {
 	justify-content: space-around;
 }
 
-.answer {
-	position: relative;
-	padding: 0.2em;
-	display: flex;
-	height: 5em;
+.answerSquare {
 	width: 11.5%;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
 	border: 0.1em solid #F4EEE0;
-	background-color: #4F4557;
-	overflow-wrap: break-word;
 	border-radius: 0.25em;
-	text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
 	z-index: 1;
+}
+
+.answerContent::before {
+	content:"";
+	padding-top:90%;
+}
+
+.answerContent {
+	font-size: 1.3em;
+	position: relative;
+	display:flex;
+	height:100%;
+	width:100%;
+	justify-content:center;
+	align-items:center;
+	text-align: center;
+	text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
+	overflow-wrap: break-word;
 }
 
 .badAnswer {
@@ -238,10 +248,8 @@ input[type=text]:focus {
 	filter: brightness(52%);
 	height: 100%;
 	width: 100%;
-	top: 0;
-	left: 0;
 	z-index: -1;
-	border-radius: 0.25em;
+	border-radius: 0.15em;
 }
 
 .backgroundArrow {
@@ -310,9 +318,6 @@ input[type=text]:focus {
 	.category {
 		height: 5.5em;
 	}
-	.answer {
-		height: 5em;
-	}
 }
 
 @media screen and (min-width: 334px) and (max-width: 480px) {
@@ -339,12 +344,6 @@ input[type=text]:focus {
 	.category {
 		height: 5em;
 	}
-	.answer {
-		height: 4.5em;
-	}
-	/*::-webkit-scrollbar {
-		width: 3px;
-	}*/
 }
 
 @media screen and (max-width: 333px) {
@@ -371,10 +370,4 @@ input[type=text]:focus {
 	.category {
 		height: 5em;
 	}
-	.answer {
-		height: 3.5em;
-	}
-	/*::-webkit-scrollbar {
-		width: 3px;
-	}*/
 }

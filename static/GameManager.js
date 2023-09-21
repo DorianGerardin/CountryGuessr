@@ -15,6 +15,11 @@ countrySubmit.addEventListener('click', SubmitCountry)
 countryInput.addEventListener('keydown', (e) => TrySubmitCountry(e))
 countryInput.addEventListener('input', (e) => UpdateSuggestions(e))
 countryInput.addEventListener('click', (e) => UpdateSuggestions(e))
+document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("resize", () => {
+        adjustTextSize()
+    });
+});
 document.body.addEventListener("click", (e) => {
   if(countryInput.style.visibility === "hidden" || e.target === countryInput) {
     return
@@ -71,79 +76,88 @@ function SubmitCountry() {
           currentCountry = null
           hasAlreadyAnswered = true
           let countryData = JSON.parse(data)
-          createAnswer(countryData)
+          CreateAnswerRow(countryData)
       })
       .catch(error => {
         console.error('Une erreur s\'est produite :', error);
       });
 }
 
-function createAnswer(countryData) {
-    let goodAnswerClass = "goodAnswer"
-    let badAnswerClass = "badAnswer"
 
+function CreateAnswerSquare(rowNode, textValue, ratio) {
+    let squareNode = document.createElement("div");
+    let squareContentNode = document.createElement("div");
+    squareNode.classList.add("answerSquare")
+    squareContentNode.classList.add("answerContent")
+    squareContentNode.innerText = textValue
+    PickColor(squareNode, ratio)
+    squareNode.appendChild(squareContentNode)
+    rowNode.appendChild(squareNode)
+}
+
+function CreateArrowSquare(rowNode, textValue, ratio, equals, isDistance = false) {
+    let squareNode = document.createElement("div");
+    let squareContentNode = document.createElement("div");
+    squareNode.classList.add("answerSquare")
+    squareContentNode.classList.add("answerContent")
+    squareContentNode.innerText = numberWithSpaces(textValue)
+    if(isDistance) {
+        PickColorDistance(squareNode, ratio)
+    } else {
+        AddArrowIndicator(equals, squareContentNode)
+        PickColor(squareNode, ratio)
+    }
+    squareNode.appendChild(squareContentNode)
+    rowNode.appendChild(squareNode)
+}
+
+function CreateAnswerRow(countryData) {
     let answerRow= document.createElement("div");
     answerRow.classList.add("answerRow")
 
+    // NAME
     let nameNode = document.createElement("div");
+    let nameContentNode = document.createElement("div");
     nameNode.style.cursor = "pointer"
     nameNode.addEventListener("click", () => {
         window.open(countryData.maps, "_blank");
     })
-    nameNode.classList.add("answer")
+    nameNode.classList.add("answerSquare")
+    nameContentNode.classList.add("answerContent")
     let flagBG = document.createElement("div");
     flagBG.classList.add("backgroundFlag")
     flagBG.style.backgroundImage = `url(${countryData.flag})`
-    nameNode.innerText = countryData.name
-    nameNode.appendChild(flagBG)
+    nameContentNode.innerText = countryData.name
+    nameContentNode.appendChild(flagBG)
+    nameNode.appendChild(nameContentNode)
     answerRow.appendChild(nameNode)
 
-    let continentNode = document.createElement("div");
-    continentNode.classList.add("answer")
-    continentNode.innerText = countryData.continent.value
-    PickColor(continentNode, countryData.continent.equals ? 1 : 0)
-    answerRow.appendChild(continentNode)
+    // CONTINENT
+    let continentRatio = countryData.continent.equals ? 1 : 0
+    CreateAnswerSquare(answerRow, countryData.continent.value, continentRatio)
 
-    let languageNode = document.createElement("div");
-    languageNode.classList.add("answer")
-    languageNode.innerText = countryData.language.value
-    PickColor(languageNode, countryData.language.equals ? 1 : 0)
-    answerRow.appendChild(languageNode)
+    // LANGUAGE
+    let languageRatio = countryData.language.equals ? 1 : 0
+    CreateAnswerSquare(answerRow, countryData.language.value, languageRatio)
 
-    let populationNode = document.createElement("div");
-    populationNode.classList.add("answer")
-    populationNode.innerText = numberWithSpaces(countryData.populationCount.value)
-    AddArrowIndicator(countryData.populationCount.equals, populationNode)
-    PickColor(populationNode, countryData.populationCount.ratio)
-    answerRow.appendChild(populationNode)
+    // POPULATION
+    CreateArrowSquare(answerRow, countryData.populationCount.value, countryData.populationCount.ratio, countryData.populationCount.equals)
 
-    let currencyNode = document.createElement("div");
-    currencyNode.classList.add("answer")
-    currencyNode.innerText = countryData.currency.value
-    PickColor(currencyNode, countryData.currency.equals ? 1 : 0)
-    answerRow.appendChild(currencyNode)
+    // CURRENCY
+    let currencyRatio = countryData.currency.equals ? 1 : 0
+    CreateAnswerSquare(answerRow, countryData.currency.value, currencyRatio)
 
-    let borderNode = document.createElement("div");
-    borderNode.classList.add("answer")
-    borderNode.innerText = numberWithSpaces(countryData.borderCount.value)
-    AddArrowIndicator(countryData.borderCount.equals, borderNode)
-    PickColor(borderNode, countryData.borderCount.ratio)
-    answerRow.appendChild(borderNode)
+    // BORDERS
+    CreateArrowSquare(answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.equals)
 
-    let areaNode = document.createElement("div");
-    areaNode.classList.add("answer")
-    areaNode.innerText = numberWithSpaces(countryData.area.value)
-    AddArrowIndicator(countryData.area.equals, areaNode)
-    PickColor(areaNode, countryData.area.ratio)
-    answerRow.appendChild(areaNode)
+    // AREA
+    CreateArrowSquare(answerRow, countryData.area.value, countryData.area.ratio, countryData.area.equals)
 
-    let distanceNode = document.createElement("div");
-    distanceNode.classList.add("answer")
-    distanceNode.innerText = `${numberWithSpaces(countryData.distance.value)} km`
-    PickColorDistance(distanceNode, countryData.distance.ratio)
-    answerRow.appendChild(distanceNode)
+    // DISTANCE
+    CreateArrowSquare(answerRow, countryData.distance.value, countryData.distance.ratio, false, true)
 
     answersGrid.prepend(answerRow)
+    adjustTextSize(answerRow);
 }
 
 function numberWithSpaces(x) {
@@ -174,6 +188,52 @@ function PickColor(node, ratio) {
 function PickColorDistance(node, ratio) {
     let answerColorClass = ratio < 0.575 ? "badAnswer" : ratio < 0.75 ? "answerPercent25_50" : ratio < 0.85 ? "answerPercent50_75" : "goodAnswer"
     node.classList.add(answerColorClass)
+}
+
+function adjustTextSize(answerRow) {
+    let containers = answerRow !== undefined ? answerRow.querySelectorAll('.answerSquare') : document.getElementsByClassName("answerSquare");
+    for (const answerSquare of containers) {
+        answerSquare.style.removeProperty('fontSize');
+        let defaultFontSize = parseFloat(getComputedStyle(document.getElementById("answersContainer")).fontSize);
+        let containerWidth = answerSquare.clientWidth
+        let answerContent = answerSquare.querySelector('.answerContent');
+        let textWidth = measureTextWidth(answerContent.textContent, getComputedStyle(answerContent).font);
+
+        let currentFontSize = parseFloat(getComputedStyle(answerContent).fontSize)
+        let newFontSize = containerWidth * 3 / textWidth * currentFontSize
+        answerContent.style.fontSize = Math.min(newFontSize, defaultFontSize) + "px";
+    }
+}
+
+function measureTextWidth(text, font) {
+    let canvas = document.createElement("canvas");
+    let context = canvas.getContext("2d");
+    context.font = font;
+    let metrics = context.measureText(text);
+    return Math.ceil(metrics.width);
+}
+
+function ZoomIn() {
+    let answersCategories = document.getElementById("answersCategories")
+    let answersGrid = document.getElementById("answersGrid")
+    answersContainer.style.fontSize = "0.7em"
+    answersContainer.style.marginTop = "2em"
+    answersCategories.style.width = "150%"
+    console.log(answersCategories.style.width)
+    answersGrid.style.width = "150%"
+    answersGrid.style.marginBottom = "2em"
+    adjustTextSize()
+}
+
+function ZoomOut() {
+    let answersCategories = document.getElementById("answersCategories")
+    let answersGrid = document.getElementById("answersGrid")
+    answersContainer.style.removeProperty("font-size")
+    answersContainer.style.removeProperty("margin-top")
+    answersCategories.style.removeProperty("width")
+    answersGrid.style.removeProperty("width")
+    answersGrid.style.removeProperty("margin-bottom")
+    adjustTextSize()
 }
 
 
