@@ -4,7 +4,11 @@ const countrySubmit = document.getElementById('countrySubmit');
 const suggestions = document.getElementById('suggestions');
 const answersContainer = document.getElementById('answersContainer');
 const answersGrid = document.getElementById('answersGrid');
+const zoomContainer = document.getElementById('zoomContainer')
+const zoomButton = document.getElementById('zoomButton')
 
+let zoomedIn = false
+let isZoomDisplayed = false
 let hasAlreadyAnswered = false
 let currentCountry = null
 let countrySuggestionList
@@ -17,7 +21,14 @@ countryInput.addEventListener('input', (e) => UpdateSuggestions(e))
 countryInput.addEventListener('click', (e) => UpdateSuggestions(e))
 document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("resize", () => {
+        console.log("resize")
         adjustTextSize()
+        if(window.innerWidth > 480) {
+            HideZoomButton()
+            if(zoomedIn) ZoomOut()
+        } else {
+            ShowZoomButton();
+        }
     });
 });
 document.body.addEventListener("click", (e) => {
@@ -25,6 +36,9 @@ document.body.addEventListener("click", (e) => {
     return
   }
   countrySuggestionList.Hide()
+})
+zoomButton.addEventListener('click', () => {
+    zoomedIn ? ZoomOut() : ZoomIn()
 })
 
 function GetCountriesBySuggestion(suggestion) {
@@ -77,28 +91,31 @@ function SubmitCountry() {
           hasAlreadyAnswered = true
           let countryData = JSON.parse(data)
           CreateAnswerRow(countryData)
+          ShowZoomButton();
       })
       .catch(error => {
         console.error('Une erreur s\'est produite :', error);
       });
 }
 
-
-function CreateAnswerSquare(rowNode, textValue, ratio) {
+function CreateAnswerSquare(answerNumber, rowNode, textValue, ratio) {
     let squareNode = document.createElement("div");
     let squareContentNode = document.createElement("div");
     squareNode.classList.add("answerSquare")
+    squareNode.classList.add(`answer${answerNumber}`)
     squareContentNode.classList.add("answerContent")
     squareContentNode.innerText = textValue
     PickColor(squareNode, ratio)
     squareNode.appendChild(squareContentNode)
     rowNode.appendChild(squareNode)
+    return squareNode
 }
 
-function CreateArrowSquare(rowNode, textValue, ratio, equals, isDistance = false) {
+function CreateArrowSquare(answerNumber, rowNode, textValue, ratio, equals, isDistance = false) {
     let squareNode = document.createElement("div");
     let squareContentNode = document.createElement("div");
     squareNode.classList.add("answerSquare")
+    squareNode.classList.add(`answer${answerNumber}`)
     squareContentNode.classList.add("answerContent")
     squareContentNode.innerText = numberWithSpaces(textValue)
     if(isDistance) {
@@ -109,6 +126,7 @@ function CreateArrowSquare(rowNode, textValue, ratio, equals, isDistance = false
     }
     squareNode.appendChild(squareContentNode)
     rowNode.appendChild(squareNode)
+    return squareNode
 }
 
 function CreateAnswerRow(countryData) {
@@ -123,6 +141,7 @@ function CreateAnswerRow(countryData) {
         window.open(countryData.maps, "_blank");
     })
     nameNode.classList.add("answerSquare")
+    nameNode.classList.add("answer0")
     nameContentNode.classList.add("answerContent")
     let flagBG = document.createElement("div");
     flagBG.classList.add("backgroundFlag")
@@ -134,27 +153,27 @@ function CreateAnswerRow(countryData) {
 
     // CONTINENT
     let continentRatio = countryData.continent.equals ? 1 : 0
-    CreateAnswerSquare(answerRow, countryData.continent.value, continentRatio)
+    CreateAnswerSquare(1, answerRow, countryData.continent.value, continentRatio)
 
     // LANGUAGE
     let languageRatio = countryData.language.equals ? 1 : 0
-    CreateAnswerSquare(answerRow, countryData.language.value, languageRatio)
+    CreateAnswerSquare(2, answerRow, countryData.language.value, languageRatio)
 
     // POPULATION
-    CreateArrowSquare(answerRow, countryData.populationCount.value, countryData.populationCount.ratio, countryData.populationCount.equals)
+    CreateArrowSquare(3, answerRow, countryData.populationCount.value, countryData.populationCount.ratio, countryData.populationCount.equals)
 
     // CURRENCY
     let currencyRatio = countryData.currency.equals ? 1 : 0
-    CreateAnswerSquare(answerRow, countryData.currency.value, currencyRatio)
+    CreateAnswerSquare(4, answerRow, countryData.currency.value, currencyRatio)
 
     // BORDERS
-    CreateArrowSquare(answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.equals)
+    CreateArrowSquare(5, answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.equals)
 
     // AREA
-    CreateArrowSquare(answerRow, countryData.area.value, countryData.area.ratio, countryData.area.equals)
+    CreateArrowSquare(6, answerRow, countryData.area.value, countryData.area.ratio, countryData.area.equals)
 
     // DISTANCE
-    CreateArrowSquare(answerRow, countryData.distance.value, countryData.distance.ratio, false, true)
+    CreateArrowSquare(7, answerRow, countryData.distance.value, countryData.distance.ratio, false, true)
 
     answersGrid.prepend(answerRow)
     adjustTextSize(answerRow);
@@ -191,8 +210,13 @@ function PickColorDistance(node, ratio) {
 }
 
 function adjustTextSize(answerRow) {
-    let containers = answerRow !== undefined ? answerRow.querySelectorAll('.answerSquare') : document.getElementsByClassName("answerSquare");
+    /*let containers = answerRow !== undefined ? answerRow.querySelectorAll('.answerSquare') : document.getElementsByClassName("answerSquare");
     for (const answerSquare of containers) {
+        if(!answerSquare.classList.contains("answer0") && !answerSquare.classList.contains("answer1") && !answerSquare.classList.contains("answer2")
+            && !answerSquare.classList.contains("answer3") && !answerSquare.classList.contains("answer4") && !answerSquare.classList.contains("answer6")) {
+            continue
+        }
+        console.log("adjust")
         answerSquare.style.removeProperty('fontSize');
         let defaultFontSize = parseFloat(getComputedStyle(document.getElementById("answersContainer")).fontSize);
         let containerWidth = answerSquare.clientWidth
@@ -202,7 +226,7 @@ function adjustTextSize(answerRow) {
         let currentFontSize = parseFloat(getComputedStyle(answerContent).fontSize)
         let newFontSize = containerWidth * 3 / textWidth * currentFontSize
         answerContent.style.fontSize = Math.min(newFontSize, defaultFontSize) + "px";
-    }
+    }*/
 }
 
 function measureTextWidth(text, font) {
@@ -216,13 +240,14 @@ function measureTextWidth(text, font) {
 function ZoomIn() {
     let answersCategories = document.getElementById("answersCategories")
     let answersGrid = document.getElementById("answersGrid")
-    answersContainer.style.fontSize = "0.7em"
+    answersContainer.style.fontSize = "0.8em"
     answersContainer.style.marginTop = "2em"
-    answersCategories.style.width = "150%"
-    console.log(answersCategories.style.width)
-    answersGrid.style.width = "150%"
+    answersCategories.style.width = "175%"
+    answersGrid.style.width = "175%"
     answersGrid.style.marginBottom = "2em"
     adjustTextSize()
+    zoomButton.style.backgroundImage = "url(./static/images/zoomOut_w.png)"
+    zoomedIn = true
 }
 
 function ZoomOut() {
@@ -234,6 +259,22 @@ function ZoomOut() {
     answersGrid.style.removeProperty("width")
     answersGrid.style.removeProperty("margin-bottom")
     adjustTextSize()
+    zoomButton.style.backgroundImage = "url(./static/images/zoomIn_w.png)"
+    zoomedIn = false;
+}
+
+function ShowZoomButton() {
+    if(!isZoomDisplayed && hasAlreadyAnswered && window.innerWidth <= 480) {
+        zoomContainer.style.display = "flex"
+        isZoomDisplayed = true;
+    }
+}
+
+function HideZoomButton() {
+    if(isZoomDisplayed) {
+        zoomContainer.style.display = "none"
+        isZoomDisplayed = false;
+    }
 }
 
 

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CountryGuessr</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="container">
+        <header>
+            <h1>COUNTRY GUESSR</h1>
+        </header>
+
+        <main>
+            <div id="countryForm">
+                <input type="text" autocomplete="off" id="countryInput" placeholder="Entrez un pays">
+                <div id="countrySubmit">Deviner</div>
+
+                <div id="suggestions">
+                </div>
+
+            </div>
+
+            <div id="answersContainer">
+
+                <div id="answersCategories">
+                    <div id="nameCategory" class="category">
+                        <span>Pays</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                    <div id="continentCategory" class="category">
+                        <span>Continent</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                    <div id="languageCategory" class="category">
+                        <span>Langue</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                    <div id="populationCategory" class="category">
+                        <span>Nombre d'habitants</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                    <div id="currencyCategory" class="category">
+                        <span>Devise</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                    <div id="bordersCategory" class="category">
+                        <span>Frontières</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                    <div id="areaCategory" class="category">
+                        <span>Superficie (km²)</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                    <div id="distanceCategory" class="category">
+                        <span>Distance</span>
+                        <div class="thematicBreak"></div>
+                    </div>
+                </div>
+
+                <div id="answersGrid">
+                </div>
+
+            </div>
+
+            <div id="zoomContainer" class="center">
+                <div id="zoomButton">
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <footer></footer>
+<script type="module" src="static/Country.js"></script>
+<script src="static/CountrySuggestionList.js"></script>
+<script src="static/GameManager.js"></script>
+
+</body>
+
+</html>
