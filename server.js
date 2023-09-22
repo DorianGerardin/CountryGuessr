@@ -18,10 +18,44 @@ const port = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+let currencyTypes = ["dollar", "lev", "yuan", "riel", "gourde", "vatu", "colón", "won", "convertible mark", "Euro", "somoni", "leu", "franc", "CFA franc", "CFP franc",
+    "dobra", "kip", "lek", "lira", "pound", "rial", "riyal", "naira", "peso", "escudo", "yen", "krone", "koruna", "króna", "krona", "ruble", "guilder", "kwacha",
+    "manat", "tögrög", "tālā", "ngultrum", "rupee", "rupiah", "taka", "guaraní", "pataca", "nakfa", "afghani", "bolívar soberano", "leone", "kyat", "dinar", "shilling",
+    "ariary", "lempira", "balboa", "florin", "denar", "kwanza", "new shekel", "soʻm", "lari", "rufiyaa", "som", "sol", "dirham", "dirham", "kina", "dram", "forint", "hryvnia",
+    "pula", "paʻanga", "baht", "quetzal", "córdoba", "lilangeni", "rand", "dalasi", "birr", "real", "złoty", "boliviano", "cedi", "metical", "tenge", "ringgit", "đồng", "loti", "ouguiya"]
 let countries = [];
 let countryToGuess = null
 SetAllCountries();
 
+function getCurrency(currency) {
+    let bestMatch = ""
+    let currencyTypesCount = currencyTypes.length
+    for (let i = 0; i < currencyTypesCount; i++) {
+
+        if (currency.toLowerCase().includes(currencyTypes[i].toLowerCase()) && currencyTypes[i].length > bestMatch.length) {
+            bestMatch = currencyTypes[i];
+        }
+    }
+    currency = currency.replace(bestMatch, '')
+    let currencyDescription = currency.split(' ').filter(c => c).join(' ')
+    return [bestMatch, currencyDescription]
+}
+
+function currencyToString(currency) {
+    if(currency[0] === null) {
+        return currency[1]
+    }
+    let returnString = `${currency[0].charAt(0).toUpperCase() + currency[0].slice(1)}`
+    if(currency[1] === "") {
+        return returnString
+    } else {
+        return `${returnString} (${currency[1]})`
+    }
+}
+
+function hasSameCurrency(currency1, currency2) {
+    return currency1[0] === currency2[0]
+}
 
 function SelectCountry() {
     return countries[Math.floor(Math.random()*countries.length)];
@@ -53,7 +87,13 @@ function SetAllCountries() {
                 let latlng = countryData.latlng
                 let maps = countryData.maps.googleMaps
 
-                let country = new Country(code, name, continent, language, populationCount, currency, bordersCount, area, latlng, maps)
+                let currencyType
+                if(currency === "No Currency") {
+                    currencyType = [null, "No currency"]
+                } else {
+                     currencyType = getCurrency(currency)
+                }
+                let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps)
                 countries.push(country)
             }
         }
@@ -140,8 +180,8 @@ function CreateCountryData(country) {
             equals: populationCompare
         },
         currency: {
-            value: country.currency,
-            equals: country.currency === countryToGuess.currency
+            value: currencyToString(country.currency),
+            equals: hasSameCurrency(country.currency, countryToGuess.currency)
         },
         borderCount: {
             value: country.borderCount,

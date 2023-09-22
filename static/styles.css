@@ -89,7 +89,7 @@ main {
 }
 
 #countrySubmit:hover {
-	transition: 0.2s linear;
+	transition: 0.1s linear;
 	color: #393646;
 	background-color: #F4EEE0;
 }
@@ -176,6 +176,7 @@ input[type=text]:focus {
 	justify-content: space-around;
 	margin-bottom: 1.5em;
 }
+
 .category {
 	display: flex;
 	flex-direction: column;
@@ -211,7 +212,7 @@ input[type=text]:focus {
 }
 
 .answerContent {
-	font-size: 1.3em;
+	font-size: 1.15em;
 	position: relative;
 	display:flex;
 	height:100%;
@@ -221,6 +222,7 @@ input[type=text]:focus {
 	text-align: center;
 	text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
 	overflow-wrap: break-word;
+	word-break: break-word;
 }
 
 .badAnswer {

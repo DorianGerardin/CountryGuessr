@@ -240,7 +240,7 @@ function measureTextWidth(text, font) {
 function ZoomIn() {
     let answersCategories = document.getElementById("answersCategories")
     let answersGrid = document.getElementById("answersGrid")
-    answersContainer.style.fontSize = "0.8em"
+    answersContainer.style.fontSize = "0.85em"
     answersContainer.style.marginTop = "2em"
     answersCategories.style.width = "175%"
     answersGrid.style.width = "175%"
