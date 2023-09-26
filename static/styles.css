@@ -208,7 +208,7 @@ input[type=text]:focus {
 
 .answerContent::before {
 	content:"";
-	padding-top:90%;
+	padding-top:95%;
 }
 
 .answerContent {

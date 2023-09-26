@@ -163,35 +163,36 @@ function CreateCountryData(country) {
     let distance = getDistance(country.latlng[0], country.latlng[1], countryToGuess.latlng[0], countryToGuess.latlng[1])
 
     return {
+        isAnswer : country.code === countryToGuess.code,
         name: country.name,
         code: country.code,
         maps : country.maps,
         continent: {
             value: country.continent,
-            equals: country.continent === countryToGuess.continent
+            isEqual: country.continent === countryToGuess.continent
         },
         language: {
             value: country.language,
-            equals: country.language === countryToGuess.language
+            isEqual: country.language === countryToGuess.language
         },
         populationCount: {
             value: country.populationCount,
             ratio: ComputeRatio(country.populationCount, countryToGuess.populationCount),
-            equals: populationCompare
+            isEqual: populationCompare
         },
         currency: {
             value: currencyToString(country.currency),
-            equals: hasSameCurrency(country.currency, countryToGuess.currency)
+            isEqual: hasSameCurrency(country.currency, countryToGuess.currency)
         },
         borderCount: {
             value: country.borderCount,
             ratio: ComputeRatio(country.borderCount, countryToGuess.borderCount),
-            equals: borderCompare
+            isEqual: borderCompare
         },
         area: {
             value: country.area,
             ratio: ComputeRatio(country.area, countryToGuess.area),
-            equals: areaCompare
+            isEqual: areaCompare
         },
         distance: {
             value: distance,

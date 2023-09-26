@@ -7,6 +7,17 @@ const answersGrid = document.getElementById('answersGrid');
 const zoomContainer = document.getElementById('zoomContainer')
 const zoomButton = document.getElementById('zoomButton')
 
+let incrementAttempt, getAttemptCount;
+(function () {
+    let attempt = 0;
+    incrementAttempt = function() {
+        attempt++;
+    };
+    getAttemptCount = function() {
+        return attempt;
+    };
+})();
+
 let zoomedIn = false
 let isZoomDisplayed = false
 let hasAlreadyAnswered = false
@@ -14,7 +25,6 @@ let currentCountry = null
 let countrySuggestionList
 let countriesName = [];
 GetAllCountriesName()
-
 
 countrySubmit.addEventListener('click', SubmitCountry)
 countryInput.addEventListener('keydown', (e) => TrySubmitCountry(e))
@@ -77,13 +87,13 @@ function TrySubmitCountry(event) {
 
 function SubmitCountry() {
   if(!currentCountry) {
-    console.log("pays introuvable")
+      DisplayWrongCountry()
       return
   }
   fetch(`/guess?code=${currentCountry}`)
       .then(response => response.json())
       .then(data => {
-          console.log("fetched");
+          incrementAttempt()
           if(!hasAlreadyAnswered) {
               answersContainer.style.display = "flex"
           }
@@ -93,10 +103,39 @@ function SubmitCountry() {
           let countryData = JSON.parse(data)
           CreateAnswerRow(countryData)
           ShowZoomButton();
+          if(countryData.isAnswer) {
+              console.log(`you won in ${getAttemptCount()} attempts`)
+          }
       })
       .catch(error => {
-        console.error('Une erreur s\'est produite :', error);
+          WinGame()
+          console.error('Une erreur s\'est produite :', error);
       });
+}
+
+function WinGame() {
+    countrySubmit.removeEventListener('click', SubmitCountry)
+}
+
+function DisplayWrongCountry() {
+    let toast = Toastify({
+        text: "Pays introuvable",
+        duration: 1500,
+        gravity: "top", // `top` or `bottom`
+        position: "center", // `left`, `center` or `right`
+        avatar: './static/images/alert.svg',
+        stopOnFocus: false, // Prevents dismissing of toast on hover
+        onClick: function(){
+            toast.hideToast()
+        },
+        style: {
+            padding : "1.2em 4em 1.2em 4em",
+            background: "#171313",
+            borderRadius: "0.5em",
+            boxShadow: "0 10px 25px -7px #00000075",
+        }
+    })
+    toast.showToast();
 }
 
 function CreateAnswerSquare(answerNumber, rowNode, textValue, ratio) {
@@ -153,25 +192,25 @@ function CreateAnswerRow(countryData) {
     answerRow.appendChild(nameNode)
 
     // CONTINENT
-    let continentRatio = countryData.continent.equals ? 1 : 0
+    let continentRatio = countryData.continent.isEqual ? 1 : 0
     CreateAnswerSquare(1, answerRow, countryData.continent.value, continentRatio)
 
     // LANGUAGE
-    let languageRatio = countryData.language.equals ? 1 : 0
+    let languageRatio = countryData.language.isEqual ? 1 : 0
     CreateAnswerSquare(2, answerRow, countryData.language.value, languageRatio)
 
     // POPULATION
-    CreateArrowSquare(3, answerRow, countryData.populationCount.value, countryData.populationCount.ratio, countryData.populationCount.equals)
+    CreateArrowSquare(3, answerRow, countryData.populationCount.value, countryData.populationCount.ratio, countryData.populationCount.isEqual)
 
     // CURRENCY
-    let currencyRatio = countryData.currency.equals ? 1 : 0
+    let currencyRatio = countryData.currency.isEqual ? 1 : 0
     CreateAnswerSquare(4, answerRow, countryData.currency.value, currencyRatio)
 
     // BORDERS
-    CreateArrowSquare(5, answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.equals)
+    CreateArrowSquare(5, answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.isEqual)
 
     // AREA
-    CreateArrowSquare(6, answerRow, countryData.area.value, countryData.area.ratio, countryData.area.equals)
+    CreateArrowSquare(6, answerRow, countryData.area.value, countryData.area.ratio, countryData.area.isEqual)
 
     // DISTANCE
     CreateArrowSquare(7, answerRow, countryData.distance.value, countryData.distance.ratio, false, true)

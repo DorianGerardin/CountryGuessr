@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "scroll-into-view-if-needed": "^3.0.10"
+    "scroll-into-view-if-needed": "^3.0.10",
+    "toastify-js": "^1.12.0"
   }
 }
