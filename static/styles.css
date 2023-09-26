@@ -165,7 +165,7 @@ input[type=text]:focus {
 	display: none;
 	flex-direction: column;
 	width: 100%;
-	margin-top: 5em;
+	margin-top: 3.5em;
 	margin-bottom: 2em;
 	font-size: 14px;
 	overflow-x: scroll;
@@ -268,7 +268,7 @@ input[type=text]:focus {
 
 #zoomContainer {
 	display: none;
-	margin-bottom: 5em;
+	margin-bottom: 2em;
 }
 
 #zoomButton {
@@ -280,6 +280,143 @@ input[type=text]:focus {
 	background-size: 95%;
 	background-repeat: no-repeat;
 	background-position: center;
+}
+
+#ggContainer {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	width: 100%;
+	margin-bottom: 2.5em;
+}
+
+.detailSquare {
+	width: 48%;
+	border-radius: 0.5em;
+}
+
+.detailPadding::before {
+	content:"";
+	padding-top:85%;
+}
+
+.detailPadding {
+	position: relative;
+	display:flex;
+}
+
+.detailContent {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+#gameDetailPadding {
+	border-radius: 0.5em;
+	border: 0.16em solid #31ff83;
+	background: rgb(20,132,47);
+	background: -moz-linear-gradient(180deg, rgba(20,132,47,1) 0%, rgba(11,38,17,1) 100%);
+	background: -webkit-linear-gradient(180deg, rgba(20,132,47,1) 0%, rgba(11,38,17,1) 100%);
+	background: linear-gradient(180deg, rgba(20,132,47,1) 0%, rgba(11,38,17,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#14842f",endColorstr="#0b2611",GradientType=1);
+}
+
+#ggHeader {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 35%;
+	width: 100%;
+	font-size: 2em;
+	font-weight: bold;
+}
+
+#ggGuess {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	column-gap: 1em;
+}
+
+#ggContent {
+	height: 65%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+}
+
+#ggFlag img {
+	display: flex;
+	width: 5.5em;
+	border-radius: 0.5em;
+	box-shadow: 0 10px 25px -7px #00000075;
+}
+
+#ggMessage {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+#ggCountryName {
+	font-weight: bold;
+	font-size: 1.5em;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+#ggAttempts {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+}
+
+.ggAttemptsCount {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+#shareGamePadding {
+	border-radius: 0.5em;
+	border: 0.16em solid #6ae8ff;
+	background: rgb(0,96,198);
+	background: -moz-linear-gradient(180deg, rgba(0,96,198,1) 0%, rgba(0,30,62,1) 100%);
+	background: -webkit-linear-gradient(180deg, rgba(0,96,198,1) 0%, rgba(0,30,62,1) 100%);
+	background: linear-gradient(180deg, rgba(0,96,198,1) 0%, rgba(0,30,62,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0060c6",endColorstr="#001e3e",GradientType=1);
+}
+
+#shareGameContent {
+	padding: 1em;
+	font-size: 1em;
+}
+
+#shareContent {
+	white-space: pre-line;
+	text-align: center;
+}
+
+#shareButtonContainer {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	margin-top: 0.5em;
+}
+
+#shareButton {
+	padding: 0.5em 1em 0.5em 1em;
+	text-align: center;
+	border-radius: 0.5em;
+	border: 0.16em solid #6ae8ff;
+}
+
+#shareButton:hover {
+	transition: 0.2s;
+	background-color: #6ae8ff;
+	color : #202123;
+	cursor: pointer;
 }
 
 @keyframes ZoomInAndOut {
@@ -336,6 +473,16 @@ input[type=text]:focus {
 	.category {
 		height: 5.5em;
 	}
+	#ggContainer {
+		justify-content: center;
+		row-gap: 1em;
+	}
+	#gameDetailContainer {
+		width: 75%;
+	}
+	#shareGameContainer {
+		width: 75%;
+	}
 }
 
 @media screen and (min-width: 334px) and (max-width: 480px) {
@@ -362,6 +509,16 @@ input[type=text]:focus {
 	.category {
 		height: 5em;
 	}
+	#ggContainer {
+		justify-content: center;
+		row-gap: 1em;
+	}
+	#gameDetailContainer {
+		width: 90%;
+	}
+	#shareGameContainer {
+		width: 90%;
+	}
 }
 
 @media screen and (max-width: 333px) {
@@ -387,5 +544,15 @@ input[type=text]:focus {
 	}
 	.category {
 		height: 5em;
+	}
+	#ggContainer {
+		justify-content: center;
+		row-gap: 1em;
+	}
+	#gameDetailContainer {
+		width: 90%;
+	}
+	#shareGameContainer {
+		width: 90%;
 	}
 }
