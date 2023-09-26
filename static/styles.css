@@ -283,7 +283,7 @@ input[type=text]:focus {
 }
 
 #ggContainer {
-	display: flex;
+	display: none;
 	justify-content: space-between;
 	flex-wrap: wrap;
 	width: 100%;
@@ -394,6 +394,11 @@ input[type=text]:focus {
 }
 
 #shareContent {
+	white-space: pre-line;
+	text-align: center;
+}
+
+#shareColors {
 	white-space: pre-line;
 	text-align: center;
 }

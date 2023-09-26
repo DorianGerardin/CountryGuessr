@@ -18,6 +18,17 @@ let incrementAttempt, getAttemptCount;
     };
 })();
 
+let addShareLine, getShareContent
+(function (newline) {
+    let shareContent = "";
+    addShareLine = function(newline) {
+        shareContent = " \n" + newline + shareContent;
+    };
+    getShareContent = function() {
+        return shareContent;
+    };
+})();
+
 let zoomedIn = false
 let isZoomDisplayed = false
 let hasAlreadyAnswered = false
@@ -104,17 +115,46 @@ function SubmitCountry() {
           CreateAnswerRow(countryData)
           ShowZoomButton();
           if(countryData.isAnswer) {
-              console.log(`you won in ${getAttemptCount()} attempts`)
+              WinGame(countryData)
           }
       })
       .catch(error => {
-          WinGame()
           console.error('Une erreur s\'est produite :', error);
       });
 }
 
-function WinGame() {
-    countrySubmit.removeEventListener('click', SubmitCountry)
+function WinGame(countryData) {
+    let ggContainer = document.getElementById("ggContainer")
+    ggContainer.style.display = "flex";
+    ggContainer.scrollIntoView({ behavior: "smooth" });
+
+    let attemptCount = getAttemptCount()
+    let attemptsElements = document.getElementsByClassName("ggAttemptsCount")
+    for (let i = 0; i < attemptsElements.length; i++) {
+        attemptsElements[i].innerText = attemptCount
+    }
+
+    let shareContent = getShareContent()
+    let shareContentElement = document.getElementById('shareContent')
+    if(attemptCount > 5) {
+        shareContentElement.innerText += Get5FirstLines(shareContent)
+        shareContentElement.innerText += `+ ${attemptCount - 5} de plus`
+    } else {
+        shareContentElement.innerText += shareContent;
+    }
+    let copyButton = document.getElementById("shareButton")
+    copyButton.addEventListener("click", () => {
+        navigator.clipboard.writeText(shareContentElement.innerText);
+    })
+
+    let ggFlagImg = document.getElementById("ggFlagImg")
+    let ggCountryName = document.getElementById("ggCountryName")
+    ggFlagImg.src = `./static/images/flags/${countryData.code}.svg`
+    ggCountryName.innerText = countryData.name
+}
+
+function Get5FirstLines(text) {
+    return "\n" + text.split("\n").slice(1, 6).join("\n") + "\n";
 }
 
 function DisplayWrongCountry() {
@@ -173,6 +213,8 @@ function CreateAnswerRow(countryData) {
     let answerRow= document.createElement("div");
     answerRow.classList.add("answerRow")
 
+    let newLineEmojis = ""
+
     // NAME
     let nameNode = document.createElement("div");
     let nameContentNode = document.createElement("div");
@@ -193,30 +235,57 @@ function CreateAnswerRow(countryData) {
 
     // CONTINENT
     let continentRatio = countryData.continent.isEqual ? 1 : 0
-    CreateAnswerSquare(1, answerRow, countryData.continent.value, continentRatio)
+    let continentSquareNode = CreateAnswerSquare(1, answerRow, countryData.continent.value, continentRatio)
+    let continentEmoji = getEmojiByColor(continentSquareNode.classList)
+    newLineEmojis += continentEmoji
 
     // LANGUAGE
     let languageRatio = countryData.language.isEqual ? 1 : 0
-    CreateAnswerSquare(2, answerRow, countryData.language.value, languageRatio)
+    let languageSquareNode = CreateAnswerSquare(2, answerRow, countryData.language.value, languageRatio)
+    let languageEmoji = getEmojiByColor(languageSquareNode.classList)
+    newLineEmojis += languageEmoji
 
     // POPULATION
-    CreateArrowSquare(3, answerRow, countryData.populationCount.value, countryData.populationCount.ratio, countryData.populationCount.isEqual)
+    let populationSquareNode = CreateArrowSquare(3, answerRow, countryData.populationCount.value, countryData.populationCount.ratio, countryData.populationCount.isEqual)
+    let populationEmoji = getEmojiByColor(populationSquareNode.classList)
+    newLineEmojis += populationEmoji
 
     // CURRENCY
     let currencyRatio = countryData.currency.isEqual ? 1 : 0
-    CreateAnswerSquare(4, answerRow, countryData.currency.value, currencyRatio)
+    let currencySquareNode = CreateAnswerSquare(4, answerRow, countryData.currency.value, currencyRatio)
+    let currencyEmoji = getEmojiByColor(currencySquareNode.classList)
+    newLineEmojis += currencyEmoji
 
     // BORDERS
-    CreateArrowSquare(5, answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.isEqual)
+    let bordersSquareNode = CreateArrowSquare(5, answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.isEqual)
+    let bordersEmoji = getEmojiByColor(bordersSquareNode.classList)
+    newLineEmojis += bordersEmoji
 
     // AREA
-    CreateArrowSquare(6, answerRow, countryData.area.value, countryData.area.ratio, countryData.area.isEqual)
+    let areaSquareNode = CreateArrowSquare(6, answerRow, countryData.area.value, countryData.area.ratio, countryData.area.isEqual)
+    let areaEmoji = getEmojiByColor(areaSquareNode.classList)
+    newLineEmojis += areaEmoji
 
     // DISTANCE
-    CreateArrowSquare(7, answerRow, countryData.distance.value, countryData.distance.ratio, false, true)
+    let distanceSquareNode = CreateArrowSquare(7, answerRow, countryData.distance.value, countryData.distance.ratio, false, true)
+    let distanceEmoji = getEmojiByColor(distanceSquareNode.classList)
+    newLineEmojis += distanceEmoji
 
+    addShareLine(newLineEmojis)
     answersGrid.prepend(answerRow)
     adjustTextSize(answerRow);
+}
+
+function getEmojiByColor(classList) {
+    if(classList.contains("badAnswer")) {
+        return "🟥"
+    } else if (classList.contains("answerPercent25_50")) {
+        return "🟧"
+    } else if(classList.contains("answerPercent50_75")) {
+        return "🟨"
+    } else {
+        return "🟩"
+    }
 }
 
 function numberWithSpaces(x) {
