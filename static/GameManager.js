@@ -29,6 +29,21 @@ let addShareLine, getShareContent
     };
 })();
 
+function startGame() {
+    let hasWon = false;
+    function endGame() {
+        hasWon = true;
+    }
+    function HasWon() {
+        return hasWon;
+    }
+    return {
+        endGame,
+        HasWon,
+    };
+}
+const game = startGame()
+
 let zoomedIn = false
 let isZoomDisplayed = false
 let hasAlreadyAnswered = false
@@ -97,11 +112,14 @@ function TrySubmitCountry(event) {
 }
 
 function SubmitCountry() {
-  if(!currentCountry) {
+    if(game.HasWon()) {
+        return
+    }
+    if(!currentCountry) {
       DisplayWrongCountry()
       return
-  }
-  fetch(`/guess?code=${currentCountry}`)
+    }
+    fetch(`/guess?code=${currentCountry}`)
       .then(response => response.json())
       .then(data => {
           incrementAttempt()
@@ -124,9 +142,22 @@ function SubmitCountry() {
 }
 
 function WinGame(countryData) {
+    //countryForm.style.display = "none"
+    const scaleUpAndDown = [
+        { transform: "scale(1)" },
+        { transform: "scale(1.05)" },
+    ];
+    const scaleUpAndDownTiming = {
+        duration: 250,
+        iterations: 6,
+        direction: "alternate",
+        easing:"ease-in-out"
+    };
+    game.endGame()
     let ggContainer = document.getElementById("ggContainer")
     ggContainer.style.display = "flex";
     ggContainer.scrollIntoView({ behavior: "smooth" });
+    ggContainer.animate(scaleUpAndDown, scaleUpAndDownTiming)
 
     let attemptCount = getAttemptCount()
     let attemptsElements = document.getElementsByClassName("ggAttemptsCount")
@@ -134,6 +165,7 @@ function WinGame(countryData) {
         attemptsElements[i].innerText = attemptCount
     }
 
+    document.getElementById("essai").innerText = attemptCount > 1 ? "essais" : "essai"
     let shareContent = getShareContent()
     let shareContentElement = document.getElementById('shareContent')
     if(attemptCount > 5) {
@@ -144,7 +176,11 @@ function WinGame(countryData) {
     }
     let copyButton = document.getElementById("shareButton")
     copyButton.addEventListener("click", () => {
-        navigator.clipboard.writeText(shareContentElement.innerText);
+        navigator.clipboard.writeText(shareContentElement.innerText).then(function() {
+            DisplayCopiedToClipboard()
+        }).catch(function(err) {
+            console.error('Erreur lors de la copie du texte : ', err);
+        });
     })
 
     let ggFlagImg = document.getElementById("ggFlagImg")
@@ -164,15 +200,26 @@ function DisplayWrongCountry() {
         gravity: "top", // `top` or `bottom`
         position: "center", // `left`, `center` or `right`
         avatar: './static/images/alert.svg',
+        className: "toast",
         stopOnFocus: false, // Prevents dismissing of toast on hover
         onClick: function(){
             toast.hideToast()
-        },
-        style: {
-            padding : "1.2em 4em 1.2em 4em",
-            background: "#171313",
-            borderRadius: "0.5em",
-            boxShadow: "0 10px 25px -7px #00000075",
+        }
+    })
+    toast.showToast();
+}
+
+function DisplayCopiedToClipboard() {
+    let toast = Toastify({
+        text: "Copié dans le presse-papiers",
+        duration: 1500,
+        gravity: "top", // `top` or `bottom`
+        position: "center", // `left`, `center` or `right`
+        avatar: './static/images/clipboard.png',
+        className: "toast",
+        stopOnFocus: false, // Prevents dismissing of toast on hover
+        onClick: function(){
+            toast.hideToast()
         }
     })
     toast.showToast();

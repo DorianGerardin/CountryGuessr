@@ -282,6 +282,13 @@ input[type=text]:focus {
 	background-position: center;
 }
 
+.toast {
+	padding : 1.2em 4em 1.2em 4em !important;
+	background: #171313 !important;
+	border-radius: 0.5em !important;
+	box-shadow: 0 10px 25px -7px #00000075 !important;
+}
+
 #ggContainer {
 	display: none;
 	justify-content: space-between;
