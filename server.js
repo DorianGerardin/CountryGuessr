@@ -113,6 +113,9 @@ function GetCountryData(countryCode) {
 }
 
 function ComputeRatio(tryValue, valueToGuess) {
+    if(tryValue === valueToGuess) {
+        return 1
+    }
     if(valueToGuess !== 0) {
         if(tryValue >= valueToGuess * 2 || tryValue <= 0) {
             return 0

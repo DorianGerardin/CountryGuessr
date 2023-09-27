@@ -53,6 +53,38 @@ let decrementClueAttempt, getDetailClueRemainAttempt, getLetterClueRemainAttempt
     }
 })();
 
+let ToggleClueContent
+(function () {
+    let currentOpenedIndex = -1;
+    ToggleClueContent = function(index) {
+        let clueContent = document.getElementById("clueContent")
+        let cluePointer = document.getElementById("cluePointer")
+        let isDisplayed = getComputedStyle(clueContent).display === "flex"
+        switch (index) {
+            case 0 :
+                cluePointer.style.left = "12%"
+                break
+            case 1:
+                cluePointer.style.left = "50%"
+                break
+            case 2 :
+                cluePointer.style.left = "88%"
+                break
+        }
+        if(!isDisplayed) {
+            clueContent.style.display = "flex"
+            currentOpenedIndex = index
+            return
+        }
+        if(isDisplayed && currentOpenedIndex === index) {
+            clueContent.style.display = "none"
+            currentOpenedIndex = -1
+        } else {
+            currentOpenedIndex = index
+        }
+    };
+})();
+
 function startGame() {
     let hasWon = false;
     function endGame() {
@@ -167,69 +199,85 @@ function SubmitCountry() {
       });
 }
 
+function UnlockAllClues() {
+    for (let i = 0; i < 3; i++) {
+        UnlockClue(i)
+    }
+}
+
+function UnlockClue(index) {
+    const scaleUpAndDown = [
+        { transform: "scale(1)" },
+        { transform: "scale(1.075)" },
+    ];
+    const scaleUpAndDownTiming = {
+        duration: 250,
+        iterations: 6,
+        direction: "alternate",
+        easing:"ease-in-out"
+    };
+    let clueContent = document.getElementById("clueContent")
+    switch (index) {
+        case 0:
+            let detailClueNode = document.getElementById("clueDetail")
+            let detailClueImgContainer = document.getElementById("clueDetailImgContainer")
+            let detailClueImg = document.getElementById("clueDetailImg")
+            let clueTextDetail = document.getElementById("clueTextDetail")
+            clueTextDetail.innerHTML = "Indice caractéristique"
+            detailClueNode.classList.add("clueHover", "clueUnlocked")
+            detailClueImgContainer.classList.add("clueImgUnlocked")
+            detailClueImg.src = "./static/images/detailClue_unlocked.svg"
+            detailClueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
+            detailClueNode.addEventListener("click", () => {
+                ToggleClueContent(0)
+                console.log("indice detail")
+            })
+            break
+        case 1:
+            let letterClueNode = document.getElementById("clueLetter")
+            let letterClueImgContainer = document.getElementById("clueLetterImgContainer")
+            let letterClueImg = document.getElementById("clueLetterImg")
+            let clueTextLetter = document.getElementById("clueTextLetter")
+            clueTextLetter.innerHTML = "Indice première lettre"
+            letterClueNode.classList.add("clueHover", "clueUnlocked")
+            letterClueImgContainer.classList.add("clueImgUnlocked")
+            letterClueImg.src = "./static/images/letterClue_unlocked.svg"
+            letterClueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
+            letterClueNode.addEventListener("click", () => {
+                ToggleClueContent(1)
+                console.log("indice lettre")
+            })
+            break
+        case 2:
+            let flagClueNode = document.getElementById("clueFlag")
+            let flagClueImgContainer = document.getElementById("clueFlagImgContainer")
+            let flagClueImg = document.getElementById("clueFlagImg")
+            let clueTextFlag = document.getElementById("clueTextFlag")
+            clueTextFlag.innerHTML = "Indice drapeau"
+            flagClueNode.classList.add("clueHover", "clueUnlocked")
+            flagClueImgContainer.classList.add("clueImgUnlocked")
+            flagClueImg.src = "./static/images/flagClue_unlocked.svg"
+            flagClueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
+            flagClueNode.addEventListener("click", () => {
+                ToggleClueContent(2)
+                console.log("indice drapeau")
+            })
+    }
+}
+
 function UpdateClues() {
-    let detailClueNode = document.getElementById("clueDetail")
-    let detailClueImgContainer = document.getElementById("clueDetailImgContainer")
-    let detailClueImg = document.getElementById("clueDetailImg")
     let detailClueAttemptsText = document.getElementById("detailClueAttempts")
-    let clueTextDetail = document.getElementById("clueTextDetail")
-
-    let letterClueNode = document.getElementById("clueLetter")
-    let letterClueImgContainer = document.getElementById("clueLetterImgContainer")
-    let letterClueImg = document.getElementById("clueLetterImg")
     let letterClueAttemptsText = document.getElementById("letterClueAttempts")
-    let clueTextLetter = document.getElementById("clueTextLetter")
-
-    let flagClueNode = document.getElementById("clueFlag")
-    let flagClueImgContainer = document.getElementById("clueFlagImgContainer")
-    let flagClueImg = document.getElementById("clueFlagImg")
     let flagClueAttemptsText = document.getElementById("flagClueAttempts")
-    let clueTextFlag = document.getElementById("clueTextFlag")
 
     decrementClueAttempt();
     let detailClueAttempts = getDetailClueRemainAttempt()
     let letterClueAttempts = getLetterClueRemainAttempt()
     let flagClueAttempts = getFlagClueRemainAttempt()
 
-    if(detailClueAttempts <= 0) {
-        clueTextDetail.innerHTML = "Indice caractéristique"
-        detailClueNode.classList.add("clueHover", "clueUnlocked")
-        detailClueImgContainer.classList.add("clueImgUnlocked")
-        detailClueImg.src = "./static/images/detailClue_unlocked.svg"
-        detailClueNode.addEventListener("click", () => {
-            console.log("indice detail")
-        })
-
-    }
-    else {
-        detailClueAttemptsText.innerText = detailClueAttempts
-    }
-
-    if(letterClueAttempts <= 0) {
-        clueTextLetter.innerHTML = "Indice première lettre"
-        letterClueNode.classList.add("clueHover", "clueUnlocked")
-        letterClueImgContainer.classList.add("clueImgUnlocked")
-        letterClueImg.src = "./static/images/letterClue_unlocked.svg"
-        letterClueNode.addEventListener("click", () => {
-            console.log("indice lettre")
-        })
-    }
-    else {
-        letterClueAttemptsText.innerText = letterClueAttempts
-    }
-
-    if(flagClueAttempts <= 0) {
-        clueTextFlag.innerHTML = "Indice drapeau"
-        flagClueNode.classList.add("clueHover", "clueUnlocked")
-        flagClueImgContainer.classList.add("clueImgUnlocked")
-        flagClueImg.src = "./static/images/flagClue_unlocked.svg"
-        flagClueNode.addEventListener("click", () => {
-            console.log("indice drapeau")
-        })
-    }
-    else {
-        flagClueAttemptsText.innerText = flagClueAttempts
-    }
+    detailClueAttempts === 0 ? UnlockClue(0) : detailClueAttempts > 0 ? detailClueAttemptsText.innerText = detailClueAttempts : null
+    letterClueAttempts === 0 ? UnlockClue(1) : letterClueAttempts > 0 ? letterClueAttemptsText.innerText = letterClueAttempts : null
+    flagClueAttempts === 0 ? UnlockClue(2) : flagClueAttempts > 0 ? flagClueAttemptsText.innerText = flagClueAttempts : null
 }
 
 function WinGame(countryData) {
@@ -437,7 +485,6 @@ function AddArrowIndicator(value, node) {
     downArrow.style.backgroundImage = `url("./static/images/down_arrow.png")`
 
     if(value === "=") {
-        node.classList.add("goodAnswer")
         return
     }
     node.appendChild(value === "+" ? upArrow : downArrow)
