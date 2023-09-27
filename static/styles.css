@@ -67,7 +67,7 @@ main {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 3em;
+	margin-top: 2em;
 	width: 100%;
 }
 
@@ -75,6 +75,7 @@ main {
 	position: relative;
 	display: none;
 	width: 60%;
+	margin-top: 1em;
 }
 
 #countrySubmit {
@@ -165,7 +166,7 @@ input[type=text]:focus {
 	display: none;
 	flex-direction: column;
 	width: 100%;
-	margin-top: 3.5em;
+	margin-top: 2.5em;
 	margin-bottom: 2em;
 	font-size: 14px;
 	overflow-x: scroll;
@@ -226,7 +227,7 @@ input[type=text]:focus {
 }
 
 .badAnswer {
-	background-color: #FF5757;
+	background-color: #d63f3f;
 }
 
 .answerPercent25_50 {
@@ -238,7 +239,7 @@ input[type=text]:focus {
 }
 
 .goodAnswer {
-	background-color: #17D345;
+	background-color: #3bc03b;
 }
 
 .backgroundFlag {
@@ -418,6 +419,7 @@ input[type=text]:focus {
 }
 
 #shareButton {
+	width: 100%;
 	padding: 0.5em 1em 0.5em 1em;
 	text-align: center;
 	border-radius: 0.5em;
@@ -431,6 +433,69 @@ input[type=text]:focus {
 	cursor: pointer;
 }
 
+#cluesContainer {
+	display: flex;
+	flex-direction: column;
+	row-gap: 1em;
+	align-items: center;
+	width: 60%;
+	padding: 1em;
+	background-color: #0f0f10;
+	border-radius: 0.5em;
+	border: 0.16em solid #F4EEE0;
+}
+
+#clueContainerHeader {
+	font-size: 1.3em;
+}
+
+#clues {
+	justify-content: space-between;
+	font-size: 0.7em;
+	display: flex;
+	flex-direction: row;
+}
+
+.clueImg {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	width: 6em;
+	height: 6em;
+	border: 0.16em solid #5d5d5d80;
+}
+
+.clueImg img{
+	width: 60%;
+	height: 60%;
+}
+
+.clue {
+	transition: 0.2s;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	row-gap: 0.5em;
+	text-align: center;
+	width: 25%;
+	color: #5d5d5d80;
+}
+
+.clueUnlocked {
+	color: #F4EEE0;
+}
+
+.clueImgUnlocked {
+	border: 0.16em solid #F4EEE0;
+}
+
+.clueHover:hover{
+	transition: 0.2s;
+	cursor: pointer;
+	scale: 1.05;
+}
+
 @keyframes ZoomInAndOut {
     0%, 33% { scale: 1 }
     34%, 67% { scale: 1.2 }
@@ -442,12 +507,14 @@ input[type=text]:focus {
 		width:95%;
 	}
 	header {
-		width: 100%;
+		width: 70%;
 		font-size: 16px;
 	}
+	#cluesContainer {
+		width: 70%;
+	}
 	#countryForm {
-		display: none;
-		width: 100%;
+		width: 70%;
 	}
 	#suggestions {
 		width: 100%;
@@ -473,6 +540,9 @@ input[type=text]:focus {
 		width: 100%;
 		font-size: 16px;
 	}
+	#cluesContainer {
+		width: 100%;
+	}
 	#suggestions {
 		width: 100%;
 	}
@@ -495,6 +565,10 @@ input[type=text]:focus {
 	#shareGameContainer {
 		width: 75%;
 	}
+	.clueImg {
+		width: 5em;
+		height: 5em;
+	}
 }
 
 @media screen and (min-width: 334px) and (max-width: 480px) {
@@ -504,6 +578,9 @@ input[type=text]:focus {
 	header {
 		width: 100%;
 		font-size: 16px;
+	}
+	#cluesContainer {
+		width: 100%;
 	}
 	#suggestions {
 		width: 100%;
@@ -530,6 +607,10 @@ input[type=text]:focus {
 	}
 	#shareGameContainer {
 		width: 90%;
+	}
+	.clueImg {
+		width: 5em;
+		height: 5em;
 	}
 }
 
@@ -541,6 +622,9 @@ input[type=text]:focus {
 		width: 100%;
 		font-size: 16px;
 	}
+	#cluesContainer {
+		width: 100%;
+	}
 	#suggestions {
 		width: 100%;
 	}
@@ -566,5 +650,9 @@ input[type=text]:focus {
 	}
 	#shareGameContainer {
 		width: 90%;
+	}
+	.clueImg {
+		width: 5em;
+		height: 5em;
 	}
 }

@@ -20,6 +20,30 @@
         </header>
 
         <main>
+            <div id="cluesContainer">
+                <div id="clueContainerHeader">Devine le pays du jour</div>
+                <div id="clues">
+                    <div id="clueDetail" class="clue">
+                        <div id="clueDetailImgContainer" class="clueImg">
+                            <img id="clueDetailImg" src="static/images/detailClue_locked.svg">
+                        </div>
+                        <div id="clueTextDetail" class="clueText">Indice caractéristique dans <span id="detailClueAttempts">5</span> essais</div>
+                    </div>
+                    <div id="clueLetter" class="clue">
+                        <div id="clueLetterImgContainer" class="clueImg">
+                            <img id="clueLetterImg" src="static/images/letterClue_locked.svg">
+                        </div>
+                        <div id="clueTextLetter" class="clueText">Indice première lettre dans <span id="letterClueAttempts">10</span> essais</div>
+                    </div>
+                    <div id="clueFlag" class="clue">
+                        <div id="clueFlagImgContainer" class="clueImg">
+                            <img id="clueFlagImg" src="static/images/flagClue_locked.svg">
+                        </div>
+                        <div id="clueTextFlag" class="clueText">Indice drapeau dans <span id="flagClueAttempts">15</span> essais</div>
+                    </div>
+                </div>
+            </div>
+
             <div id="countryForm">
                 <input type="text" autocomplete="off" id="countryInput" placeholder="Entrez un pays">
                 <div id="countrySubmit">Deviner</div>

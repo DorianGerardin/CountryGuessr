@@ -18,15 +18,39 @@ let incrementAttempt, getAttemptCount;
     };
 })();
 
-let addShareLine, getShareContent
-(function (newline) {
+let addShareLine, getShareContent, get5FirstShare
+(function () {
     let shareContent = "";
     addShareLine = function(newline) {
-        shareContent = " \n" + newline + shareContent;
+        shareContent = "\n" + newline + shareContent;
     };
     getShareContent = function() {
         return shareContent;
     };
+    get5FirstShare = function() {
+        return "\n" + shareContent.split("\n").slice(1, 6).join("\n") + "\n";
+    }
+})();
+
+let decrementClueAttempt, getDetailClueRemainAttempt, getLetterClueRemainAttempt, getFlagClueRemainAttempt;
+(function () {
+    let detailClueRemainAttempt = 5;
+    let letterClueRemainAttempt = 10;
+    let flagClueRemainAttempt = 15;
+    decrementClueAttempt = function() {
+        detailClueRemainAttempt -= 1;
+        letterClueRemainAttempt -= 1;
+        flagClueRemainAttempt -= 1;
+    };
+    getDetailClueRemainAttempt = function() {
+        return detailClueRemainAttempt;
+    };
+    getLetterClueRemainAttempt = function() {
+        return letterClueRemainAttempt;
+    };
+    getFlagClueRemainAttempt = function() {
+        return flagClueRemainAttempt;
+    }
 })();
 
 function startGame() {
@@ -108,6 +132,7 @@ function TrySubmitCountry(event) {
     if(event.key !== "Enter" || !countrySuggestionList.IsEmpty()) {
         return
     }
+    event.preventDefault();
     SubmitCountry()
 }
 
@@ -131,6 +156,7 @@ function SubmitCountry() {
           hasAlreadyAnswered = true
           let countryData = JSON.parse(data)
           CreateAnswerRow(countryData)
+          UpdateClues()
           ShowZoomButton();
           if(countryData.isAnswer) {
               WinGame(countryData)
@@ -141,8 +167,73 @@ function SubmitCountry() {
       });
 }
 
+function UpdateClues() {
+    let detailClueNode = document.getElementById("clueDetail")
+    let detailClueImgContainer = document.getElementById("clueDetailImgContainer")
+    let detailClueImg = document.getElementById("clueDetailImg")
+    let detailClueAttemptsText = document.getElementById("detailClueAttempts")
+    let clueTextDetail = document.getElementById("clueTextDetail")
+
+    let letterClueNode = document.getElementById("clueLetter")
+    let letterClueImgContainer = document.getElementById("clueLetterImgContainer")
+    let letterClueImg = document.getElementById("clueLetterImg")
+    let letterClueAttemptsText = document.getElementById("letterClueAttempts")
+    let clueTextLetter = document.getElementById("clueTextLetter")
+
+    let flagClueNode = document.getElementById("clueFlag")
+    let flagClueImgContainer = document.getElementById("clueFlagImgContainer")
+    let flagClueImg = document.getElementById("clueFlagImg")
+    let flagClueAttemptsText = document.getElementById("flagClueAttempts")
+    let clueTextFlag = document.getElementById("clueTextFlag")
+
+    decrementClueAttempt();
+    let detailClueAttempts = getDetailClueRemainAttempt()
+    let letterClueAttempts = getLetterClueRemainAttempt()
+    let flagClueAttempts = getFlagClueRemainAttempt()
+
+    if(detailClueAttempts <= 0) {
+        clueTextDetail.innerHTML = "Indice caractéristique"
+        detailClueNode.classList.add("clueHover", "clueUnlocked")
+        detailClueImgContainer.classList.add("clueImgUnlocked")
+        detailClueImg.src = "./static/images/detailClue_unlocked.svg"
+        detailClueNode.addEventListener("click", () => {
+            console.log("indice detail")
+        })
+
+    }
+    else {
+        detailClueAttemptsText.innerText = detailClueAttempts
+    }
+
+    if(letterClueAttempts <= 0) {
+        clueTextLetter.innerHTML = "Indice première lettre"
+        letterClueNode.classList.add("clueHover", "clueUnlocked")
+        letterClueImgContainer.classList.add("clueImgUnlocked")
+        letterClueImg.src = "./static/images/letterClue_unlocked.svg"
+        letterClueNode.addEventListener("click", () => {
+            console.log("indice lettre")
+        })
+    }
+    else {
+        letterClueAttemptsText.innerText = letterClueAttempts
+    }
+
+    if(flagClueAttempts <= 0) {
+        clueTextFlag.innerHTML = "Indice drapeau"
+        flagClueNode.classList.add("clueHover", "clueUnlocked")
+        flagClueImgContainer.classList.add("clueImgUnlocked")
+        flagClueImg.src = "./static/images/flagClue_unlocked.svg"
+        flagClueNode.addEventListener("click", () => {
+            console.log("indice drapeau")
+        })
+    }
+    else {
+        flagClueAttemptsText.innerText = flagClueAttempts
+    }
+}
+
 function WinGame(countryData) {
-    //countryForm.style.display = "none"
+    countryForm.remove()
     const scaleUpAndDown = [
         { transform: "scale(1)" },
         { transform: "scale(1.05)" },
@@ -154,11 +245,6 @@ function WinGame(countryData) {
         easing:"ease-in-out"
     };
     game.endGame()
-    let ggContainer = document.getElementById("ggContainer")
-    ggContainer.style.display = "flex";
-    ggContainer.scrollIntoView({ behavior: "smooth" });
-    ggContainer.animate(scaleUpAndDown, scaleUpAndDownTiming)
-
     let attemptCount = getAttemptCount()
     let attemptsElements = document.getElementsByClassName("ggAttemptsCount")
     for (let i = 0; i < attemptsElements.length; i++) {
@@ -169,10 +255,9 @@ function WinGame(countryData) {
     let shareContent = getShareContent()
     let shareContentElement = document.getElementById('shareContent')
     if(attemptCount > 5) {
-        shareContentElement.innerText += Get5FirstLines(shareContent)
-        shareContentElement.innerText += `+ ${attemptCount - 5} de plus`
+        shareContentElement.innerHTML += get5FirstShare() + `+ ${attemptCount - 5} de plus`
     } else {
-        shareContentElement.innerText += shareContent;
+        shareContentElement.innerHTML += shareContent;
     }
     let copyButton = document.getElementById("shareButton")
     copyButton.addEventListener("click", () => {
@@ -187,10 +272,13 @@ function WinGame(countryData) {
     let ggCountryName = document.getElementById("ggCountryName")
     ggFlagImg.src = `./static/images/flags/${countryData.code}.svg`
     ggCountryName.innerText = countryData.name
-}
 
-function Get5FirstLines(text) {
-    return "\n" + text.split("\n").slice(1, 6).join("\n") + "\n";
+    setTimeout(function() {
+        let ggContainer = document.getElementById("ggContainer")
+        ggContainer.style.display = "flex";
+        ggContainer.scrollIntoView({ behavior: "smooth"});
+        ggContainer.animate(scaleUpAndDown, scaleUpAndDownTiming)
+    }, 50);
 }
 
 function DisplayWrongCountry() {
