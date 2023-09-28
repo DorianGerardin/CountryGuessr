@@ -14,7 +14,7 @@ class Clue {
         this.contentNode = contentNode
 
         this.isUnlocked = false
-        this.isVisible = false
+        this.hasBeenUsed = false
     }
 
     static currentVisibleClueID = -1
@@ -43,10 +43,9 @@ class Clue {
         this.clueNode.addEventListener("click", () => {
             if(Clue.currentVisibleClueID === this.clueID) {
                 this.ToggleContent()
-                console.log("hide")
                 return
             }
-            console.log("show content")
+
             let clueContent = document.getElementById("clueContent")
             if(clueContent.childNodes.length === 0) {
                 clueContent.appendChild(this.contentNode)
@@ -54,6 +53,9 @@ class Clue {
                 clueContent.childNodes[0].replaceWith(this.contentNode)
             }
             this.ToggleContent()
+            if(!this.hasBeenUsed) {
+                this.hasBeenUsed = true
+            }
         })
     }
 
@@ -93,6 +95,16 @@ class Clue {
         Clue.allClues.forEach((clue) => {
             clue.Unlock()
         });
+    }
+
+    static UsedClueCount() {
+        let sum = 0
+        Clue.allClues.forEach((clue) => {
+            if(clue.hasBeenUsed) {
+                sum++
+            }
+        });
+        return sum
     }
 }
 

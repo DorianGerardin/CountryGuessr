@@ -170,6 +170,10 @@ function WinGame(countryData) {
         attemptsElements[i].innerText = attemptCount
     }
 
+    let clueUsedCountNode = document.getElementById("clueUsedCount")
+    clueUsedCountNode.innerText = Clue.UsedClueCount()
+    document.getElementById("indices").innerText = Clue.UsedClueCount() > 1 ? "indices" : "indice"
+
     document.getElementById("essai").innerText = attemptCount > 1 ? "essais" : "essai"
     let shareContent = getShareContent()
     let shareContentElement = document.getElementById('shareContent')
