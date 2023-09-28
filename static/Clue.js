@@ -80,7 +80,6 @@ class Clue {
             clueContentContainer.style.display = "none"
             Clue.currentVisibleClueID = -1
         } else {
-            clueContentContainer.style.display = "flex"
             Clue.currentVisibleClueID = this.clueID
         }
     }

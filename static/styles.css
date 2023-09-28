@@ -468,7 +468,7 @@ input[type=text]:focus {
 	border-radius: 50%;
 	width: 6em;
 	height: 6em;
-	border: 0.16em solid #4e4e4e;
+	border: 0.35em solid #4e4e4e;
 }
 
 .clueImg img{
@@ -483,7 +483,7 @@ input[type=text]:focus {
 	flex-direction: column;
 	row-gap: 0.5em;
 	text-align: center;
-	width: 25%;
+	width: 28%;
 	color: #4e4e4e;
 }
 
@@ -492,7 +492,7 @@ input[type=text]:focus {
 }
 
 .clueImgUnlocked {
-	border: 0.16em solid #F4EEE0;
+	border: 0.35em solid #F4EEE0;
 }
 
 .clueHover:hover{
