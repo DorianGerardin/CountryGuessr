@@ -32,89 +32,6 @@ let addShareLine, getShareContent, get5FirstShare
     }
 })();
 
-let decrementClueAttempt, getShapeClueRemainAttempt, getBorderClueRemainAttempt, getCapitalClueRemainAttempt;
-(function () {
-    let shapeClueRemainAttempt = 7;
-    let borderClueRemainAttempt = 12;
-    let capitalClueRemainAttempt = 15;
-
-    decrementClueAttempt = function() {
-        shapeClueRemainAttempt -= 1;
-        borderClueRemainAttempt -= 1;
-        capitalClueRemainAttempt -= 1;
-    };
-    getShapeClueRemainAttempt = function() {
-        return shapeClueRemainAttempt;
-    };
-    getBorderClueRemainAttempt = function() {
-        return borderClueRemainAttempt;
-    };
-    getCapitalClueRemainAttempt = function() {
-        return capitalClueRemainAttempt;
-    }
-})();
-
-let ToggleClueContent, ClearClueContent
-(function () {
-    let currentOpenedIndex = -1;
-    ToggleClueContent = function(index) {
-        //ClearClueContent()
-        let clueContentContainer = document.getElementById("clueContentContainer")
-        let cluePointer = document.getElementById("cluePointer")
-        let isDisplayed = getComputedStyle(clueContentContainer).display === "flex"
-        switch (index) {
-            case 0 :
-                cluePointer.style.left = "12%"
-                break
-            case 1:
-                cluePointer.style.left = "50%"
-                break
-            case 2 :
-                cluePointer.style.left = "88%"
-                break
-        }
-        if(!isDisplayed) {
-            clueContentContainer.style.display = "flex"
-            currentOpenedIndex = index
-            return true
-        }
-        if(isDisplayed && currentOpenedIndex === index) {
-            clueContentContainer.style.display = "none"
-            currentOpenedIndex = -1
-            return false
-        } else {
-            clueContentContainer.style.display = "flex"
-            currentOpenedIndex = index
-            return true
-        }
-    };
-    ClearClueContent = function() {
-        let clueContentContainer = document.getElementById("clueContentContainer")
-        let cluePointer = document.getElementById('cluePointer');
-        let childNodes = clueContentContainer.childNodes;
-        for (let i = childNodes.length - 1; i >= 0; i--) {
-            let childNode = childNodes[i];
-            if (childNode !== cluePointer) {
-                clueContentContainer.removeChild(childNode);
-            }
-        }
-    }
-})();
-
-let GetCurrentBorderClue, SetCurrentBorderClue, HasBorderClue
-(function () {
-    let currentBorderClue = null;
-    GetCurrentBorderClue = function() {
-        return currentBorderClue
-    };
-    SetCurrentBorderClue = function(borderClue) {
-        currentBorderClue = borderClue
-    }
-    HasBorderClue = function() {
-       return currentBorderClue !== null
-    }
-})();
-
 function startGame() {
     let hasWon = false;
     function endGame() {
@@ -218,7 +135,7 @@ function SubmitCountry() {
           hasAlreadyAnswered = true
           let countryData = JSON.parse(data)
           CreateAnswerRow(countryData)
-          UpdateClues()
+          Clue.UpdateCluesAttempts()
           ShowZoomButton();
           if(countryData.isAnswer) {
               WinGame(countryData)
@@ -229,171 +146,12 @@ function SubmitCountry() {
       });
 }
 
-function UnlockAllClues() {
-    for (let i = 0; i < 3; i++) {
-        UnlockClue(i)
-    }
-}
-
-async function WaitForCountryShape() {
-    const apiURL = `/countryShape`
-    const response = await fetch(apiURL);
-    return await response.json();
-}
-
-async function WaitForBorderName() {
-    const apiURL = `/randomBorder`
-    const response = await fetch(apiURL);
-    return await response.json();
-}
-
-async function WaitForCapital() {
-    const apiURL = `/capital`
-    const response = await fetch(apiURL);
-    return await response.json();
-}
-
-function UnlockClue(index) {
-    const scaleUpAndDown = [
-        { transform: "scale(1)" },
-        { transform: "scale(1.075)" },
-    ];
-    const scaleUpAndDownTiming = {
-        duration: 250,
-        iterations: 6,
-        direction: "alternate",
-        easing:"ease-in-out"
-    };
-    let clueContent = document.getElementById("clueContent")
-    switch (index) {
-        case 0:
-            let shapeClueNode = document.getElementById("clueShape")
-            let shapeClueImgContainer = document.getElementById("clueShapeImgContainer")
-            let shapeClueImg = document.getElementById("clueShapeImg")
-            let clueTextShape = document.getElementById("clueTextShape")
-            clueTextShape.innerHTML = "Indice forme du pays"
-            shapeClueNode.classList.add("clueHover", "clueUnlocked")
-            shapeClueImgContainer.classList.add("clueImgUnlocked")
-            shapeClueImg.src = "./static/images/shapeClue_unlocked.svg"
-            shapeClueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
-            shapeClueNode.addEventListener("click", () => {
-                let isVisible = ToggleClueContent(0)
-                if(!isVisible) {
-                    return
-                }
-                WaitForCountryShape()
-                    .then(data => {
-                        let parsedData = JSON.parse(data)
-                        let shapeImg = document.createElement("img")
-                        shapeImg.classList.add('countryShape')
-                        shapeImg.src = `./static/images/shapes/${parsedData.code}.svg`
-                        if(clueContent.childNodes.length === 0) {
-                            clueContent.appendChild(shapeImg)
-                        } else {
-                            clueContent.childNodes[0].replaceWith(shapeImg)
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Une erreur s\'est produite :', error);
-                    });
-            })
-            break
-        case 1:
-            let borderClueNode = document.getElementById("clueBorder")
-            let borderClueImgContainer = document.getElementById("clueBorderImgContainer")
-            let borderClueImg = document.getElementById("clueBorderImg")
-            let clueTextBorder = document.getElementById("clueTextBorder")
-            clueTextBorder.innerHTML = "Indice pays frontalier"
-            borderClueNode.classList.add("clueHover", "clueUnlocked")
-            borderClueImgContainer.classList.add("clueImgUnlocked")
-            borderClueImg.src = "./static/images/borderClue_unlocked.svg"
-            borderClueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
-            borderClueNode.addEventListener("click", () => {
-                let isVisible = ToggleClueContent(1)
-                if(!isVisible) {
-                    return
-                }
-                if(HasBorderClue()) {
-                    let borderNameNode = document.createElement("div")
-                    borderNameNode.innerText = GetCurrentBorderClue()
-                    clueContent.childNodes[0].replaceWith(borderNameNode)
-                } else {
-                    WaitForBorderName()
-                        .then(data => {
-                            let parsedData = JSON.parse(data)
-                            let borderName = parsedData.value
-                            let borderNameNode = document.createElement("div")
-                            SetCurrentBorderClue(borderName)
-                            borderNameNode.innerText = borderName
-                            if(clueContent.childNodes.length === 0) {
-                                clueContent.appendChild(borderNameNode)
-                            } else {
-                                clueContent.childNodes[0].replaceWith(borderNameNode)
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Une erreur s\'est produite :', error);
-                        });
-                }
-            })
-            break
-        case 2:
-            let capitalClueNode = document.getElementById("clueCapital")
-            let capitalClueImgContainer = document.getElementById("clueCapitalImgContainer")
-            let capitalClueImg = document.getElementById("clueCapitalImg")
-            let clueTextCapital = document.getElementById("clueTextCapital")
-            clueTextCapital.innerHTML = "Indice capitale"
-            capitalClueNode.classList.add("clueHover", "clueUnlocked")
-            capitalClueImgContainer.classList.add("clueImgUnlocked")
-            capitalClueImg.src = "./static/images/capitalClue_unlocked.svg"
-            capitalClueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
-            capitalClueNode.addEventListener("click", () => {
-                let isVisible = ToggleClueContent(2)
-                if(!isVisible) {
-                    return
-                }
-                WaitForCapital()
-                    .then(data => {
-                        let parsedData = JSON.parse(data)
-                        let capital = parsedData.capital
-                        let capitalNode = document.createElement("div")
-                        capitalNode.innerText = capital
-                        if(clueContent.childNodes.length === 0) {
-                            clueContent.appendChild(capitalNode)
-                        } else {
-                            clueContent.childNodes[0].replaceWith(capitalNode)
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Une erreur s\'est produite :', error);
-                    });
-            })
-    }
-}
-
-function UpdateClues() {
-    let shapeClueAttemptsText = document.getElementById("shapeClueAttempts")
-    let borderClueAttemptsText = document.getElementById("borderClueAttempts")
-    let capitalClueAttemptsText = document.getElementById("capitalClueAttempts")
-
-
-    decrementClueAttempt();
-    let shapeClueAttempts = getShapeClueRemainAttempt()
-    let borderClueAttempts = getBorderClueRemainAttempt()
-    let capitalClueAttempts = getCapitalClueRemainAttempt()
-
-    shapeClueAttempts === 0 ? UnlockClue(0) : shapeClueAttempts > 0 ? shapeClueAttemptsText.innerText = shapeClueAttempts : null
-    borderClueAttempts === 0 ? UnlockClue(1) : borderClueAttempts > 0 ? borderClueAttemptsText.innerText = borderClueAttempts : null
-    capitalClueAttempts === 0 ? UnlockClue(2) : capitalClueAttempts > 0 ? capitalClueAttemptsText.innerText = capitalClueAttempts : null
-
-}
-
 function WinGame(countryData) {
     if(!countryData.isAnswer) {
         console.log("Nope")
         return
     }
-    UnlockAllClues()
+    Clue.UnlockAllClues()
     countryForm.remove()
     const scaleUpAndDown = [
         { transform: "scale(1)" },
@@ -679,5 +437,3 @@ function HideZoomButton() {
         isZoomDisplayed = false;
     }
 }
-
-
