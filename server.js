@@ -18,6 +18,8 @@ const port = process.env.PORT || 8080;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+let noUseCountries = ["UMI"]
+
 let currencyTypes = ["dollar", "lev", "yuan", "riel", "gourde", "vatu", "colón", "won", "convertible mark", "Euro", "somoni", "leu", "franc", "CFA franc", "CFP franc",
     "dobra", "kip", "lek", "lira", "pound", "rial", "riyal", "naira", "peso", "escudo", "yen", "krone", "koruna", "króna", "krona", "ruble", "guilder", "kwacha",
     "manat", "tögrög", "tālā", "ngultrum", "rupee", "rupiah", "taka", "guaraní", "pataca", "nakfa", "afghani", "bolívar soberano", "leone", "kyat", "dinar", "shilling",
@@ -62,7 +64,7 @@ function SelectCountry() {
 }
 
 async function WaitForAllCountriesData() {
-    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags,latlng,maps`
+    const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags,latlng,maps,capital`
     const response = await fetch(apiURL);
     return await response.json();
 }
@@ -77,6 +79,9 @@ function SetAllCountries() {
             for (let i = 0; i < countryCount; i++) {
                 let countryData = data[i]
                 let code = countryData.cca3;
+                if(noUseCountries.includes(code)) {
+                    continue
+                }
                 let name = countryData.translations.fra.common;
                 let continent = countryData.continents[0];
                 let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages)[0] : "No language"
@@ -86,6 +91,8 @@ function SetAllCountries() {
                 let area = countryData.area
                 let latlng = countryData.latlng
                 let maps = countryData.maps.googleMaps
+                let borders = countryData.borders
+                let capital = countryData.capital
 
                 let currencyType
                 if(currency === "No Currency") {
@@ -93,7 +100,7 @@ function SetAllCountries() {
                 } else {
                      currencyType = getCurrency(currency)
                 }
-                let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps)
+                let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital)
                 countries.push(country)
             }
         }
@@ -223,8 +230,38 @@ app.get('/guess', function (req, res) {
 
 app.get('/AllCountriesName', function (req, res) {
     res.header("Content-Type",'application/json');
-    let countriesName= countries.map(c => ({name:c.name, code: c.code, flag:c.flag}))
+    let countriesName= countries.map(c => ({name:c.name, code: c.code}))
     res.json(JSON.stringify(countriesName))
+})
+
+app.get('/countryShape', function (req, res) {
+    let response = {
+        code : countryToGuess.code
+    }
+    res.json(JSON.stringify(response))
+})
+
+app.get('/randomBorder', function (req, res) {
+    let response
+    if(countryToGuess.borderCount === 0) {
+        response = {
+            value : "Aucun pays frontalier"
+        }
+    } else {
+        let randomBorderCode = countryToGuess.borders[Math.floor(Math.random()*countryToGuess.borderCount)]
+        let countryName = GetCountryData(randomBorderCode).name
+        response = {
+            value : countryName
+        }
+    }
+    res.json(JSON.stringify(response))
+})
+
+app.get('/capital', function (req, res) {
+    let response = {
+        capital : countryToGuess.capital
+    }
+    res.json(JSON.stringify(response))
 })
 
 app.use("/static", express.static('./static/'));
@@ -232,3 +269,35 @@ app.use("/static", express.static('./static/'));
 app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
     console.log(`Now listening on port ${port}`);
 });
+
+
+function downloadSVG(url, filename) {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Une erreur s'est produite lors du téléchargement du fichier. Code de statut : ${response.status}`);
+            }
+            return response.arrayBuffer();
+        })
+        .then(buffer => {
+            Fs.writeFileSync(filename, Buffer.from(buffer));
+            console.log(`Le fichier ${filename} a été téléchargé avec succès.`);
+        })
+        .catch(error => {
+            console.error(`Une erreur s'est produite lors du téléchargement du fichier : ${error.message}`);
+        });
+}
+
+function updateSVG(filename) {
+    if (Fs.existsSync(filename)) {
+        const file = Fs.readFileSync(filename, 'utf-8');
+        const newColor = '#FFFFFF';
+        const updatedSVG = file.replace(/fill="[^"]*"/g, `fill="${newColor}"`);
+        Fs.writeFileSync(filename, updatedSVG);
+        console.log('Fichier SVG modifié avec succès.');
+    }
+    else {
+        console.log('Le fichier SVG n\'existe pas. Aucune modification effectuée.');
+    }
+
+}

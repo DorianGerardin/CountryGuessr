@@ -443,9 +443,9 @@ input[type=text]:focus {
 	border-radius: 0.5em;
 	border: 0.16em solid #F4EEE0;
 	background: rgb(62,62,62);
-	background: -moz-linear-gradient(180deg, rgba(62,62,62,1) 0%, rgba(9,9,9,1) 100%);
-	background: -webkit-linear-gradient(180deg, rgba(62,62,62,1) 0%, rgba(9,9,9,1) 100%);
-	background: linear-gradient(180deg, rgba(62,62,62,1) 0%, rgba(9,9,9,1) 100%);
+	background: -moz-linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
+	background: -webkit-linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
+	background: linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#3e3e3e",endColorstr="#090909",GradientType=1);
 }
 
@@ -468,7 +468,7 @@ input[type=text]:focus {
 	border-radius: 50%;
 	width: 6em;
 	height: 6em;
-	border: 0.16em solid #a5a5a580;
+	border: 0.16em solid #4e4e4e;
 }
 
 .clueImg img{
@@ -484,7 +484,7 @@ input[type=text]:focus {
 	row-gap: 0.5em;
 	text-align: center;
 	width: 25%;
-	color: #a5a5a580;
+	color: #4e4e4e;
 }
 
 .clueUnlocked {
@@ -501,15 +501,25 @@ input[type=text]:focus {
 	scale: 1.05;
 }
 
-#clueContent {
+#clueContentContainer {
 	display: none;
 	position: relative;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
 	background-color: #3e3e3e;
 	border-radius: 0.2em;
 	padding: 1em 0 1em 0;
-	justify-content: center;
+	height: 100%;
 	width: 100%;
 	font-size: 2em;
+}
+
+#clueContent {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
 }
 
 #cluePointer {
@@ -520,6 +530,10 @@ input[type=text]:focus {
 	border-width: 12px;
 	border-style: solid;
 	border-color: transparent transparent #3e3e3e transparent;
+}
+
+.countryShape {
+	width: 60%;
 }
 
 @keyframes ZoomInAndOut {
