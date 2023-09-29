@@ -224,6 +224,7 @@ input[type=text]:focus {
 	text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
 	overflow-wrap: break-word;
 	word-break: break-word;
+	hyphens: auto;
 }
 
 .badAnswer {
@@ -440,7 +441,7 @@ input[type=text]:focus {
 	align-items: center;
 	width: 60%;
 	padding: 1em;
-	border-radius: 0.5em;
+	border-radius: 0.75em;
 	border: 0.16em solid #F4EEE0;
 	background: rgb(62,62,62);
 	background: -moz-linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
@@ -508,11 +509,11 @@ input[type=text]:focus {
 	align-items: center;
 	text-align: center;
 	background-color: #3e3e3e;
-	border-radius: 0.2em;
-	padding: 1em 0 1em 0;
+	border-radius: 0.4em;
+	padding: 1em 0.5em 1em 0.5em;
 	height: 100%;
 	width: 100%;
-	font-size: 2em;
+	font-size: 1.5em;
 }
 
 #clueContent {

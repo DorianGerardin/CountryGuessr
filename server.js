@@ -110,6 +110,23 @@ function SetAllCountries() {
     });
 }
 
+function GetNearestCountry(country) {
+    let nearestCountry = null
+    let minDistance = Infinity
+    for (let i = 0; i < countries.length; i++) {
+        let otherCountry = countries[i]
+        if(otherCountry.code === country.code) {
+            continue
+        }
+        let distance = getDistance(country.latlng[0], country.latlng[1], otherCountry.latlng[0], otherCountry.latlng[1])
+        if(distance < minDistance) {
+            minDistance = distance
+            nearestCountry = otherCountry
+        }
+    }
+    return nearestCountry
+}
+
 function GetCountryData(countryCode) {
     for (let i = 0; i < countries.length; i++) {
         if (countries[i].code === countryCode) {
@@ -244,8 +261,9 @@ app.get('/countryShape', function (req, res) {
 app.get('/randomBorder', function (req, res) {
     let response
     if(countryToGuess.borderCount === 0) {
+        let nearestCountryName = GetNearestCountry(countryToGuess).name
         response = {
-            value : "Aucun pays frontalier"
+            value : `Aucun pays frontalier (pays le plus proche : ${nearestCountryName})`
         }
     } else {
         let randomBorderCode = countryToGuess.borders[Math.floor(Math.random()*countryToGuess.borderCount)]

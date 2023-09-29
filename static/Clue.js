@@ -21,9 +21,6 @@ class Clue {
     static allClues = []
 
     Unlock() {
-        if(this.isUnlocked) {
-            return
-        }
         const scaleUpAndDown = [
             { transform: "scale(1)" },
             { transform: "scale(1.075)" },
@@ -40,6 +37,9 @@ class Clue {
         this.clueImgContainer.classList.add("clueImgUnlocked")
         this.clueImg.src = `./static/images/${this.clueImgUnlocked}.svg`
         this.clueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
+        if(this.isUnlocked) {
+            return
+        }
         this.clueNode.addEventListener("click", () => {
             if(Clue.currentVisibleClueID === this.clueID) {
                 this.ToggleContent()
