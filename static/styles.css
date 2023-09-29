@@ -202,8 +202,8 @@ input[type=text]:focus {
 
 .answerSquare {
 	width: 11.5%;
-	border: 0.1em solid #F4EEE0;
-	border-radius: 0.25em;
+	/*border: 0.1em solid #F4EEE0;*/
+	border-radius: 0.35em;
 	z-index: 1;
 }
 
@@ -229,18 +229,22 @@ input[type=text]:focus {
 
 .badAnswer {
 	background-color: #d63f3f;
+	border: 0.15em solid #ff0000;
 }
 
 .answerPercent25_50 {
-	background-color: #F3870D;
+	background-color: #e78312;
+	border: 0.15em solid #ff7823;
 }
 
 .answerPercent50_75 {
-	background-color: #F3DA0D;
+	background-color: #f0d000;
+	border: 0.15em solid #ffff00;
 }
 
 .goodAnswer {
 	background-color: #3bc03b;
+	border: 0.15em solid #00ff0f;
 }
 
 .backgroundFlag {
@@ -252,7 +256,12 @@ input[type=text]:focus {
 	height: 100%;
 	width: 100%;
 	z-index: -1;
-	border-radius: 0.15em;
+	border-radius: 0.2em;
+	box-shadow: 0 10px 25px -7px #0000008c;
+}
+
+.answer0 {
+	border: 0.15em solid #F4EEE0;
 }
 
 .backgroundArrow {

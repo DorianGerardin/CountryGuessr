@@ -50,7 +50,6 @@ function startGame() {
     let hasWon = false;
     function endGame() {
         hasWon = true;
-        localStorage.setItem('hasWon', hasWon);
     }
     function HasWon() {
         return hasWon;
@@ -70,14 +69,18 @@ let countrySuggestionList
 let countriesName = [];
 GetAllCountriesName()
 
+async function submitHistoryCountries(submittedCountries) {
+    for (const countryCode of submittedCountries) {
+        await SubmitCountry(countryCode)
+    }
+}
+
 function CheckForHistory() {
     let submittedCountries = JSON.parse(localStorage.getItem('submittedCountries'));
+    console.log(submittedCountries)
 
     if(submittedCountries !== null) {
-        submittedCountries.forEach((countryCode) => {
-            console.log("create")
-            SubmitCountry(countryCode)
-        })
+        submitHistoryCountries(submittedCountries)
     }
 }
 CheckForHistory()
@@ -144,7 +147,7 @@ function TrySubmitCountry(event) {
     SubmitCountry(currentCountry)
 }
 
-function SubmitCountry(countryCode) {
+async function SubmitCountry(countryCode) {
     if(game.HasWon()) {
         return
     }
@@ -152,31 +155,33 @@ function SubmitCountry(countryCode) {
       DisplayWrongCountry()
       return
     }
-    fetch(`/guess?code=${countryCode}`)
-      .then(response => response.json())
-      .then(data => {
-          incrementAttempt()
-          if(!hasAlreadyAnswered) {
-              answersContainer.style.display = "flex"
-          }
-          countryInput.value = ""
-          currentCountry = null
-          hasAlreadyAnswered = true
+    return new Promise((resolve, reject) => {
+        fetch(`/guess?code=${countryCode}`)
+            .then(response => response.json())
+            .then(data => {
+                incrementAttempt()
+                if (!hasAlreadyAnswered) {
+                    answersContainer.style.display = "flex"
+                }
+                countryInput.value = ""
+                currentCountry = null
+                hasAlreadyAnswered = true
 
-          let countryData = JSON.parse(data)
-          CreateAnswerRow(countryData)
-          Clue.UpdateCluesAttempts()
-          SetSubmittedCountry(countryData.code)
-          SetSubmittedCountriesToLocalStorage()
-
-          ShowZoomButton();
-          if(countryData.isAnswer) {
-              WinGame(countryData)
-          }
-      })
-      .catch(error => {
-          console.error('Une erreur s\'est produite :', error);
-      });
+                let countryData = JSON.parse(data)
+                CreateAnswerRow(countryData)
+                Clue.UpdateCluesAttempts()
+                SetSubmittedCountry(countryData.code)
+                SetSubmittedCountriesToLocalStorage()
+                ShowZoomButton();
+                if (countryData.isAnswer) {
+                    WinGame(countryData)
+                }
+                resolve(countryData)
+            })
+            .catch(error => {
+                reject('Une erreur s\'est produite :', error);
+            });
+    })
 }
 
 function WinGame(countryData) {
@@ -204,7 +209,7 @@ function WinGame(countryData) {
     }
 
     let clueUsedCountNode = document.getElementById("clueUsedCount")
-    clueUsedCountNode.innerText = Clue.UsedClueCount()
+    clueUsedCountNode.innerText = Clue.UsedClueCount().toString()
     document.getElementById("indices").innerText = Clue.UsedClueCount() > 1 ? "indices" : "indice"
 
     document.getElementById("essai").innerText = attemptCount > 1 ? "essais" : "essai"
@@ -229,8 +234,8 @@ function WinGame(countryData) {
     ggFlagImg.src = `./static/images/flags/${countryData.code}.svg`
     ggCountryName.innerText = countryData.name
 
+    let ggContainer = document.getElementById("ggContainer")
     setTimeout(function() {
-        let ggContainer = document.getElementById("ggContainer")
         ggContainer.style.display = "flex";
         ggContainer.scrollIntoView({ behavior: "smooth"});
         ggContainer.animate(scaleUpAndDown, scaleUpAndDownTiming)
