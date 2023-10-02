@@ -234,7 +234,7 @@ input[type=text]:focus {
 
 .answerPercent25_50 {
 	background-color: #e78312;
-	border: 0.15em solid #ff7823;
+	border: 0.15em solid #ff6323;
 }
 
 .answerPercent50_75 {
@@ -311,6 +311,7 @@ input[type=text]:focus {
 .detailSquare {
 	width: 48%;
 	border-radius: 0.5em;
+	box-shadow: 0 10px 13px -7px #0000006e;
 }
 
 .detailPadding::before {
@@ -452,6 +453,7 @@ input[type=text]:focus {
 	padding: 1em;
 	border-radius: 0.75em;
 	border: 0.16em solid #F4EEE0;
+	box-shadow: 0 10px 13px -7px #0000006e;
 	background: rgb(62,62,62);
 	background: -moz-linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
 	background: -webkit-linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);

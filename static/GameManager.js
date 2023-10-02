@@ -69,10 +69,8 @@ let countrySuggestionList
 let countriesName = [];
 GetAllCountriesName()
 
-async function submitHistoryCountries(submittedCountries) {
-    for (const countryCode of submittedCountries) {
-        await SubmitCountry(countryCode)
-    }
+function GetCountryPromises(submittedCountries) {
+    return submittedCountries.map(countryCode => SubmitCountry(countryCode));
 }
 
 function CheckForHistory() {
@@ -80,13 +78,24 @@ function CheckForHistory() {
     console.log(submittedCountries)
 
     if(submittedCountries !== null) {
-        submitHistoryCountries(submittedCountries)
+        Promise.all(GetCountryPromises(submittedCountries))
+            .then(results => {
+                for (const countryData of results) {
+                    ResolveCountry(countryData)
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
     }
 }
 CheckForHistory()
 
 countrySubmit.addEventListener('click', () => {
-    SubmitCountry(currentCountry)
+    SubmitCountry(currentCountry).then((countryData) => {
+        ResolveCountry(countryData)
+    })
 })
 countryInput.addEventListener('keydown', (e) => TrySubmitCountry(e))
 countryInput.addEventListener('input', (e) => UpdateSuggestions(e))
@@ -144,7 +153,29 @@ function TrySubmitCountry(event) {
         return
     }
     event.preventDefault();
-    SubmitCountry(currentCountry)
+    SubmitCountry(currentCountry).then((countryData) => {
+        ResolveCountry(countryData)
+    })
+}
+
+function ResolveCountry(countryData) {
+    incrementAttempt()
+    if (!hasAlreadyAnswered) {
+        answersContainer.style.display = "flex"
+    }
+    countryInput.value = ""
+    currentCountry = null
+    hasAlreadyAnswered = true
+
+    let country = JSON.parse(countryData)
+    CreateAnswerRow(country)
+    Clue.UpdateCluesAttempts()
+    SetSubmittedCountry(country.code)
+    SetSubmittedCountriesToLocalStorage()
+    ShowZoomButton();
+    if (country.isAnswer) {
+        WinGame(country)
+    }
 }
 
 async function SubmitCountry(countryCode) {
@@ -159,24 +190,7 @@ async function SubmitCountry(countryCode) {
         fetch(`/guess?code=${countryCode}`)
             .then(response => response.json())
             .then(data => {
-                incrementAttempt()
-                if (!hasAlreadyAnswered) {
-                    answersContainer.style.display = "flex"
-                }
-                countryInput.value = ""
-                currentCountry = null
-                hasAlreadyAnswered = true
-
-                let countryData = JSON.parse(data)
-                CreateAnswerRow(countryData)
-                Clue.UpdateCluesAttempts()
-                SetSubmittedCountry(countryData.code)
-                SetSubmittedCountriesToLocalStorage()
-                ShowZoomButton();
-                if (countryData.isAnswer) {
-                    WinGame(countryData)
-                }
-                resolve(countryData)
+                resolve(data)
             })
             .catch(error => {
                 reject('Une erreur s\'est produite :', error);
