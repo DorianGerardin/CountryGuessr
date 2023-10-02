@@ -11,6 +11,7 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 import express from 'express'; //Import the express dependency
 import Country from './static/Country.js' //Save the port number where your server will be listening
+import { CronJob } from 'cron';
 const app = express();              //Instantiate an express app, the main work horse of this server
 const port = process.env.PORT || 8080;
 //Idiomatic expression in express to route and respond to a client request
@@ -27,6 +28,7 @@ let currencyTypes = ["dollar", "lev", "yuan", "riel", "gourde", "vatu", "colón"
     "pula", "paʻanga", "baht", "quetzal", "córdoba", "lilangeni", "rand", "dalasi", "birr", "real", "złoty", "boliviano", "cedi", "metical", "tenge", "ringgit", "đồng", "loti", "ouguiya"]
 let countries = [];
 let countryToGuess = null
+let job = null
 SetAllCountries();
 
 function getCurrency(currency) {
@@ -116,6 +118,16 @@ function SetAllCountries() {
         countries.sort((c1, c2) => c1.name.localeCompare(c2.name))
         const argCode = process.argv[2]
         countryToGuess = argCode === null ? SelectCountry() : SelectCountry(argCode)
+        job = new CronJob(
+            '00 00 * * *',
+            function () {
+                countryToGuess = SelectCountry()
+                console.log(`reset country : ${countryToGuess.name}`)
+            },
+            null,
+            true,
+            'Europe/Paris'
+        );
         console.log(countryToGuess.name)
     });
 }

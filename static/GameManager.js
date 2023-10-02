@@ -179,6 +179,14 @@ function ResolveCountry(countryData) {
 }
 
 async function SubmitCountry(countryCode) {
+    let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
+    if(expirationDate !== null) {
+        if(expirationDate < new Date()) {
+            localStorage.clear()
+            window.location.reload();
+        }
+    }
+
     if(game.HasWon()) {
         return Promise.resolve(null)
     }
