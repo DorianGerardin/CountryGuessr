@@ -81,7 +81,6 @@ function CheckForHistory() {
             .then(results => {
                 for (const countryData of results) {
                     ResolveCountry(countryData)
-                    console.log("resolve")
                 }
             })
             .catch(error => {
@@ -89,7 +88,6 @@ function CheckForHistory() {
             });
     }
 }
-CheckForHistory()
 
 countrySubmit.addEventListener('click', () => {
     SubmitCountry(currentCountry).then((countryData) => {
@@ -158,6 +156,9 @@ function TrySubmitCountry(event) {
 }
 
 function ResolveCountry(countryData) {
+    if(countryData === null) {
+        return
+    }
     incrementAttempt()
     if (!hasAlreadyAnswered) {
         answersContainer.style.display = "flex"
@@ -179,11 +180,11 @@ function ResolveCountry(countryData) {
 
 async function SubmitCountry(countryCode) {
     if(game.HasWon()) {
-        return
+        return Promise.resolve(null)
     }
     if(!countryCode) {
-      DisplayWrongCountry()
-      return
+        DisplayWrongCountry()
+        return Promise.resolve(null);
     }
     return new Promise((resolve, reject) => {
         fetch(`/guess?code=${countryCode}`)

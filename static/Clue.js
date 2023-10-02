@@ -169,6 +169,76 @@ function GetLocalStorageExpirationDate() {
     return date
 }
 
+function InitiateShapeClue(data) {
+    let saveClues = JSON.parse(localStorage.getItem('clues'));
+    let shapeClueNode = document.getElementById("clueShape")
+    let shapeClueImgContainer = document.getElementById("clueShapeImgContainer")
+    let shapeClueImg = document.getElementById("clueShapeImg")
+    let shapeClueTextNode = document.getElementById("clueTextShape")
+    let shapeClueAttemptsText = document.getElementById("shapeClueAttempts")
+    let clueShape = null
+
+    let parsedData = JSON.parse(data)
+    let contentNode = document.createElement("img")
+    contentNode.classList.add('countryShape')
+    contentNode.src = `./static/images/shapes/${parsedData.code}.svg`
+    clueShape = new Clue(0, 7, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
+        shapeClueTextNode, "Indice forme du pays", "12%", shapeClueAttemptsText, contentNode)
+    if(saveClues !== null) {
+        clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
+    }
+    Clue.allClues.push(clueShape)
+}
+
+function InitiateBorderClue(data) {
+    let saveClues = JSON.parse(localStorage.getItem('clues'));
+    let border = JSON.parse(localStorage.getItem('border'));
+    let borderClueNode = document.getElementById("clueBorder")
+    let borderClueImgContainer = document.getElementById("clueBorderImgContainer")
+    let borderClueImg = document.getElementById("clueBorderImg")
+    let borderClueTextNode = document.getElementById("clueTextBorder")
+    let borderClueAttemptsText = document.getElementById("borderClueAttempts")
+    let borderClue = null
+
+    let borderName
+    if(border !== null) {
+        borderName = border.value
+    } else {
+        let parsedData = JSON.parse(data)
+        borderName = parsedData.value
+    }
+
+    let contentNode = document.createElement("div")
+    contentNode.innerText = borderName
+    borderClue = new Clue(1, 12, borderClueNode, borderClueImgContainer, borderClueImg, "borderClue_unlocked",
+        borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, contentNode)
+    if(saveClues !== null) {
+        borderClue.hasBeenUsed = saveClues[1].hasBeenUsed
+    }
+    Clue.allClues.push(borderClue)
+}
+
+function InitiateCapitalClue(data) {
+    let saveClues = JSON.parse(localStorage.getItem('clues'));
+    let capitalClueNode = document.getElementById("clueCapital")
+    let capitalClueImgContainer = document.getElementById("clueCapitalImgContainer")
+    let capitalClueImg = document.getElementById("clueCapitalImg")
+    let capitalClueTextNode = document.getElementById("clueTextCapital")
+    let capitalClueAttemptsText = document.getElementById("capitalClueAttempts")
+    let capitalClue = null
+
+    let parsedData = JSON.parse(data)
+    let capital = parsedData.capital
+    let contentNode = document.createElement("div")
+    contentNode.innerText = capital
+    capitalClue = new Clue(2, 15, capitalClueNode, capitalClueImgContainer, capitalClueImg, "capitalClue_unlocked",
+        capitalClueTextNode, "Indice capitale", "88%", capitalClueAttemptsText, contentNode)
+    if(saveClues !== null) {
+        capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
+    }
+    Clue.allClues.push(capitalClue)
+}
+
 function InitiateClues() {
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
     if(expirationDate !== null) {
@@ -178,85 +248,17 @@ function InitiateClues() {
     }
 
     localStorage.setItem('expirationDate', JSON.stringify(GetLocalStorageExpirationDate().getTime()));
-    let saveClues = JSON.parse(localStorage.getItem('clues'));
-    let border = JSON.parse(localStorage.getItem('border'));
 
-    // SHAPE CLUE
-    let shapeClueNode = document.getElementById("clueShape")
-    let shapeClueImgContainer = document.getElementById("clueShapeImgContainer")
-    let shapeClueImg = document.getElementById("clueShapeImg")
-    let shapeClueTextNode = document.getElementById("clueTextShape")
-    let shapeClueAttemptsText = document.getElementById("shapeClueAttempts")
-    let clueShape = null
     WaitForCountryShape()
-        .then(data => {
-            let parsedData = JSON.parse(data)
-            let contentNode = document.createElement("img")
-            contentNode.classList.add('countryShape')
-            contentNode.src = `./static/images/shapes/${parsedData.code}.svg`
-            clueShape = new Clue(0, 7, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
-                shapeClueTextNode, "Indice forme du pays", "12%", shapeClueAttemptsText, contentNode)
-            if(saveClues !== null) {
-                clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
-            }
-            Clue.allClues.push(clueShape)
-            console.log("shape")
-        })
-        .catch(error => {
-            console.log("Erreur : " + error);
-        })
-
-    // BORDER CLUE
-    let borderClueNode = document.getElementById("clueBorder")
-    let borderClueImgContainer = document.getElementById("clueBorderImgContainer")
-    let borderClueImg = document.getElementById("clueBorderImg")
-    let borderClueTextNode = document.getElementById("clueTextBorder")
-    let borderClueAttemptsText = document.getElementById("borderClueAttempts")
-    let borderClue = null
-    WaitForBorderName()
-        .then(data => {
-            let borderName
-            if(border !== null) {
-                borderName = border.value
-            } else {
-                let parsedData = JSON.parse(data)
-                borderName = parsedData.value
-            }
-
-            let contentNode = document.createElement("div")
-            contentNode.innerText = borderName
-            borderClue = new Clue(1, 12, borderClueNode, borderClueImgContainer, borderClueImg, "borderClue_unlocked",
-                borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, contentNode)
-            if(saveClues !== null) {
-                borderClue.hasBeenUsed = saveClues[1].hasBeenUsed
-            }
-            Clue.allClues.push(borderClue)
-            console.log("border")
-        })
-        .catch(error => {
-            console.log("Erreur : " + error);
-        })
-
-    // CAPITAL CLUE
-    let capitalClueNode = document.getElementById("clueCapital")
-    let capitalClueImgContainer = document.getElementById("clueCapitalImgContainer")
-    let capitalClueImg = document.getElementById("clueCapitalImg")
-    let capitalClueTextNode = document.getElementById("clueTextCapital")
-    let capitalClueAttemptsText = document.getElementById("capitalClueAttempts")
-    let capitalClue = null
-    WaitForCapital()
-        .then(data => {
-            let parsedData = JSON.parse(data)
-            let capital = parsedData.capital
-            let contentNode = document.createElement("div")
-            contentNode.innerText = capital
-            capitalClue = new Clue(2, 15, capitalClueNode, capitalClueImgContainer, capitalClueImg, "capitalClue_unlocked",
-                capitalClueTextNode, "Indice capitale", "88%", capitalClueAttemptsText, contentNode)
-            if(saveClues !== null) {
-                capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
-            }
-            Clue.allClues.push(capitalClue)
-            console.log("capital")
+        .then(shapeData => {
+            InitiateShapeClue(shapeData)
+            WaitForBorderName().then((borderData) => {
+                InitiateBorderClue(borderData)
+                WaitForCapital().then((capitalData) => {
+                    InitiateCapitalClue(capitalData)
+                    CheckForHistory()
+                })
+            })
         })
         .catch(error => {
             console.log("Erreur : " + error);
