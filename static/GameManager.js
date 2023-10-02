@@ -168,13 +168,13 @@ function ResolveCountry(countryData) {
     hasAlreadyAnswered = true
 
     let country = JSON.parse(countryData)
-    CreateAnswerRow(country)
     Clue.UpdateCluesAttempts()
     SetSubmittedCountry(country.code)
     SetSubmittedCountriesToLocalStorage()
     ShowZoomButton();
-    if (country.isAnswer) {
-        WinGame(country)
+    CreateAnswerRow(country)
+    if(country.isAnswer) {
+        countryForm.remove()
     }
 }
 
@@ -204,7 +204,6 @@ function WinGame(countryData) {
         return
     }
     Clue.UnlockAllClues()
-    countryForm.remove()
     const scaleUpAndDown = [
         { transform: "scale(1)" },
         { transform: "scale(1.05)" },
@@ -249,11 +248,10 @@ function WinGame(countryData) {
     ggCountryName.innerText = countryData.name
 
     let ggContainer = document.getElementById("ggContainer")
-    setTimeout(function() {
-        ggContainer.style.display = "flex";
-        ggContainer.scrollIntoView({ behavior: "smooth"});
-        ggContainer.animate(scaleUpAndDown, scaleUpAndDownTiming)
-    }, 50);
+    ggContainer.style.display = "flex";
+    ggContainer.scrollIntoView({ behavior: "smooth"});
+    ggContainer.animate(scaleUpAndDown, scaleUpAndDownTiming)
+
 }
 
 function DisplayWrongCountry() {
@@ -293,6 +291,7 @@ function CreateAnswerSquare(answerNumber, rowNode, textValue, ratio) {
     let squareContentNode = document.createElement("div");
     squareNode.classList.add("answerSquare")
     squareNode.classList.add(`answer${answerNumber}`)
+    squareNode.style.opacity = '0'
     squareContentNode.classList.add("answerContent")
     squareContentNode.innerText = textValue
     PickColor(squareNode, ratio)
@@ -306,6 +305,7 @@ function CreateArrowSquare(answerNumber, rowNode, textValue, ratio, equals, isDi
     let squareContentNode = document.createElement("div");
     squareNode.classList.add("answerSquare")
     squareNode.classList.add(`answer${answerNumber}`)
+    squareNode.style.opacity = '0'
     squareContentNode.classList.add("answerContent")
     squareContentNode.innerText = numberWithSpaces(textValue)
     if(isDistance) {
@@ -317,6 +317,33 @@ function CreateArrowSquare(answerNumber, rowNode, textValue, ratio, equals, isDi
     squareNode.appendChild(squareContentNode)
     rowNode.appendChild(squareNode)
     return squareNode
+}
+
+function AnimateAnswerRow(answerRow, country, index) {
+    const fadeIn = [
+        { opacity: "0", scale: "0.6"},
+        { opacity: "1", scale: "1" },
+    ];
+    const fadeInTiming = {
+        duration: 600,
+        iterations: 1,
+        easing:"ease-in-out",
+        fill: 'forwards'
+    };
+
+    let squareNodes = answerRow.childNodes
+    if (index < squareNodes.length) {
+        setTimeout(function() {
+            squareNodes[index].animate(fadeIn, fadeInTiming)
+            AnimateAnswerRow(answerRow, country,index + 1);
+        }, 330);
+    } else {
+        setTimeout(function() {
+            if (country.isAnswer) {
+                WinGame(country)
+            }
+        }, 500);
+    }
 }
 
 function CreateAnswerRow(countryData) {
@@ -384,6 +411,7 @@ function CreateAnswerRow(countryData) {
     addShareLine(newLineEmojis)
     answersGrid.prepend(answerRow)
     adjustTextSize(answerRow);
+    AnimateAnswerRow(answerRow, countryData,1)
 }
 
 function getEmojiByColor(classList) {
