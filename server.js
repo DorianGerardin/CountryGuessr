@@ -59,8 +59,13 @@ function hasSameCurrency(currency1, currency2) {
     return currency1[0] === currency2[0]
 }
 
-function SelectCountry() {
-    return countries[Math.floor(Math.random()*countries.length)];
+function SelectCountry(desiredCode = null) {
+    if(desiredCode === null) {
+        return countries[Math.floor(Math.random()*countries.length)];
+    }
+    else {
+        return countries.find((country) => country.code === desiredCode)
+    }
 }
 
 async function WaitForAllCountriesData() {
@@ -90,6 +95,10 @@ function SetAllCountries() {
                 let bordersCount = countryData.borders.length
                 let area = countryData.area
                 let latlng = countryData.latlng
+                // saint martin api error
+                if(code === "MAF") {
+                    latlng[1] *= -1
+                }
                 let maps = countryData.maps.googleMaps
                 let borders = countryData.borders
                 let capital = countryData.capital
@@ -105,7 +114,8 @@ function SetAllCountries() {
             }
         }
         countries.sort((c1, c2) => c1.name.localeCompare(c2.name))
-        countryToGuess = SelectCountry()
+        const argCode = process.argv[2]
+        countryToGuess = argCode === null ? SelectCountry() : SelectCountry(argCode)
         console.log(countryToGuess.name)
     });
 }

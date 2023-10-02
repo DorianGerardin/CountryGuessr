@@ -418,7 +418,7 @@ function AddArrowIndicator(value, node) {
 }
 
 function PickColor(node, ratio) {
-    let answerColorClass = ratio < 0.25 ? "badAnswer" : ratio < 0.5 ? "answerPercent25_50" : ratio < 0.75 ? "answerPercent50_75" : "goodAnswer"
+    let answerColorClass = ratio < 0.55 ? "badAnswer" : ratio < 0.75 ? "answerPercent25_50" : ratio < 1 ? "answerPercent50_75" : "goodAnswer"
     node.classList.add(answerColorClass)
 }
 
