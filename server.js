@@ -332,9 +332,15 @@ function updateSVG(filename) {
     if (Fs.existsSync(filename)) {
         const file = Fs.readFileSync(filename, 'utf-8');
         const newColor = '#FFFFFF';
-        const updatedSVG = file.replace(/fill="[^"]*"/g, `fill="${newColor}"`);
-        Fs.writeFileSync(filename, updatedSVG);
-        console.log('Fichier SVG modifié avec succès.');
+        if (!file.match(/fill="[^"]*"/)) {
+            const updatedSVGWithFill = file.replace(/<svg/, `<svg fill="${newColor}"`);
+            Fs.writeFileSync(filename, updatedSVGWithFill);
+            console.log('La propriété fill a été ajoutée avec succès.');
+        } else {
+            const updatedSVG = file.replace(/fill="[^"]*"/g, `fill="${newColor}"`);
+            Fs.writeFileSync(filename, updatedSVG);
+            console.log('La propriété fill a été modifiée avec succès.');
+        }
     }
     else {
         console.log('Le fichier SVG n\'existe pas. Aucune modification effectuée.');

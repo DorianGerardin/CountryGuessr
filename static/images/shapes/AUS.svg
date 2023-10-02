@@ -1,14 +1,14 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+<svg fill="#FFFFFF" version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="1024.000000pt" height="1024.000000pt" viewBox="0 0 1024.000000 1024.000000"
  preserveAspectRatio="xMidYMid meet">
 <metadata>
 Created by potrace 1.10, written by Peter Selinger 2001-2011
 </metadata>
 <g transform="translate(0.000000,1024.000000) scale(0.100000,-0.100000)"
-fill="#FFFFFF" stroke="none">
+stroke="none">
 <path d="M7380 9882 c0 -13 -14 -24 -41 -35 -34 -13 -40 -20 -34 -36 3 -11 1
 -58 -6 -103 -8 -61 -17 -90 -34 -108 -36 -39 -85 -125 -85 -149 0 -13 6 -21
 18 -21 20 -1 57 -26 45 -31 -5 -2 -23 -23 -41 -46 -33 -43 -34 -43 -19 -85 13
