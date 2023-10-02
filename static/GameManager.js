@@ -75,19 +75,18 @@ function GetCountryPromises(submittedCountries) {
 
 function CheckForHistory() {
     let submittedCountries = JSON.parse(localStorage.getItem('submittedCountries'));
-    console.log(submittedCountries)
 
     if(submittedCountries !== null) {
         Promise.all(GetCountryPromises(submittedCountries))
             .then(results => {
                 for (const countryData of results) {
                     ResolveCountry(countryData)
+                    console.log("resolve")
                 }
             })
             .catch(error => {
                 console.error(error);
             });
-
     }
 }
 CheckForHistory()

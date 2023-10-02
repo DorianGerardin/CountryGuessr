@@ -64,6 +64,13 @@ class Clue {
             }
             localStorage.setItem('clues', JSON.stringify(Clue.GetDataForLocalStorage()));
             Clue.allClues[this.clueID] = this
+
+            if(this.clueID === 1) {
+                let border = {
+                    value : this.contentNode.innerText
+                }
+                localStorage.setItem('border', JSON.stringify(border))
+            }
         })
     }
 
@@ -145,9 +152,34 @@ async function WaitForCapital() {
     return await response.json();
 }
 
+function GetLocalStorageExpirationDate() {
+    let date = new Date();
+    let offsetMinutes = date.getTimezoneOffset();
+    let parisOffsetMinutes = -60; // En hiver
+    let isSummerTime = false;
+    if (date.getMonth() >= 2 && date.getMonth() <= 9) {
+        isSummerTime = true;
+    }
+    if (isSummerTime) {
+        parisOffsetMinutes = -120; // En été (mars à octobre)
+    }
+    let adjustedOffsetMinutes = parisOffsetMinutes - offsetMinutes;
+    date.setMinutes(date.getMinutes() + adjustedOffsetMinutes);
+    date.setHours(23, 59, 59);
+    return date
+}
+
 function InitiateClues() {
+    let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
+    if(expirationDate !== null) {
+        if(expirationDate < new Date()) {
+            localStorage.clear()
+        }
+    }
+
+    localStorage.setItem('expirationDate', JSON.stringify(GetLocalStorageExpirationDate().getTime()));
     let saveClues = JSON.parse(localStorage.getItem('clues'));
-    Clue.allClues = []
+    let border = JSON.parse(localStorage.getItem('border'));
 
     // SHAPE CLUE
     let shapeClueNode = document.getElementById("clueShape")
@@ -168,6 +200,7 @@ function InitiateClues() {
                 clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
             }
             Clue.allClues.push(clueShape)
+            console.log("shape")
         })
         .catch(error => {
             console.log("Erreur : " + error);
@@ -182,8 +215,14 @@ function InitiateClues() {
     let borderClue = null
     WaitForBorderName()
         .then(data => {
-            let parsedData = JSON.parse(data)
-            let borderName = parsedData.value
+            let borderName
+            if(border !== null) {
+                borderName = border.value
+            } else {
+                let parsedData = JSON.parse(data)
+                borderName = parsedData.value
+            }
+
             let contentNode = document.createElement("div")
             contentNode.innerText = borderName
             borderClue = new Clue(1, 12, borderClueNode, borderClueImgContainer, borderClueImg, "borderClue_unlocked",
@@ -192,6 +231,7 @@ function InitiateClues() {
                 borderClue.hasBeenUsed = saveClues[1].hasBeenUsed
             }
             Clue.allClues.push(borderClue)
+            console.log("border")
         })
         .catch(error => {
             console.log("Erreur : " + error);
@@ -216,6 +256,7 @@ function InitiateClues() {
                 capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
             }
             Clue.allClues.push(capitalClue)
+            console.log("capital")
         })
         .catch(error => {
             console.log("Erreur : " + error);
