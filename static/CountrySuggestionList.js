@@ -62,8 +62,9 @@ class CountrySuggestionList {
     }
 
     SelectCountry(index) {
-        this.container.style.display = "none"
+        this.Hide()
         this.countryInput.value = this.list[index].name
+        this.countryInput.focus()
         currentCountry = this.list[index].code
         this.container.innerHTML = "";
         this.currentFocusIndex = 0;
@@ -92,19 +93,18 @@ class CountrySuggestionList {
 
     UpdateFocused(event) {
         if(this.list.length === 0) {
-            this.Show(this.list)
             return
         }
-        if(event.keyCode === 40){//down
+        if(event.keyCode === 40){ // DOWN
             event.preventDefault()
             let newIndex = this.currentFocusIndex + 1 >= this.list.length ? 0 : this.currentFocusIndex + 1
             this.SetNewFocus(newIndex)
         }
-        else if(event.keyCode === 38){//up
+        else if(event.keyCode === 38){ // UP
             event.preventDefault()
             let newIndex = this.currentFocusIndex - 1 < 0 ? this.list.length - 1 : this.currentFocusIndex - 1
             this.SetNewFocus(newIndex)
-        } else if(event.key === "Enter") {
+        } else if(event.key === "Enter" && this.list.length > 0) {
             this.SelectCountry(this.currentFocusIndex)
         }
     }

@@ -183,7 +183,7 @@ function InitiateShapeClue(data) {
     contentNode.classList.add('countryShape')
     contentNode.src = `./static/images/shapes/${parsedData.code}.svg`
     clueShape = new Clue(0, 7, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
-        shapeClueTextNode, "Indice forme du pays", "12%", shapeClueAttemptsText, contentNode)
+        shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, contentNode)
     if(saveClues !== null) {
         clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
     }
@@ -232,7 +232,7 @@ function InitiateCapitalClue(data) {
     let contentNode = document.createElement("div")
     contentNode.innerText = capital
     capitalClue = new Clue(2, 15, capitalClueNode, capitalClueImgContainer, capitalClueImg, "capitalClue_unlocked",
-        capitalClueTextNode, "Indice capitale", "88%", capitalClueAttemptsText, contentNode)
+        capitalClueTextNode, "Indice capitale", "86%", capitalClueAttemptsText, contentNode)
     if(saveClues !== null) {
         capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
     }

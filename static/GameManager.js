@@ -163,7 +163,6 @@ function ResolveCountry(countryData) {
     if (!hasAlreadyAnswered) {
         answersContainer.style.display = "flex"
     }
-    countryInput.value = ""
     currentCountry = null
     hasAlreadyAnswered = true
 
@@ -174,6 +173,7 @@ function ResolveCountry(countryData) {
     ShowZoomButton();
     CreateAnswerRow(country)
     if(country.isAnswer) {
+        game.endGame()
         countryForm.remove()
     }
 }
@@ -182,6 +182,7 @@ async function SubmitCountry(countryCode) {
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
     if(expirationDate !== null) {
         if(expirationDate < new Date()) {
+            alert("Un nouveau pays a été sélectionné. La page va se recharger")
             localStorage.clear()
             window.location.reload();
         }
@@ -194,6 +195,9 @@ async function SubmitCountry(countryCode) {
         DisplayWrongCountry()
         return Promise.resolve(null);
     }
+
+    countryInput.value = ""
+
     return new Promise((resolve, reject) => {
         fetch(`/guess?code=${countryCode}`)
             .then(response => response.json())
@@ -222,7 +226,6 @@ function WinGame(countryData) {
         direction: "alternate",
         easing:"ease-in-out"
     };
-    game.endGame()
     let attemptCount = getAttemptCount()
     let attemptsElements = document.getElementsByClassName("ggAttemptsCount")
     for (let i = 0; i < attemptsElements.length; i++) {
@@ -350,7 +353,7 @@ function AnimateAnswerRow(answerRow, country, index) {
             if (country.isAnswer) {
                 WinGame(country)
             }
-        }, 500);
+        }, 700);
     }
 }
 
