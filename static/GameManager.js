@@ -246,7 +246,8 @@ function WinGame(countryData) {
     }
     let copyButton = document.getElementById("shareButton")
     copyButton.addEventListener("click", () => {
-        navigator.clipboard.writeText(shareContentElement.innerText).then(function() {
+        let copyText = shareContentElement.innerText + "\n https://countryguessr.mrdo.fr"
+        navigator.clipboard.writeText(copyText).then(function() {
             DisplayCopiedToClipboard()
         }).catch(function(err) {
             console.error('Erreur lors de la copie du texte : ', err);
