@@ -347,7 +347,7 @@ input[type=text]:focus {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 35%;
+	height: 30%;
 	width: 100%;
 	font-size: 2em;
 	font-weight: bold;
@@ -359,9 +359,11 @@ input[type=text]:focus {
 	flex-direction: row;
 	justify-content: center;
 	column-gap: 1em;
+	align-items: center;
 }
 
 #ggContent {
+	padding: 0 1em 0 1em;
 	height: 65%;
 	width: 100%;
 	display: flex;
@@ -369,8 +371,19 @@ input[type=text]:focus {
 	row-gap: 1em;
 }
 
-#ggFlag img {
+#ggFlag {
+	transition: 0.4s;
 	display: flex;
+	height: fit-content;
+	justify-content: flex-end;
+}
+
+#ggFlag:hover {
+	cursor: pointer;
+	scale: 1.15;
+}
+
+#ggFlag > img {
 	width: 5.5em;
 	border-radius: 0.5em;
 	box-shadow: 0 10px 25px -7px #00000075;
@@ -384,7 +397,7 @@ input[type=text]:focus {
 
 #ggCountryName {
 	font-weight: bold;
-	font-size: 1.5em;
+	font-size: 1.05em;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
 }

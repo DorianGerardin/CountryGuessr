@@ -263,6 +263,15 @@ function WinGame(countryData) {
     ggContainer.scrollIntoView({ behavior: "smooth"});
     ggContainer.animate(scaleUpAndDown, scaleUpAndDownTiming)
 
+    let nameNodes = document.getElementsByClassName("answer0")
+    for (let i = 0; i < nameNodes.length; i++) {
+        nameNodes[i].style.cursor = "pointer"
+    }
+
+    let ggFlag = document.getElementById("ggFlag")
+    ggFlag.addEventListener("click", () => {
+        window.open(countryData.maps, "_blank");
+    })
 }
 
 function DisplayWrongCountry() {
@@ -366,12 +375,14 @@ function CreateAnswerRow(countryData) {
     // NAME
     let nameNode = document.createElement("div");
     let nameContentNode = document.createElement("div");
-    nameNode.style.cursor = "pointer"
-    nameNode.addEventListener("click", () => {
-        window.open(countryData.maps, "_blank");
-    })
     nameNode.classList.add("answerSquare")
     nameNode.classList.add("answer0")
+    nameNode.addEventListener("click", () => {
+        if(!game.HasWon()) {
+            return
+        }
+        window.open(countryData.maps, "_blank");
+    })
     nameContentNode.classList.add("answerContent")
     let flagBG = document.createElement("div");
     flagBG.classList.add("backgroundFlag")
