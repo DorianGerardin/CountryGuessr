@@ -270,7 +270,7 @@ function WinGame(countryData) {
 
     let ggFlag = document.getElementById("ggFlag")
     ggFlag.addEventListener("click", () => {
-        window.open(countryData.maps, "_blank");
+        window.open(countryData.maps, "_blank")
     })
 }
 
