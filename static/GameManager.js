@@ -291,6 +291,9 @@ function DisplayWrongCountry() {
 }
 
 function DisplayCopiedToClipboard() {
+    if(window.innerWidth <= 768) {
+        return
+    }
     let toast = Toastify({
         text: "Copié dans le presse-papiers",
         duration: 1500,
