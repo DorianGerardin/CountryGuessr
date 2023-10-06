@@ -13,11 +13,13 @@ import express from 'express'; //Import the express dependency
 import Country from './static/Country.js' //Save the port number where your server will be listening
 import { CronJob } from 'cron';
 const app = express();              //Instantiate an express app, the main work horse of this server
+import axios from 'axios'
+import dotenv from 'dotenv'
 const port = process.env.PORT || 8080;
-//Idiomatic expression in express to route and respond to a client request
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+dotenv.config();
 
 let noUseCountries = ["UMI"]
 
@@ -30,6 +32,29 @@ let countries = [];
 let countryToGuess = null
 let job = null
 SetAllCountries();
+
+async function UpdateCurrentCountry(newCountryCode) {
+    try {
+        const data = {
+            CURRENT_COUNTRY : newCountryCode
+        }
+        await axios({
+            method: 'patch',
+            url: `https://api.heroku.com/apps/country-guessr/config-vars`,
+            headers: {
+                'Authorization': `Bearer ${process.env.HEROKU_API_KEY}`,
+                'Accept': 'application/vnd.heroku+json; version=3',
+                'Content-Type': 'application/json',
+            },
+            data: data
+        });
+    }
+    catch (error) {
+        console.error('Erreur lors de la mise à jour de la variable d\'environnement sur Heroku :', error);
+        throw error;
+    }
+
+}
 
 function getCurrency(currency) {
     let bestMatch = ""
@@ -68,6 +93,10 @@ function SelectCountry(desiredCode = null) {
     else {
         return countries.find((country) => country.code === desiredCode)
     }
+}
+
+function GetRandomCountryCode() {
+    return countries[Math.floor(Math.random()*countries.length)].code
 }
 
 async function WaitForAllCountriesData() {
@@ -116,18 +145,19 @@ function SetAllCountries() {
             }
         }
         countries.sort((c1, c2) => c1.name.localeCompare(c2.name))
-        const argCode = process.argv[2]
-        countryToGuess = argCode === null ? SelectCountry() : SelectCountry(argCode)
         job = new CronJob(
             '00 00 * * *',
             function () {
-                countryToGuess = SelectCountry()
+                UpdateCurrentCountry(GetRandomCountryCode()).then(() => {
+                    countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
+                })
                 console.log(`reset country : ${countryToGuess.name}`)
             },
             null,
             true,
             'Europe/Paris'
         );
+        countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
         console.log(countryToGuess.name)
     });
 }
