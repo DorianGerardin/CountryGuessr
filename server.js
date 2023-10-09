@@ -120,7 +120,7 @@ function SetAllCountries() {
                 }
                 let name = countryData.translations.fra.common;
                 let continent = countryData.continents[0];
-                let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages)[0] : "No language"
+                let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages) : ["No language"]
                 let populationCount = countryData.population
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
                 let bordersCount = countryData.borders.length
@@ -235,11 +235,17 @@ function getProximityPercent(distance) {
     return (1 - (distance / halfEarthCircumference)).toFixed(2)
 }
 
+function GetLanguagesInCommon(languages1, languages2) {
+    return languages1.filter(element => languages2.includes(element));
+}
+
 function CreateCountryData(country) {
     let populationCompare = country.populationCount > countryToGuess.populationCount ? "-" : country.populationCount < countryToGuess.populationCount ? "+" : "="
     let borderCompare = country.borderCount > countryToGuess.borderCount ? "-" : country.borderCount < countryToGuess.borderCount ? "+" : "="
     let areaCompare = country.area > countryToGuess.area ? "-" : country.area < countryToGuess.area ? "+" : "="
     let distance = getDistance(country.latlng[0], country.latlng[1], countryToGuess.latlng[0], countryToGuess.latlng[1])
+    let languagesInCommon = GetLanguagesInCommon(country.language, countryToGuess.language)
+    let languagesToDisplay = languagesInCommon.length > 0 ? languagesInCommon.slice(0,3).join(",\n") : country.language.slice(0,3).join(",\n")
 
     return {
         isAnswer : country.code === countryToGuess.code,
@@ -251,8 +257,8 @@ function CreateCountryData(country) {
             isEqual: country.continent === countryToGuess.continent
         },
         language: {
-            value: country.language,
-            isEqual: country.language === countryToGuess.language
+            value: languagesToDisplay,
+            isEqual: languagesInCommon.length
         },
         populationCount: {
             value: country.populationCount,
