@@ -56,7 +56,7 @@ async function UpdateCurrentCountry(newCountryCode) {
 
 }
 
-function getCurrency(currency) {
+function getCurrency(currency, currencyCode) {
     let bestMatch = ""
     let currencyTypesCount = currencyTypes.length
     for (let i = 0; i < currencyTypesCount; i++) {
@@ -67,7 +67,7 @@ function getCurrency(currency) {
     }
     currency = currency.replace(bestMatch, '')
     let currencyDescription = currency.split(' ').filter(c => c).join(' ')
-    return [bestMatch, currencyDescription]
+    return [bestMatch, currencyCode]
 }
 
 function currencyToString(currency) {
@@ -123,6 +123,7 @@ function SetAllCountries() {
                 let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages) : ["No language"]
                 let populationCount = countryData.population
                 let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
+                let currencyCode = Object.keys(countryData.currencies)[0]
                 let bordersCount = countryData.borders.length
                 let area = countryData.area
                 let latlng = countryData.latlng
@@ -138,7 +139,7 @@ function SetAllCountries() {
                 if(currency === "No Currency") {
                     currencyType = [null, "No currency"]
                 } else {
-                     currencyType = getCurrency(currency)
+                     currencyType = getCurrency(currency, currencyCode)
                 }
                 let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital)
                 countries.push(country)
