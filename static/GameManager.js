@@ -76,7 +76,7 @@ function GetCountryPromises(submittedCountries) {
 
 function CheckForHistory() {
     let isFirstTime = JSON.parse(localStorage.getItem('isFirstTime'));
-    if(isFirstTime === null) {
+    if(isFirstTime === null || isFirstTime) {
         GoToRules()
         localStorage.setItem('isFirstTime', JSON.stringify(false));
     }

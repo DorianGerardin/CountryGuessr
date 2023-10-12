@@ -241,9 +241,15 @@ function InitiateCapitalClue(data) {
 
 function ClearLocalStorage() {
     for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
+        const keysToDelete = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key !== "isFirstTime") {
+                keysToDelete.push(key);
+            }
+        }
 
-        if (key !== "isFirstTime") {
+        for (const key of keysToDelete) {
             localStorage.removeItem(key);
         }
     }
