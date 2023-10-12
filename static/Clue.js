@@ -255,6 +255,10 @@ function ClearLocalStorage() {
     }
 }
 
+function GoToRules() {
+    window.location.href = `${window.location.href}rules`
+}
+
 function InitiateClues() {
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
     if(expirationDate !== null) {
@@ -264,6 +268,12 @@ function InitiateClues() {
     }
 
     localStorage.setItem('expirationDate', JSON.stringify(GetLocalStorageExpirationDate().getTime()));
+
+    let isFirstTime = JSON.parse(localStorage.getItem('isFirstTime'));
+    if(isFirstTime === null || isFirstTime) {
+        GoToRules()
+        localStorage.setItem('isFirstTime', JSON.stringify(false));
+    }
 
     WaitForCountryShape()
         .then(shapeData => {

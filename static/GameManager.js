@@ -75,12 +75,6 @@ function GetCountryPromises(submittedCountries) {
 }
 
 function CheckForHistory() {
-    let isFirstTime = JSON.parse(localStorage.getItem('isFirstTime'));
-    if(isFirstTime === null || isFirstTime) {
-        GoToRules()
-        localStorage.setItem('isFirstTime', JSON.stringify(false));
-    }
-
     let submittedCountries = JSON.parse(localStorage.getItem('submittedCountries'));
 
     if(submittedCountries !== null) {
@@ -94,10 +88,6 @@ function CheckForHistory() {
                 console.error(error);
             });
     }
-}
-
-function GoToRules() {
-    window.location.href = `${window.location.href}rules`
 }
 
 countrySubmit.addEventListener('click', () => {
