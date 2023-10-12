@@ -25,12 +25,12 @@
         <div id="backButton">Acceder au jeu</div>
         <h2 style="margin: 1em 0 1em 0">BIENVENUE SUR COUNTRY GUESSR !</h2>
         
-        <h3>REGLES DU JEU</h3>
+        <h3>BUT DU JEU</h3>
         <hr>
         <div class="smallContainer" id="explication1">
             <p>Devine le pays du jour avec le moins d'essais possibles.</p>
             <p>Chaque essai correspond à un pays valide (inclus dans la liste du jeu).</p>
-            <p>Quand vous validez un pays, vous avez accès à de nombreuses caractéristiques relatives à ce dernier</p>
+            <p>Quand vous validez un pays, vous avez accès à de nombreuses caractéristiques relatives à ce dernier.</p>
         </div>
 
         <h3>CARACTERISTIQUES</h3>
@@ -38,8 +38,8 @@
         <div class="smallContainer" id="caractéristiques">
             <p>La couleur des tuiles indique si tu es proche de la caractéristique du pays à trouver.</p>
             <p><span style="color:#3bc03b">Vert</span> indique que la caractéristique est une correspondance exacte.</p>
-            <p><span style="color:#f0d000">Jaune</span> indique une correspondance proche pour les caractéristiques numériques.</p>
-            <p><span style="color:#e78312">Orange</span> indique une correspondance éloignée pour les caractéristiques numériques.</p>
+            <p><span style="color:#f0d000">Jaune</span> indique une correspondance proche (caractéristiques numériques).</p>
+            <p><span style="color:#e78312">Orange</span> indique une correspondance éloignée (caractéristiques numériques).</p>
             <p><span style="color:#d63f3f">Rouge</span> indique que l'essai ne correspond pas ou une correspondance trop éloignée pour une
                 caractéristique numérique.</p>
             <p>Pour les caractéristiques numériques, en plus des indicateurs de couleur, il y a un indicateur de direction pour indiquer si la valeur
@@ -49,7 +49,7 @@
                 ● Les langues parlées <br>
                 ● Le nombre d'habitants <br>
                 ● La devise <br>
-                ● La nombre de frontières <br>
+                ● Le nombre de frontières <br>
                 ● La superficie <br>
                 ● La distance <br>
             </p>
@@ -58,8 +58,8 @@
         <h3>EXEMPLE</h3>
         <hr>
         <div class="smallContainer" id="exemple">
-           <p>Considérons que le pays à deviner est la <span class="bold">France.</span></p>
-           <p>Si on entre le <span class="bold">Tchad</span>, voici ce que l'on obtiens : </p>
+           <p>Considérons que le pays à deviner est la <span class="bold countryName">France.</span></p>
+           <p>Si on entre le <span class="bold countryName">Tchad</span>, voici ce que l'on obtiens : </p>
             <div class="answerRow">
 
                 <div class="answerSquare answer0">
@@ -103,16 +103,16 @@
                 </div>
             </div>
             <p>Continent : <span style="color:#d63f3f">Rouge</span><br>
-            Le continent ne correspond pas, la France se trouve en Europe
+            Le continent ne correspond pas, la France se trouve en Europe.
             </p>
 
             <p>Langue : <span style="color:#3bc03b">Vert</span><br>
-            Le tchad parle le français et l'arabe. La France parle le français. C'est donc une
-            correspondance exacte pour le français
+            Le Tchad parle le français et l'arabe. La France parle le français. C'est donc une
+            correspondance exacte pour le français.
             </p>
 
             <p>Nombre d'habitants : <span style="color:#d63f3f">Rouge</span><br>
-            Le tchad possède 16 425 859 habitants. La France en possède 67 391 582. C'est une correspondance trop éloignée.
+            Le Tchad possède 16 425 859 habitants. La France en possède 67 391 582. C'est une correspondance trop éloignée.
             </p>
 
             <p>Monnaie : <span style="color:#d63f3f">Rouge</span><br>
@@ -120,11 +120,11 @@
             </p>
 
             <p>Nombre de frontières : <span style="color:#f0d000">Jaune</span><br>
-            Le tchad possède 6 frontières, la France en possède 8. C'est une correspondance proche.
+            Le Tchad possède 6 frontières, la France en possède 8. C'est une correspondance proche.
             </p>
 
             <p>Superficie <span style="color:#d63f3f">Rouge</span><br>
-            Le tchad possède une superficie de 1 284 000 km², tandis que la France en a une de 551 695 km². C'est une correspondance trop éloignée.
+            Le Tchad possède une superficie de 1 284 000 km², tandis que la France en a une de 551 695 km². C'est une correspondance trop éloignée.
             </p>
 
             <p>Distance <span style="color:#f0d000">Jaune</span><br>
@@ -137,10 +137,10 @@
         <hr>
         <div class="smallContainer" id="indices">
             <p>Des indices sont mis à disposition pour vous aider à trouver le pays du jour après un certains nombres d'essais.</p>
-            <p><span class="bold" style="font-size: 1.25em">Forme du pays</span> donne accès à la forme du pays.</p>
+            <p><span class="bold" style="font-size: 1.25em">Forme du pays</span> donne accès à la forme du pays. (Debloqué après 5 essais)</p>
             <p><span class="bold" style="font-size: 1.25em">Pays frontalier</span> donne accès au nom d'un pays frontalier aléatoire.
-                Si, le pays n'en possède aucun, donne le nom au pays le plus proche. </p>
-            <p><span class="bold" style="font-size: 1.25em">Capitale</span> donne accès à la capitale du pays.</p>
+                Si, le pays n'en possède aucun, donne le nom au pays le plus proche. (Debloqué après 8 essais)</p>
+            <p><span class="bold" style="font-size: 1.25em">Capitale</span> donne accès à la capitale du pays. (Debloqué après 11 essais)</p>
         </div>
 
         <p>Bonne chance !</p>

@@ -92,6 +92,11 @@ li {
     font-weight: bold;
 }
 
+.countryName {
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
 #backButton {
     color: #6ae8ff;
     cursor: pointer;
