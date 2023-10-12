@@ -59,8 +59,24 @@ h1 {
 }
 
 header {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
 	width: 60%;
 	border-bottom: 2px solid #F4EEE0;
+}
+
+#rulesButton {
+	position: absolute;
+	right: 0;
+	transition: 0.25s;
+}
+
+#rulesButton:hover {
+	cursor: pointer;
+	scale: 1.15;
 }
 
 main {

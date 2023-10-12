@@ -182,7 +182,7 @@ function InitiateShapeClue(data) {
     let contentNode = document.createElement("img")
     contentNode.classList.add('countryShape')
     contentNode.src = `./static/images/shapes/${parsedData.code}.svg`
-    clueShape = new Clue(0, 7, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
+    clueShape = new Clue(0, 5, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
         shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, contentNode)
     if(saveClues !== null) {
         clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
@@ -210,7 +210,7 @@ function InitiateBorderClue(data) {
 
     let contentNode = document.createElement("div")
     contentNode.innerText = borderName
-    borderClue = new Clue(1, 12, borderClueNode, borderClueImgContainer, borderClueImg, "borderClue_unlocked",
+    borderClue = new Clue(1, 8, borderClueNode, borderClueImgContainer, borderClueImg, "borderClue_unlocked",
         borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, contentNode)
     if(saveClues !== null) {
         borderClue.hasBeenUsed = saveClues[1].hasBeenUsed
@@ -231,7 +231,7 @@ function InitiateCapitalClue(data) {
     let capital = parsedData.capital
     let contentNode = document.createElement("div")
     contentNode.innerText = capital
-    capitalClue = new Clue(2, 15, capitalClueNode, capitalClueImgContainer, capitalClueImg, "capitalClue_unlocked",
+    capitalClue = new Clue(2, 11, capitalClueNode, capitalClueImgContainer, capitalClueImg, "capitalClue_unlocked",
         capitalClueTextNode, "Indice capitale", "86%", capitalClueAttemptsText, contentNode)
     if(saveClues !== null) {
         capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
@@ -239,11 +239,21 @@ function InitiateCapitalClue(data) {
     Clue.allClues.push(capitalClue)
 }
 
+function ClearLocalStorage() {
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+
+        if (key !== "isFirstTime") {
+            localStorage.removeItem(key);
+        }
+    }
+}
+
 function InitiateClues() {
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
     if(expirationDate !== null) {
         if(expirationDate < new Date()) {
-            localStorage.clear()
+            ClearLocalStorage()
         }
     }
 

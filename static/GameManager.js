@@ -6,6 +6,7 @@ const answersContainer = document.getElementById('answersContainer');
 const answersGrid = document.getElementById('answersGrid');
 const zoomContainer = document.getElementById('zoomContainer')
 const zoomButton = document.getElementById('zoomButton')
+const rulesButton = document.getElementById('rulesButton')
 
 let incrementAttempt, getAttemptCount;
 (function () {
@@ -74,6 +75,12 @@ function GetCountryPromises(submittedCountries) {
 }
 
 function CheckForHistory() {
+    let isFirstTime = JSON.parse(localStorage.getItem('isFirstTime'));
+    if(isFirstTime === null) {
+        GoToRules()
+        localStorage.setItem('isFirstTime', JSON.stringify(false));
+    }
+
     let submittedCountries = JSON.parse(localStorage.getItem('submittedCountries'));
 
     if(submittedCountries !== null) {
@@ -87,6 +94,10 @@ function CheckForHistory() {
                 console.error(error);
             });
     }
+}
+
+function GoToRules() {
+    window.location.href = `${window.location.href}rules`
 }
 
 countrySubmit.addEventListener('click', () => {
@@ -117,6 +128,7 @@ document.body.addEventListener("click", (e) => {
 zoomButton.addEventListener('click', () => {
     zoomedIn ? ZoomOut() : ZoomIn()
 })
+rulesButton.addEventListener('click', GoToRules)
 
 function GetCountriesBySuggestion(suggestion) {
     let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
@@ -183,7 +195,7 @@ async function SubmitCountry(countryCode) {
     if(expirationDate !== null) {
         if(expirationDate < new Date()) {
             alert("Un nouveau pays a été sélectionné. La page va se recharger")
-            localStorage.clear()
+            ClearLocalStorage()
             window.location.reload();
         }
     }

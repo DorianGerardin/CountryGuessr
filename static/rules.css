@@ -1,0 +1,258 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color:#efd5ff;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #F4EEE0;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #F4EEE0;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 0.2em;
+    height: 0.4em;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45em;
+    height: 100%;
+}
+
+body {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(32, 33, 35, 1);
+    font-size: 16px;
+    color : #F4EEE0;
+    font-family: 'Prompt', sans-serif;
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+    padding: 0.5em 1em 0.35em 1em;
+}
+
+header {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-bottom: 2px solid #F4EEE0;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1em;
+    width: 95%;
+}
+
+p {
+    margin: 0.7em 0 0.7em 0;
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background-color:#F4EEE0;
+}
+
+li {
+    padding: 0.5em 0 0.5em 0;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+#backButton {
+    color: #6ae8ff;
+    cursor: pointer;
+}
+
+.smallContainer {
+    margin-bottom: 0.5em;
+}
+
+
+.answerRow {
+    display: flex;
+    justify-content: space-around;
+}
+
+.answerSquare {
+    width: 11.5%;
+    border-radius: 0.35em;
+    z-index: 1;
+    animation-fill-mode: forwards;
+}
+
+.answerContent::before {
+    content:"";
+    padding-top:95%;
+}
+
+.answerContent {
+    position: relative;
+    display:flex;
+    height:100%;
+    width:100%;
+    justify-content:center;
+    align-items:center;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 1);
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.badAnswer {
+    background-color: #d63f3f;
+    border: 0.2em solid #ff0000;
+}
+
+.answerPercent25_50 {
+    background-color: #e78312;
+    border: 0.2em solid #ff6323;
+}
+
+.answerPercent50_75 {
+    background-color: #f0d000;
+    border: 0.2em solid #ffff00;
+}
+
+.goodAnswer {
+    background-color: #3bc03b;
+    border: 0.2em solid #00ff0f;
+}
+
+.backgroundFlag {
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(52%);
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    border-radius: 0.2em;
+    box-shadow: 0 10px 25px -7px #0000008c;
+}
+
+.answer0 {
+    border: 0.2em solid #F4EEE0;
+}
+
+.backgroundArrow {
+    position: absolute;
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 35%;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#rulesButton {
+    position: absolute;
+    right: 0;
+    transition: 0.25s;
+}
+
+#rulesButton:hover {
+    cursor: pointer;
+    scale: 1.15;
+}
+
+@media screen and (min-width: 601px) and (max-width: 768px) {
+    #container {
+        width:95%;
+    }
+    header {
+        font-size: 16px;
+    }
+    h1 {
+        font-size: 1.75em;
+        padding: 0.5em 1em 0.35em 1em;
+    }
+    .answerRow{
+        font-size: 12px;
+    }
+}
+
+
+@media screen and (min-width: 481px) and (max-width: 600px) {
+    #container {
+        width:95%;
+    }
+    header {
+        font-size: 16px;
+    }
+    .answerRow{
+        font-size: 10px;
+    }
+}
+
+@media screen and (min-width: 334px) and (max-width: 480px) {
+    #container {
+        width:95%;
+    }
+    header {
+        font-size: 16px;
+    }
+    h1 {
+        font-size: 1.75em;
+        padding: 0.5em 1em 0.35em 1em;
+    }
+    .answerRow{
+        font-size: 8px;
+    }
+}
+
+@media screen and (max-width: 333px) {
+    #container {
+        width: 95%;
+    }
+
+    header {
+        font-size: 16px;
+    }
+
+    h1 {
+        font-size: 1.75em;
+        padding: 0.5em 1em 0.35em 1em;
+    }
+    .answerRow{
+        font-size: 8px;
+    }
+}
