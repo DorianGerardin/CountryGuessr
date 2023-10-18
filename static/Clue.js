@@ -255,8 +255,8 @@ function ClearLocalStorage() {
     }
 }
 
-function GoToRules() {
-    window.location.href = `${window.location.href}rules`
+function GoToPage(page) {
+    window.location.href = `${window.location.href}${page}`
 }
 
 function InitiateClues() {
@@ -271,7 +271,7 @@ function InitiateClues() {
 
     let isFirstTime = JSON.parse(localStorage.getItem('isFirstTime'));
     if(isFirstTime === null || isFirstTime) {
-        GoToRules()
+        GoToPage("welcome")
         localStorage.setItem('isFirstTime', JSON.stringify(false));
     }
 

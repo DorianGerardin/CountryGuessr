@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Règles du jeu</title>
+    <link rel="icon" type="image/png" href="static/images/countryGuessrLogo.png" sizes="32x32"/>
+    <link rel="stylesheet" type="text/css" href="/static/rules.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+
+<body>
+
+<div id="container">
+    <header>
+        <h1>COUNTRY GUESSR</h1>
+        <img id="rulesButton" src="static/images/question-mark.svg" height="32" width="32" alt="rules">
+    </header>
+
+    <main>
+        <h2 style="margin: 0.5em 0 0em 0">BIENVENUE SUR COUNTRY GUESSR !</h2>
+
+        <div id="playButtonContainer">
+            <div id="playButton">JOUER</div>
+        </div>
+
+        <div id="toggleRules">Afficher les règles du jeu ▼</div>
+
+        <div id="rulesContent">
+
+            <h3>BUT DU JEU</h3>
+            <hr>
+            <div class="smallContainer" id="explication1">
+                <p>Devine le pays du jour avec le moins d'essais possibles.</p>
+                <p>Chaque essai correspond à un pays valide (inclus dans la liste du jeu).</p>
+                <p>Quand vous validez un pays, vous avez accès à de nombreuses caractéristiques relatives à ce dernier.</p>
+            </div>
+
+            <h3>CARACTERISTIQUES</h3>
+            <hr>
+            <div class="smallContainer" id="caractéristiques">
+                <p>La couleur des tuiles indique si tu es proche de la caractéristique du pays à trouver.</p>
+                <p><span style="color:#3bc03b">Vert</span> indique que la caractéristique est une correspondance exacte.</p>
+                <p><span style="color:#f0d000">Jaune</span> indique une correspondance proche (caractéristiques numériques).</p>
+                <p><span style="color:#e78312">Orange</span> indique une correspondance éloignée (caractéristiques numériques).</p>
+                <p><span style="color:#d63f3f">Rouge</span> indique que l'essai ne correspond pas ou une correspondance trop éloignée pour une
+                    caractéristique numérique.</p>
+                <p>Pour les caractéristiques numériques, en plus des indicateurs de couleur, il y a un indicateur de direction pour indiquer si la valeur
+                    recherchée est supérieure ⬆️ ou inférieure ⬇️ à l'essai.</p>
+                <p>Voici la liste des caractéristiques pour chacun des pays : <br>
+                    ● Le continent <br>
+                    ● Les langues parlées <br>
+                    ● Le nombre d'habitants <br>
+                    ● La devise <br>
+                    ● Le nombre de frontières <br>
+                    ● La superficie <br>
+                    ● La distance <br>
+                </p>
+            </div>
+
+            <h3>EXEMPLE</h3>
+            <hr>
+            <div class="smallContainer" id="exemple">
+                <p>Considérons que le pays à deviner est la <span class="bold countryName">France.</span></p>
+                <p>Si on entre le <span class="bold countryName">Tchad</span>, voici ce que l'on obtiens : </p>
+                <div class="answerRow">
+
+                    <div class="answerSquare answer0">
+                        <div class="answerContent">Tchad
+                            <div class="backgroundFlag" style="background-image: url(./static/images/flags/TCD.svg);"></div>
+                        </div>
+                    </div>
+
+                    <div class="answerSquare answer1 badAnswer">
+                        <div class="answerContent">Africa</div>
+                    </div>
+
+                    <div class="answerSquare answer2 goodAnswer">
+                        <div class="answerContent">French</div>
+                    </div>
+
+                    <div class="answerSquare answer3 badAnswer">
+                        <div class="answerContent">16 425 859
+                            <div class="backgroundArrow" style="background-image: url(./static/images/up_arrow.png);"></div>
+                        </div>
+                    </div>
+
+                    <div class="answerSquare answer4 badAnswer">
+                        <div class="answerContent">CFA franc (XAF)</div>
+                    </div>
+
+                    <div class="answerSquare answer5 answerPercent50_75">
+                        <div class="answerContent">6
+                            <div class="backgroundArrow" style="background-image: url(./static/images/up_arrow.png)"></div>
+                        </div>
+                    </div>
+
+                    <div class="answerSquare answer6 badAnswer">
+                        <div class="answerContent">1 284 000
+                            <div class="backgroundArrow" style="background-image: url(./static/images/down_arrow.png);"></div>
+                        </div>
+                    </div>
+
+                    <div class="answerSquare answer7 answerPercent50_75">
+                        <div class="answerContent">3 794</div>
+                    </div>
+                </div>
+                <p>Continent : <span style="color:#d63f3f">Rouge</span><br>
+                    Le continent ne correspond pas, la France se trouve en Europe.
+                </p>
+
+                <p>Langue : <span style="color:#3bc03b">Vert</span><br>
+                    Le Tchad parle le français et l'arabe. La France parle le français. C'est donc une
+                    correspondance exacte pour le français.
+                </p>
+
+                <p>Nombre d'habitants : <span style="color:#d63f3f">Rouge</span><br>
+                    Le Tchad possède 16 425 859 habitants. La France en possède 67 391 582. C'est une correspondance trop éloignée.
+                </p>
+
+                <p>Monnaie : <span style="color:#d63f3f">Rouge</span><br>
+                    La monnaie ne correspond pas, la France utilise l'Euro.
+                </p>
+
+                <p>Nombre de frontières : <span style="color:#f0d000">Jaune</span><br>
+                    Le Tchad possède 6 frontières, la France en possède 8. C'est une correspondance proche.
+                </p>
+
+                <p>Superficie : <span style="color:#d63f3f">Rouge</span><br>
+                    Le Tchad possède une superficie de 1 284 000 km², tandis que la France en a une de 551 695 km². C'est une correspondance trop éloignée.
+                </p>
+
+                <p>Distance : <span style="color:#f0d000">Jaune</span><br>
+                    Le Tchad se trouve à une distance de 3 794 km de la France. On considère la plus grande distance possible comme la moitié
+                    de la circonférence de la terre. Ici il s'agit d'une distance assez faible.
+                </p>
+            </div>
+
+            <h3>INDICES</h3>
+            <hr>
+            <div class="smallContainer" id="indices">
+                <p>Des indices sont mis à disposition pour vous aider à trouver le pays du jour après un certains nombres d'essais.</p>
+                <p><span class="bold" style="font-size: 1.25em">Forme du pays</span> donne accès à la forme du pays. (Debloqué après 5 essais)</p>
+                <p><span class="bold" style="font-size: 1.25em">Pays frontalier</span> donne accès au nom d'un pays frontalier aléatoire.
+                    Si, le pays n'en possède aucun, donne le nom au pays le plus proche. (Debloqué après 8 essais)</p>
+                <p><span class="bold" style="font-size: 1.25em">Capitale</span> donne accès à la capitale du pays. (Debloqué après 11 essais)</p>
+            </div>
+
+            <p>Bonne chance !</p>
+
+        </div>
+
+    </main>
+</div>
+
+<footer></footer>
+
+<script>
+    let rulesDisplayed = false
+    let playButton = document.getElementById("playButton")
+    let toggleRules = document.getElementById("toggleRules")
+    let rulesContent = document.getElementById("rulesContent")
+    playButton.addEventListener("click", () => {
+        window.location.href = window.location.href.replace("/welcome", "")
+    })
+    toggleRules.addEventListener("click", () => {
+        rulesDisplayed = !rulesDisplayed
+        if(rulesDisplayed) {
+            rulesContent.style.display = "flex"
+            toggleRules.innerText = "Cacher les règles du jeu ▲"
+        } else {
+            rulesContent.style.display = "none"
+            toggleRules.innerText = "Afficher les règles du jeu ▼"
+        }
+
+    })
+
+</script>
+
+</body>
+
+</html>

@@ -70,7 +70,6 @@ header {
 main {
     display: flex;
     flex-direction: column;
-    margin-top: 1em;
     width: 95%;
 }
 
@@ -97,9 +96,61 @@ li {
     text-transform: uppercase;
 }
 
+#backButtonContainer {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
+}
+
 #backButton {
-    color: #6ae8ff;
+    border-radius: 0.5em;
+    font-weight: bold;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+    background-color: #6ae8ff;
+    color: #171313;
     cursor: pointer;
+    transition: 0.2s;
+    font-size: 1.1em;
+}
+
+#backButton:hover {
+    scale: 1.1;
+    cursor: pointer;
+}
+
+#playButtonContainer {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
+}
+
+#playButton {
+    border-radius: 0.5em;
+    font-weight: bold;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+    background-color: #6ae8ff;
+    color: #171313;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 1.5em;
+}
+
+#playButton:hover {
+    scale: 1.1;
+    cursor: pointer;
+}
+
+#toggleRules {
+    cursor: pointer;
+    color: #6ae8ff;
+}
+
+#rulesContent {
+    margin-top: 1em;
+    display: none;
+    flex-direction: column;
 }
 
 .smallContainer {

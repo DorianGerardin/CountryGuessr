@@ -345,6 +345,11 @@ app.get('/rules', (req, res) => {
     res.sendFile('rules.html', {root: __dirname});
 });
 
+app.get('/welcome', (req, res) => {
+    res.sendFile('welcome.html', {root: __dirname});
+});
+
+
 app.use("/static", express.static('./static/'));
 
 app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}

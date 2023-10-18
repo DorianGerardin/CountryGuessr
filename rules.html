@@ -22,9 +22,10 @@
     </header>
 
     <main>
-        <div id="backButton">Acceder au jeu</div>
-        <h2 style="margin: 1em 0 1em 0">BIENVENUE SUR COUNTRY GUESSR !</h2>
-        
+        <div id="backButtonContainer">
+            <div id="backButton">Accéder au jeu</div>
+        </div>
+
         <h3>BUT DU JEU</h3>
         <hr>
         <div class="smallContainer" id="explication1">
@@ -123,11 +124,11 @@
             Le Tchad possède 6 frontières, la France en possède 8. C'est une correspondance proche.
             </p>
 
-            <p>Superficie <span style="color:#d63f3f">Rouge</span><br>
+            <p>Superficie : <span style="color:#d63f3f">Rouge</span><br>
             Le Tchad possède une superficie de 1 284 000 km², tandis que la France en a une de 551 695 km². C'est une correspondance trop éloignée.
             </p>
 
-            <p>Distance <span style="color:#f0d000">Jaune</span><br>
+            <p>Distance : <span style="color:#f0d000">Jaune</span><br>
             Le Tchad se trouve à une distance de 3 794 km de la France. On considère la plus grande distance possible comme la moitié
                 de la circonférence de la terre. Ici il s'agit d'une distance assez faible.
             </p>
@@ -151,8 +152,10 @@
 <footer></footer>
 
 <script>
-
+    let rulesDisplayed = false
     let backButton = document.getElementById("backButton")
+    let toggleRules = document.getElementById("toggleRules")
+    let rulesContent = document.getElementById("rulesContent")
     backButton.addEventListener("click", () => {
         window.location.href = window.location.href.replace("/rules", "")
     })

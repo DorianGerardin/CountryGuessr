@@ -118,7 +118,7 @@ document.body.addEventListener("click", (e) => {
 zoomButton.addEventListener('click', () => {
     zoomedIn ? ZoomOut() : ZoomIn()
 })
-rulesButton.addEventListener('click', GoToRules)
+rulesButton.addEventListener('click', () => GoToPage("rules"))
 
 function GetCountriesBySuggestion(suggestion) {
     let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
