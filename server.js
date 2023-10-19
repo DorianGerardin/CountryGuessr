@@ -122,7 +122,7 @@ function SetAllCountries() {
                 let continent = countryData.continents[0];
                 let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages) : ["No language"]
                 let populationCount = countryData.population
-                let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : "No Currency"
+                let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : null
                 let currencyCode = Object.keys(countryData.currencies)[0]
                 let bordersCount = countryData.borders.length
                 let area = countryData.area
@@ -136,7 +136,7 @@ function SetAllCountries() {
                 let capital = countryData.capital
 
                 let currencyType
-                if(currency === "No Currency") {
+                if(!currency) {
                     currencyType = [null, "No currency"]
                 } else {
                      currencyType = getCurrency(currency, currencyCode)
@@ -322,7 +322,7 @@ app.get('/randomBorder', function (req, res) {
     if(countryToGuess.borderCount === 0) {
         let nearestCountryName = GetNearestCountry(countryToGuess).name
         response = {
-            value : `Aucun pays frontalier (pays le plus proche : ${nearestCountryName})`
+            value : `Aucun pays frontalier \n (Pays le plus proche : ${nearestCountryName})`
         }
     } else {
         let randomBorderCode = countryToGuess.borders[Math.floor(Math.random()*countryToGuess.borderCount)]
@@ -335,8 +335,9 @@ app.get('/randomBorder', function (req, res) {
 })
 
 app.get('/capital', function (req, res) {
+    const capital = countryToGuess.capital
     let response = {
-        capital : countryToGuess.capital
+        capital : capital.length === 0 ? "No Capital" : countryToGuess.capital.join(",\n")
     }
     res.json(JSON.stringify(response))
 })
