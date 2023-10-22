@@ -349,7 +349,7 @@ app.get('/randomBorder', function (req, res) {
 app.get('/capital', function (req, res) {
     const capital = countryToGuess.capital
     let response = {
-        capital : capital.length === 0 ? "Pas de capitale" : countryToGuess.capital.join(",\n")
+        capital : capital.length === 0 ? "Aucune capitale" : countryToGuess.capital.join(",\n")
     }
     res.json(JSON.stringify(response))
 })
