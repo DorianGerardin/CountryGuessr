@@ -104,53 +104,58 @@ function GetRandomCountryCode() {
     return countries[Math.floor(Math.random()*countries.length)].code
 }
 
-async function WaitForAllCountriesData() {
+/*async function WaitForAllCountriesData() {
     const apiURL = `https://restcountries.com/v3.1/all?fields=translations,cca3,cca2,continents,languages,population,currencies,borders,area,flags,latlng,maps,capital`
     const response = await fetch(apiURL);
     return await response.json();
+}*/
+
+function WaitForAllCountriesData() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const jsonData = Fs.readFileSync("all_countries_data.json", 'utf8');
+            const parsedData = JSON.parse(jsonData);
+            resolve(parsedData);
+        } catch (error) {
+            reject(new Error('Erreur lors de la lecture du fichier JSON local : ' + error.message));
+        }
+    });
 }
 
 function SetAllCountries() {
     WaitForAllCountriesData()
     .then(data => {
-        if (data.status === 404) {
-            console.log("aucun pays trouvé");
-        } else {
-            const countryCount = data.length;
-            for (let i = 0; i < countryCount; i++) {
-                let countryData = data[i]
-                let code = countryData.cca3;
-                if(noUseCountries.includes(code)) {
-                    continue
-                }
-                let name = countryData.translations.fra.common;
-                let continent = countryData.continents[0];
-                let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages) : ["No language"]
-                let populationCount = countryData.population
-                let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : null
-                let currencyCode = Object.keys(countryData.currencies)[0]
-                let bordersCount = countryData.borders.length
-                let area = countryData.area
-                let latlng = countryData.latlng
-                // saint martin api error
-                if(code === "MAF") {
-                    latlng[1] *= -1
-                }
-                let maps = countryData.maps.googleMaps
-                let borders = countryData.borders
-                let capital = countryData.capital
-                let wikiLink = getWikiLink(name)
-
-                let currencyType
-                if(!currency) {
-                    currencyType = [null, "No currency"]
-                } else {
-                     currencyType = getCurrency(currency, currencyCode)
-                }
-                let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital, wikiLink)
-                countries.push(country)
+        const countryCount = data.length;
+        for (let i = 0; i < countryCount; i++) {
+            let countryData = data[i]
+            let code = countryData.cca3;
+            if(noUseCountries.includes(code)) {
+                continue
             }
+            let name = countryData.translations.fra.common;
+            let continent = countryData.continents[0];
+            let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages) : ["No language"]
+            let populationCount = countryData.population
+            let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : null
+            let currencyCode = Object.keys(countryData.currencies)[0]
+            let bordersCount = countryData.borders.length
+            let area = countryData.area
+            let latlng = countryData.latlng
+            let maps = countryData.maps.googleMaps
+            let borders = countryData.borders
+            let capital = countryData.capital
+            let wikiLink = getWikiLink(name)
+
+            let currencyType
+            if(!currency) {
+                currencyType = [null, "No currency"]
+            } else {
+                 currencyType = getCurrency(currency, currencyCode)
+            }
+            let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital, wikiLink)
+            countries.push(country)
         }
+
         countries.sort((c1, c2) => c1.name.localeCompare(c2.name))
         job = new CronJob(
             '00 00 * * *',
@@ -329,7 +334,7 @@ app.get('/randomBorder', function (req, res) {
     if(countryToGuess.borderCount === 0) {
         let nearestCountryName = GetNearestCountry(countryToGuess).name
         response = {
-            value : `Aucun pays frontalier \n (Pays le plus proche : ${nearestCountryName})`
+            value : `Aucun pays frontalier \n (Le plus proche : ${nearestCountryName})`
         }
     } else {
         let randomBorderCode = countryToGuess.borders[Math.floor(Math.random()*countryToGuess.borderCount)]
@@ -344,7 +349,7 @@ app.get('/randomBorder', function (req, res) {
 app.get('/capital', function (req, res) {
     const capital = countryToGuess.capital
     let response = {
-        capital : capital.length === 0 ? "No Capital" : countryToGuess.capital.join(",\n")
+        capital : capital.length === 0 ? "Pas de capitale" : countryToGuess.capital.join(",\n")
     }
     res.json(JSON.stringify(response))
 })
@@ -360,7 +365,7 @@ app.get('/welcome', (req, res) => {
 
 app.use("/static", express.static('./static/'));
 
-app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
+app.listen(port, () => {
     console.log(`Now listening on port ${port}`);
 });
 

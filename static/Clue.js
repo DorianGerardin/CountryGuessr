@@ -152,7 +152,7 @@ async function WaitForCapital() {
     return await response.json();
 }
 
-function GetLocalStorageExpirationDate() {
+/*function GetLocalStorageExpirationDate() {
     let date = new Date();
     let offsetMinutes = date.getTimezoneOffset();
     let parisOffsetMinutes = -60; // En hiver
@@ -167,6 +167,19 @@ function GetLocalStorageExpirationDate() {
     date.setMinutes(date.getMinutes() + adjustedOffsetMinutes);
     date.setHours(23, 59, 59);
     return date
+}*/
+
+function GetLocalStorageExpirationDate() {
+    const desiredHour = 23;
+    const desiredMinute = 59;
+    const desiredSecond = 59
+    const now = new Date();
+
+    const clientTimeZoneOffset = now.getTimezoneOffset();
+    const clientTimeZoneOffsetHours = clientTimeZoneOffset / 60;
+    const timeZoneDifferenceHours = clientTimeZoneOffsetHours + 2;
+    const localHour = desiredHour + (-timeZoneDifferenceHours);
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), localHour, desiredMinute, desiredSecond);
 }
 
 function InitiateShapeClue(data) {
