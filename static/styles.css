@@ -217,6 +217,7 @@ input[type=text]:focus {
 }
 
 .answerSquare {
+	cursor: default;
 	width: 11.5%;
 	border-radius: 0.35em;
 	z-index: 1;
@@ -347,6 +348,8 @@ input[type=text]:focus {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	padding: 1em;
+	row-gap: 1em;
 }
 
 #gameDetailPadding {
@@ -363,7 +366,6 @@ input[type=text]:focus {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 30%;
 	width: 100%;
 	font-size: 2em;
 	font-weight: bold;
@@ -427,6 +429,27 @@ input[type=text]:focus {
 .ggAttemptsCount {
 	font-size: 1.5em;
 	font-weight: bold;
+}
+
+#wikipediaLink {
+	transition: 0.35s;
+	text-decoration: underline;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	column-gap: 0.5em;
+}
+
+#wikipediaLink:hover {
+	scale: 1.1;
+}
+
+#wikiLogo {
+	display: flex;
+	background-color: white;
+	padding: 0.2em;
+	border-radius: 0.35em;
 }
 
 #shareGamePadding {
@@ -542,7 +565,7 @@ input[type=text]:focus {
 .clueHover:hover{
 	transition: 0.2s;
 	cursor: pointer;
-	scale: 1.05;
+	scale: 1.1;
 }
 
 #clueContentContainer {

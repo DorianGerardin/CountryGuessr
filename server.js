@@ -95,6 +95,11 @@ function SelectCountry(desiredCode = null) {
     }
 }
 
+function getWikiLink(countryName) {
+    let nameWithUnderscore = countryName.split(" ").join("_")
+    return `https://fr.wikipedia.org/wiki/${nameWithUnderscore}`
+}
+
 function GetRandomCountryCode() {
     return countries[Math.floor(Math.random()*countries.length)].code
 }
@@ -134,6 +139,7 @@ function SetAllCountries() {
                 let maps = countryData.maps.googleMaps
                 let borders = countryData.borders
                 let capital = countryData.capital
+                let wikiLink = getWikiLink(name)
 
                 let currencyType
                 if(!currency) {
@@ -141,7 +147,7 @@ function SetAllCountries() {
                 } else {
                      currencyType = getCurrency(currency, currencyCode)
                 }
-                let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital)
+                let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital, wikiLink)
                 countries.push(country)
             }
         }
@@ -253,6 +259,7 @@ function CreateCountryData(country) {
         name: country.name,
         code: country.code,
         maps : country.maps,
+        wikiLink : country.wikiLink,
         continent: {
             value: country.continent,
             isEqual: country.continent === countryToGuess.continent

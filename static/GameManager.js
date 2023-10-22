@@ -275,6 +275,12 @@ function WinGame(countryData) {
     ggFlag.addEventListener("click", () => {
         window.open(countryData.maps, "_blank")
     })
+
+    let wikiLink = document.getElementById("wikipediaLink")
+    wikiLink.addEventListener("click", () => {
+        console.log(countryData.wikiLink)
+        window.open(countryData.wikiLink, "_blank")
+    })
 }
 
 function DisplayWrongCountry() {
@@ -294,9 +300,6 @@ function DisplayWrongCountry() {
 }
 
 function DisplayCopiedToClipboard() {
-    if(window.innerWidth <= 768) {
-        return
-    }
     let toast = Toastify({
         text: "Copié dans le presse-papiers",
         duration: 1500,
