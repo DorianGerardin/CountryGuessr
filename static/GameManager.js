@@ -301,7 +301,7 @@ function DisplayWrongCountry() {
 
 function DisplayCopiedToClipboard() {
     let toast = Toastify({
-        text: "Copié dans le presse-papiers",
+        text: "Copié !",
         duration: 1500,
         gravity: "top", // `top` or `bottom`
         position: "center", // `left`, `center` or `right`
