@@ -253,18 +253,16 @@ function InitiateCapitalClue(data) {
 }
 
 function ClearLocalStorage() {
+    const keysToDelete = [];
     for (let i = 0; i < localStorage.length; i++) {
-        const keysToDelete = [];
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key !== "isFirstTime") {
-                keysToDelete.push(key);
-            }
+        const key = localStorage.key(i);
+        if (key !== "isFirstTime") {
+            keysToDelete.push(key);
         }
+    }
 
-        for (const key of keysToDelete) {
-            localStorage.removeItem(key);
-        }
+    for (const key of keysToDelete) {
+        localStorage.removeItem(key);
     }
 }
 
@@ -288,8 +286,7 @@ function InitiateClues() {
         localStorage.setItem('isFirstTime', JSON.stringify(false));
     }
 
-    WaitForCountryShape()
-        .then(shapeData => {
+    WaitForCountryShape().then(shapeData => {
             InitiateShapeClue(shapeData)
             WaitForBorderName().then((borderData) => {
                 InitiateBorderClue(borderData)
