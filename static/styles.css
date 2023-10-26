@@ -335,7 +335,6 @@ input[type=text]:focus {
 .detailSquare {
 	width: 48%;
 	border-radius: 0.5em;
-	box-shadow: 0 10px 13px -7px #0000006e;
 }
 
 .detailPadding::before {
@@ -346,6 +345,7 @@ input[type=text]:focus {
 .detailPadding {
 	position: relative;
 	display:flex;
+	box-shadow: 0 10px 13px -7px #0000006e;
 }
 
 .detailContent {
@@ -467,7 +467,7 @@ input[type=text]:focus {
 }
 
 #shareGameContent {
-	padding: 1em;
+	padding: 0.75em 1em 0.75em 1em;
 	font-size: 1em;
 }
 
@@ -547,7 +547,7 @@ input[type=text]:focus {
 }
 
 .clue {
-	transition: 0.2s;
+	transition: 0.4s;
 	display: flex;
 	align-items: center;
 	flex-direction: column;
