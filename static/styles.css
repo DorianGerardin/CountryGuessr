@@ -172,10 +172,8 @@ input[type=text]:focus {
 
 .suggestionFocus {
 	cursor: pointer;
-	background-color: #4F4557;
-	border: 0.1em solid rgb(244 238 224 / 40%);
+	background-color: #3e4043;
 	border-radius: 0.3em;
-	padding: 0.4375em 0.1875em 0.4375em 0.9375em;
 }
 
 #answersContainer {
@@ -538,7 +536,7 @@ input[type=text]:focus {
 	border-radius: 50%;
 	width: 6em;
 	height: 6em;
-	border: 0.35em solid #4e4e4e;
+	border: 0.35em solid grey;
 }
 
 .clueImg img{
@@ -554,15 +552,15 @@ input[type=text]:focus {
 	row-gap: 0.5em;
 	text-align: center;
 	width: 28%;
-	color: #4e4e4e;
+	color: grey;
 }
 
 .clueUnlocked {
-	color: #F4EEE0;
+	color: #00ff84;
 }
 
 .clueImgUnlocked {
-	border: 0.35em solid #F4EEE0;
+	border: 0.35em solid #00ff84;
 }
 
 .clueHover:hover{
