@@ -177,7 +177,7 @@ function GetLocalStorageExpirationDate() {
 
     const clientTimeZoneOffset = now.getTimezoneOffset();
     const clientTimeZoneOffsetHours = clientTimeZoneOffset / 60;
-    const timeZoneDifferenceHours = clientTimeZoneOffsetHours + 2;
+    const timeZoneDifferenceHours = clientTimeZoneOffsetHours + Math.abs(clientTimeZoneOffsetHours)
     const localHour = desiredHour + (-timeZoneDifferenceHours);
     return new Date(now.getFullYear(), now.getMonth(), now.getDate(), localHour, desiredMinute, desiredSecond);
 }
