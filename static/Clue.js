@@ -169,15 +169,27 @@ async function WaitForCapital() {
     return date
 }*/
 
+function isSummerTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const marchLastSunday = new Date(year, 2, 31 - (new Date(year, 2, 31).getDay()));
+    const octoberLastSunday = new Date(year, 9, 31 - (new Date(year, 9, 31).getDay()));
+
+    return now >= marchLastSunday && now < octoberLastSunday;
+}
+
+
 function GetLocalStorageExpirationDate() {
     const desiredHour = 23;
     const desiredMinute = 59;
     const desiredSecond = 59
     const now = new Date();
 
+
     const clientTimeZoneOffset = now.getTimezoneOffset();
     const clientTimeZoneOffsetHours = clientTimeZoneOffset / 60;
-    const timeZoneDifferenceHours = clientTimeZoneOffsetHours + Math.abs(clientTimeZoneOffsetHours)
+    const timeShift = isSummerTime() ? 2 : 1
+    const timeZoneDifferenceHours = clientTimeZoneOffsetHours + timeShift
     const localHour = desiredHour + (-timeZoneDifferenceHours);
     return new Date(now.getFullYear(), now.getMonth(), now.getDate(), localHour, desiredMinute, desiredSecond);
 }
