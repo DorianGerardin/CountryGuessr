@@ -70,6 +70,28 @@ let countrySuggestionList
 let countriesName = [];
 GetAllCountriesName()
 
+function UpdateCountdownUntilNextCountry() {
+    let now = new Date();
+    let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
+    let difference = expirationDate.getTime() - now.getTime();
+
+    let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    let countdownNode = document.getElementById("nextCountryCountdown")
+    const formatTimer = function(hours, minutes, seconds) {
+        const formattedHours = hours < 10 ? `0${hours}` : hours;
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+        const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    };
+
+    countdownNode.innerText = `(Il te reste ${formatTimer(hours, minutes, seconds)})`
+}
+UpdateCountdownUntilNextCountry()
+let countdownInterval = setInterval(UpdateCountdownUntilNextCountry, 1000);
+
 function GetCountryPromises(submittedCountries) {
     return submittedCountries.map(countryCode => SubmitCountry(countryCode));
 }
@@ -122,7 +144,7 @@ rulesButton.addEventListener('click', () => GoToPage("rules"))
 
 function GetCountriesBySuggestion(suggestion) {
     let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
-    return countriesName.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").match(regExpSuggestion));
+    return countriesName.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/-/g, ' ').match(regExpSuggestion));
 }
 
 function UpdateSuggestions(event) {
