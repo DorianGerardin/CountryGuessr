@@ -279,6 +279,7 @@ function WinGame(countryData) {
     })
 
     let ggFlagImg = document.getElementById("ggFlagImg")
+    ggFlagImg.alt = countryData.flagAlt
     let ggCountryName = document.getElementById("ggCountryName")
     ggFlagImg.src = `./static/images/flags/${countryData.code}.svg`
     ggCountryName.innerText = countryData.name

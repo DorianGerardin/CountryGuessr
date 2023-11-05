@@ -145,6 +145,7 @@ function SetAllCountries() {
             let borders = countryData.borders
             let capital = countryData.capital
             let wikiLink = getWikiLink(name)
+            let flagAlt = countryData.flags.alt
 
             let currencyType
             if(!currency) {
@@ -152,7 +153,7 @@ function SetAllCountries() {
             } else {
                  currencyType = getCurrency(currency, currencyCode)
             }
-            let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital, wikiLink)
+            let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital, wikiLink, flagAlt)
             countries.push(country)
         }
 
@@ -265,6 +266,7 @@ function CreateCountryData(country) {
         code: country.code,
         maps : country.maps,
         wikiLink : country.wikiLink,
+        flagAlt : country.flagAlt,
         continent: {
             value: country.continent,
             isEqual: country.continent === countryToGuess.continent

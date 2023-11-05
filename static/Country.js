@@ -1,5 +1,5 @@
 export default class Country {
-	constructor(code, name, continent, language, populationCount, currency, borderCount, area, latlng, maps, borders, capital, wikiLink) {
+	constructor(code, name, continent, language, populationCount, currency, borderCount, area, latlng, maps, borders, capital, wikiLink, flagAlt) {
 		this.code = code;
 		this.name = name;
 	    this.continent = continent;
@@ -13,5 +13,6 @@ export default class Country {
 		this.borders = borders
 		this.capital = capital
 		this.wikiLink = wikiLink
+		this.flagAlt = flagAlt
   }
 }
