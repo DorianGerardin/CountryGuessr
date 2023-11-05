@@ -152,23 +152,6 @@ async function WaitForCapital() {
     return await response.json();
 }
 
-/*function GetLocalStorageExpirationDate() {
-    let date = new Date();
-    let offsetMinutes = date.getTimezoneOffset();
-    let parisOffsetMinutes = -60; // En hiver
-    let isSummerTime = false;
-    if (date.getMonth() >= 2 && date.getMonth() <= 9) {
-        isSummerTime = true;
-    }
-    if (isSummerTime) {
-        parisOffsetMinutes = -120; // En été (mars à octobre)
-    }
-    let adjustedOffsetMinutes = parisOffsetMinutes - offsetMinutes;
-    date.setMinutes(date.getMinutes() + adjustedOffsetMinutes);
-    date.setHours(23, 59, 59);
-    return date
-}*/
-
 function isSummerTime() {
     const now = new Date();
     const year = now.getFullYear();
@@ -177,7 +160,6 @@ function isSummerTime() {
 
     return now >= marchLastSunday && now < octoberLastSunday;
 }
-
 
 function GetLocalStorageExpirationDate() {
     const desiredHour = 23;
