@@ -88,6 +88,10 @@ function UpdateCountdownUntilNextCountry() {
     };
 
     countdownNode.innerText = `(Il te reste ${formatTimer(hours, minutes, seconds)})`
+
+    if(hours === 0 && minutes === 0 && seconds === 0) {
+        RefreshGame()
+    }
 }
 UpdateCountdownUntilNextCountry()
 let countdownInterval = setInterval(UpdateCountdownUntilNextCountry, 1000);
@@ -144,7 +148,13 @@ rulesButton.addEventListener('click', () => GoToPage("rules"))
 
 function GetCountriesBySuggestion(suggestion) {
     let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
-    return countriesName.filter(country => country.name.match(regExpSuggestion) || country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/-/g, ' ').match(regExpSuggestion));
+    return countriesName.filter(country =>  {
+        let normalizedCountryName = country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        return country.name.match(regExpSuggestion) ||
+            country.name.replace(/-/g, ' ').match(regExpSuggestion) ||
+            normalizedCountryName.match(regExpSuggestion) ||
+            normalizedCountryName.replace(/-/g, ' ').match(regExpSuggestion)
+    });
 }
 
 function UpdateSuggestions(event) {
@@ -202,13 +212,18 @@ function ResolveCountry(countryData) {
     }
 }
 
+
+function RefreshGame() {
+    alert("Un nouveau pays a été sélectionné. La page va se recharger")
+    ClearLocalStorage()
+    window.location.reload();
+}
+
 async function SubmitCountry(countryCode) {
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
     if(expirationDate !== null) {
         if(expirationDate < new Date()) {
-            alert("Un nouveau pays a été sélectionné. La page va se recharger")
-            ClearLocalStorage()
-            window.location.reload();
+            RefreshGame()
         }
     }
 
