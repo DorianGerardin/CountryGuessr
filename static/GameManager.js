@@ -147,6 +147,12 @@ zoomButton.addEventListener('click', () => {
 rulesButton.addEventListener('click', () => GoToPage("rules"))
 
 function GetCountriesBySuggestion(suggestion) {
+    const forbiddenCharacters = "\\{}[]/+*_.|?^&"
+    for (let i = 0; i < forbiddenCharacters.length; i++) {
+        if(suggestion.includes(forbiddenCharacters[i])) {
+            return []
+        }
+    }
     let regExpSuggestion = new RegExp(`.*${suggestion}.*`, 'giu')
     return countriesName.filter(country =>  {
         let normalizedCountryName = country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
