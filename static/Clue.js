@@ -189,6 +189,7 @@ function InitiateShapeClue(data) {
     let contentNode = document.createElement("img")
     contentNode.classList.add('countryShape')
     contentNode.src = `./static/images/shapes/${parsedData.code}.svg`
+    contentNode.alt = "shape clue"
     clueShape = new Clue(0, 5, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
         shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, contentNode)
     if(saveClues !== null) {
