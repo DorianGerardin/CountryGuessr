@@ -124,6 +124,14 @@ main {
 	background-color: #F4EEE0;
 }
 
+.loading {
+	background-color: transparent;
+	background-image: url(./images/loading.svg);
+	background-size: 40%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 input[type=text]{
 	width: 100%;
 	padding: 12px 20px;

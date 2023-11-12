@@ -62,6 +62,8 @@ function startGame() {
 }
 const game = startGame()
 
+let isLoadingCountry = false
+let isLoadingCountries = false
 let zoomedIn = false
 let isZoomDisplayed = false
 let hasAlreadyAnswered = false
@@ -97,6 +99,8 @@ UpdateCountdownUntilNextCountry()
 let countdownInterval = setInterval(UpdateCountdownUntilNextCountry, 1000);
 
 function GetCountryPromises(submittedCountries) {
+    ToggleLoading(true)
+    isLoadingCountries = true
     return submittedCountries.map(countryCode => SubmitCountry(countryCode));
 }
 
@@ -109,6 +113,8 @@ function CheckForHistory() {
                 for (const countryData of results) {
                     ResolveCountry(countryData)
                 }
+                isLoadingCountries = false
+                ToggleLoading(false)
             })
             .catch(error => {
                 console.error(error);
@@ -117,6 +123,9 @@ function CheckForHistory() {
 }
 
 countrySubmit.addEventListener('click', () => {
+    if(isLoadingCountry || isLoadingCountries) {
+        return
+    }
     SubmitCountry(currentCountry).then((countryData) => {
         ResolveCountry(countryData)
     })
@@ -225,6 +234,21 @@ function RefreshGame() {
     window.location.reload();
 }
 
+function ToggleLoading(setOn) {
+    if(isLoadingCountries) {
+        return
+    }
+    if(setOn) {
+        isLoadingCountry = true
+        countrySubmit.innerText = ""
+        countrySubmit.classList.add("loading")
+    } else {
+        isLoadingCountry = false;
+        countrySubmit.classList.remove("loading")
+        countrySubmit.innerText = "Deviner"
+    }
+}
+
 async function SubmitCountry(countryCode) {
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
     if(expirationDate !== null) {
@@ -242,11 +266,13 @@ async function SubmitCountry(countryCode) {
     }
 
     countryInput.value = ""
+    ToggleLoading(true)
 
     return new Promise((resolve, reject) => {
         fetch(`/guess?code=${countryCode}`)
             .then(response => response.json())
             .then(data => {
+                ToggleLoading(false)
                 resolve(data)
             })
             .catch(error => {
@@ -322,7 +348,6 @@ function WinGame(countryData) {
 
     let wikiLink = document.getElementById("wikipediaLink")
     wikiLink.addEventListener("click", () => {
-        console.log(countryData.wikiLink)
         window.open(countryData.wikiLink, "_blank")
     })
 }
