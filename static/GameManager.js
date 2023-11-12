@@ -240,12 +240,12 @@ function ToggleLoading(setOn) {
     }
     if(setOn) {
         isLoadingCountry = true
-        countrySubmit.innerText = ""
+        countrySubmit.innerHTML = ""
         countrySubmit.classList.add("loading")
     } else {
         isLoadingCountry = false;
         countrySubmit.classList.remove("loading")
-        countrySubmit.innerText = "Deviner"
+        countrySubmit.innerHTML = "Deviner"
     }
 }
 

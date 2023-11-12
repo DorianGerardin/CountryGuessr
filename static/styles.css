@@ -125,7 +125,7 @@ main {
 }
 
 .loading {
-	background-color: transparent;
+	background-color: #F4EEE0;
 	background-image: url(./images/loading.svg);
 	background-size: 40%;
 	background-repeat: no-repeat;
