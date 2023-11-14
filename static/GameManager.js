@@ -330,7 +330,7 @@ function WinGame(countryData) {
     shareButton.addEventListener("click", () => {
         const shareData = {
             title: "Country Guessr",
-            text: shareContentElement.textContent + "\nhttps://countryguessr.mrdo.fr",
+            text: shareContentElement.textContent,
             url: "https://countryguessr.mrdo.fr",
         };
         navigator.share(shareData).then(r => {
