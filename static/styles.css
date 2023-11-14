@@ -504,9 +504,10 @@ input[type=text]:focus {
 	display: flex;
 	justify-content: center;
 	width: 100%;
+	column-gap: 0.5em;
 }
 
-#shareButton {
+.shareButton {
 	width: 100%;
 	padding: 0.5em 1em 0.5em 1em;
 	text-align: center;
@@ -514,7 +515,7 @@ input[type=text]:focus {
 	border: 0.16em solid #6ae8ff;
 }
 
-#shareButton:hover {
+.shareButton:hover {
 	transition: 0.2s;
 	background-color: #6ae8ff;
 	color : #202123;

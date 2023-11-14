@@ -91,7 +91,8 @@ function UpdateCountdownUntilNextCountry() {
 
     countdownNode.innerText = `(Il te reste ${formatTimer(hours, minutes, seconds)})`
 
-    if(hours === 0 && minutes === 0 && seconds === 0) {
+    if(hours <= 0 && minutes <= 0 && seconds <= 0) {
+        countdownNode.innerText = `(Il te reste ${formatTimer(0, 0, 0)})`
         RefreshGame()
     }
 }
@@ -261,7 +262,7 @@ async function SubmitCountry(countryCode) {
         return Promise.resolve(null)
     }
     if(!countryCode) {
-        DisplayWrongCountry()
+        DisplayToast('Pays introuvable !', './static/images/alert.svg')
         return Promise.resolve(null);
     }
 
@@ -315,14 +316,29 @@ function WinGame(countryData) {
     } else {
         shareContentElement.innerHTML += shareContent;
     }
-    let copyButton = document.getElementById("shareButton")
+    let copyButton = document.getElementById("copyButton")
     copyButton.addEventListener("click", () => {
         let copyText = shareContentElement.textContent + "\nhttps://countryguessr.mrdo.fr"
         navigator.clipboard.writeText(copyText).then(function() {
-            DisplayCopiedToClipboard()
+            DisplayToast("Copié !",'./static/images/clipboard.png')
         }).catch(function(err) {
-            console.error('Erreur lors de la copie du texte : ', err);
+            DisplayToast("Erreur",'./static/images/alert.svg')
         });
+    })
+
+    let shareButton = document.getElementById("shareButton")
+    shareButton.addEventListener("click", () => {
+        const shareData = {
+            title: "Country Guessr",
+            text: shareContentElement.textContent + "\nhttps://countryguessr.mrdo.fr",
+            url: "https://countryguessr.mrdo.fr",
+        };
+        navigator.share(shareData).then(r => {
+            DisplayToast("Partagé !",null)
+        }).catch(function(err) {
+            DisplayToast("Erreur",'./static/images/alert.svg')
+        });
+
     })
 
     let ggFlagImg = document.getElementById("ggFlagImg")
@@ -352,35 +368,34 @@ function WinGame(countryData) {
     })
 }
 
-function DisplayWrongCountry() {
-    let toast = Toastify({
-        text: "Pays introuvable",
-        duration: 1500,
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        avatar: './static/images/alert.svg',
-        className: "toast",
-        stopOnFocus: false, // Prevents dismissing of toast on hover
-        onClick: function(){
-            toast.hideToast()
-        }
-    })
-    toast.showToast();
-}
-
-function DisplayCopiedToClipboard() {
-    let toast = Toastify({
-        text: "Copié !",
-        duration: 1500,
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        avatar: './static/images/clipboard.png',
-        className: "toast",
-        stopOnFocus: false, // Prevents dismissing of toast on hover
-        onClick: function(){
-            toast.hideToast()
-        }
-    })
+function DisplayToast(text, avatar) {
+    let toast
+    if(avatar) {
+        toast = Toastify({
+            text: text,
+            duration: 1500,
+            gravity: "top", // `top` or `bottom`
+            position: "center", // `left`, `center` or `right`
+            avatar: avatar,
+            className: "toast",
+            stopOnFocus: false, // Prevents dismissing of toast on hover
+            onClick: function(){
+                toast.hideToast()
+            }
+        })
+    } else {
+        toast = Toastify({
+            text: text,
+            duration: 1500,
+            gravity: "top", // `top` or `bottom`
+            position: "center", // `left`, `center` or `right`
+            className: "toast",
+            stopOnFocus: false, // Prevents dismissing of toast on hover
+            onClick: function(){
+                toast.hideToast()
+            }
+        })
+    }
     toast.showToast();
 }
 
