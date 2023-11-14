@@ -331,7 +331,6 @@ function WinGame(countryData) {
         const shareData = {
             title: "Country Guessr",
             text: shareContentElement.textContent + "\nhttps://countryguessr.mrdo.fr",
-            url: "https://countryguessr.mrdo.fr",
         };
         navigator.share(shareData).then(r => {
             DisplayToast("Partagé !",null)
