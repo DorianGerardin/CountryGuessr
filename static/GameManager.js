@@ -249,13 +249,10 @@ function ToggleLoading(setOn) {
     }
     if(setOn) {
         isLoadingCountry = true
-        countryInput.disabled = true;
         countrySubmit.innerHTML = ""
         countrySubmit.classList.add("loading")
     } else {
         isLoadingCountry = false;
-        countryInput.disabled = false;
-        countryInput.focus()
         countrySubmit.classList.remove("loading")
         countrySubmit.innerHTML = "Deviner"
     }
