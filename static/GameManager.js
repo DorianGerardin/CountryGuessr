@@ -72,6 +72,7 @@ let countrySuggestionList
 let countriesName = [];
 GetAllCountriesName()
 
+let countdownInterval
 function UpdateCountdownUntilNextCountry() {
     let now = new Date();
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
@@ -92,17 +93,24 @@ function UpdateCountdownUntilNextCountry() {
     countdownNode.innerText = `(Il te reste ${formatTimer(hours, minutes, seconds)})`
 
     if(hours <= 0 && minutes <= 0 && seconds <= 0) {
+        clearInterval(countdownInterval)
         countdownNode.innerText = `(Il te reste ${formatTimer(0, 0, 0)})`
         RefreshGame()
     }
 }
 UpdateCountdownUntilNextCountry()
-let countdownInterval = setInterval(UpdateCountdownUntilNextCountry, 1000);
+countdownInterval = setInterval(UpdateCountdownUntilNextCountry, 1000);
 
 function GetCountryPromises(submittedCountries) {
     ToggleLoading(true)
     isLoadingCountries = true
     return submittedCountries.map(countryCode => SubmitCountry(countryCode));
+}
+
+function GetDayCount() {
+    let launchDate = new Date('2023-10-03');
+    let msDifference = new Date() - launchDate;
+    return Math.floor(msDifference / (1000 * 60 * 60 * 24))
 }
 
 function CheckForHistory() {
@@ -241,10 +249,13 @@ function ToggleLoading(setOn) {
     }
     if(setOn) {
         isLoadingCountry = true
+        countryInput.disabled = true;
         countrySubmit.innerHTML = ""
         countrySubmit.classList.add("loading")
     } else {
         isLoadingCountry = false;
+        countryInput.disabled = false;
+        countryInput.focus()
         countrySubmit.classList.remove("loading")
         countrySubmit.innerHTML = "Deviner"
     }
@@ -299,10 +310,12 @@ function WinGame(countryData) {
         easing:"ease-in-out"
     };
     let attemptCount = getAttemptCount()
-    let attemptsElements = document.getElementsByClassName("ggAttemptsCount")
+    let attemptsElements = document.getElementsByClassName("ggAttemptsCounts")
     for (let i = 0; i < attemptsElements.length; i++) {
         attemptsElements[i].innerText = attemptCount
     }
+
+    document.getElementById("dayCount").innerText = GetDayCount().toString()
 
     let clueUsedCountNode = document.getElementById("clueUsedCount")
     clueUsedCountNode.innerText = Clue.UsedClueCount().toString()
@@ -406,13 +419,14 @@ function CreateAnswerSquare(answerNumber, rowNode, textValue, ratio) {
     squareNode.style.opacity = '0'
     squareContentNode.classList.add("answerContent")
     squareContentNode.innerText = textValue
-    PickColor(squareNode, ratio)
+    let colorThresholds = [0.55, 0.75, 1]
+    PickColor(squareNode, ratio, colorThresholds)
     squareNode.appendChild(squareContentNode)
     rowNode.appendChild(squareNode)
     return squareNode
 }
 
-function CreateArrowSquare(answerNumber, rowNode, textValue, ratio, equals, isDistance = false) {
+function CreateArrowSquare(answerNumber, rowNode, textValue, ratio, equals, isDistance = false, isBorder = false) {
     let squareNode = document.createElement("div");
     let squareContentNode = document.createElement("div");
     squareNode.classList.add("answerSquare")
@@ -420,11 +434,17 @@ function CreateArrowSquare(answerNumber, rowNode, textValue, ratio, equals, isDi
     squareNode.style.opacity = '0'
     squareContentNode.classList.add("answerContent")
     squareContentNode.innerText = numberWithSpaces(textValue)
+    let distanceColorThresholds = [0.575, 0.75, 0.85]
+    let borderColorThresholds = [0.25, 0.5, 0.75]
+    let basicColorThresholds = [0.55, 0.75, 1]
     if(isDistance) {
-        PickColorDistance(squareNode, ratio)
+        PickColor(squareNode, ratio, distanceColorThresholds)
+    } else if(isBorder) {
+        AddArrowIndicator(equals, squareContentNode)
+        PickColor(squareNode, ratio, borderColorThresholds)
     } else {
         AddArrowIndicator(equals, squareContentNode)
-        PickColor(squareNode, ratio)
+        PickColor(squareNode, ratio, basicColorThresholds)
     }
     squareNode.appendChild(squareContentNode)
     rowNode.appendChild(squareNode)
@@ -508,7 +528,7 @@ function CreateAnswerRow(countryData) {
     newLineEmojis += currencyEmoji
 
     // BORDERS
-    let bordersSquareNode = CreateArrowSquare(5, answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.isEqual)
+    let bordersSquareNode = CreateArrowSquare(5, answerRow, countryData.borderCount.value, countryData.borderCount.ratio, countryData.borderCount.isEqual, false, true)
     let bordersEmoji = getEmojiByColor(bordersSquareNode.classList)
     newLineEmojis += bordersEmoji
 
@@ -559,13 +579,8 @@ function AddArrowIndicator(value, node) {
     node.appendChild(value === "+" ? upArrow : downArrow)
 }
 
-function PickColor(node, ratio) {
-    let answerColorClass = ratio < 0.55 ? "badAnswer" : ratio < 0.75 ? "answerPercent25_50" : ratio < 1 ? "answerPercent50_75" : "goodAnswer"
-    node.classList.add(answerColorClass)
-}
-
-function PickColorDistance(node, ratio) {
-    let answerColorClass = ratio < 0.575 ? "badAnswer" : ratio < 0.75 ? "answerPercent25_50" : ratio < 0.85 ? "answerPercent50_75" : "goodAnswer"
+function PickColor(node, ratio, thresholds) {
+    let answerColorClass = ratio < thresholds[0] ? "badAnswer" : ratio < thresholds[1] ? "answerPercent25_50" : ratio < thresholds[2] ? "answerPercent50_75" : "goodAnswer"
     node.classList.add(answerColorClass)
 }
 

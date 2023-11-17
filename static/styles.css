@@ -153,6 +153,10 @@ input[type=text]:focus {
 	outline:none
 }
 
+input[type=text]:disabled {
+	background-color: #3e3e3e;
+}
+
 .center {
 	display: flex;
 	justify-content: center;
@@ -449,7 +453,7 @@ input[type=text]:focus {
 	justify-content: center;
 }
 
-.ggAttemptsCount {
+#ggAttemptsCount {
 	font-size: 1.5em;
 	font-weight: bold;
 }

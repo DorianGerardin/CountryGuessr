@@ -133,7 +133,7 @@ function SetAllCountries() {
                 continue
             }
             let name = countryData.translations.fra.common;
-            let continent = countryData.continents[0];
+            let continents = countryData.continents;
             let language = Object.keys(countryData.languages).length !== 0 ? Object.values(countryData.languages) : ["No language"]
             let populationCount = countryData.population
             let currency = Object.keys(countryData.currencies).length !== 0 ? Object.values(countryData.currencies)[0].name : null
@@ -153,7 +153,7 @@ function SetAllCountries() {
             } else {
                  currencyType = getCurrency(currency, currencyCode)
             }
-            let country = new Country(code, name, continent, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital, wikiLink, flagAlt)
+            let country = new Country(code, name, continents, language, populationCount, currencyType, bordersCount, area, latlng, maps, borders, capital, wikiLink, flagAlt)
             countries.push(country)
         }
 
@@ -205,7 +205,26 @@ function ComputeRatio(tryValue, valueToGuess) {
     if(tryValue === valueToGuess) {
         return 1
     }
-    if(valueToGuess !== 0) {
+
+    if(valueToGuess <= 4) {
+        if(valueToGuess === 0) {
+            if(tryValue > 4) {
+                return 0
+            } else {
+                return (Math.abs(tryValue - 4) / 4)
+            }
+        } else {
+            return 1 - (Math.abs(tryValue - valueToGuess) / 4)
+        }
+    } else {
+        if(tryValue >= valueToGuess * 2 || tryValue <= 0) {
+            return 0
+        } else {
+            return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)
+        }
+    }
+
+    /*if(valueToGuess !== 0) {
         if(tryValue >= valueToGuess * 2 || tryValue <= 0) {
             return 0
         }
@@ -215,7 +234,7 @@ function ComputeRatio(tryValue, valueToGuess) {
         }
         return (Math.abs(tryValue - 4) / 4)
     }
-    return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)
+    return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)*/
 }
 
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -252,6 +271,10 @@ function GetLanguagesInCommon(languages1, languages2) {
     return languages1.filter(element => languages2.includes(element));
 }
 
+function GetContinentsInCommon(continents1, continents2) {
+    return continents1.filter(element => continents2.includes(element));
+}
+
 function CreateCountryData(country) {
     let populationCompare = country.populationCount > countryToGuess.populationCount ? "-" : country.populationCount < countryToGuess.populationCount ? "+" : "="
     let borderCompare = country.borderCount > countryToGuess.borderCount ? "-" : country.borderCount < countryToGuess.borderCount ? "+" : "="
@@ -259,6 +282,8 @@ function CreateCountryData(country) {
     let distance = getDistance(country.latlng[0], country.latlng[1], countryToGuess.latlng[0], countryToGuess.latlng[1])
     let languagesInCommon = GetLanguagesInCommon(country.language, countryToGuess.language)
     let languagesToDisplay = languagesInCommon.length > 0 ? languagesInCommon.slice(0,3).join(",\n") : country.language.slice(0,3).join(",\n")
+    let continentsInCommon = GetContinentsInCommon(country.continent, countryToGuess.continent)
+    let continentsToDisplay = continentsInCommon.length > 0 ? continentsInCommon.join(", \n") : country.continent.join(", \n")
 
     return {
         isAnswer : country.code === countryToGuess.code,
@@ -268,12 +293,12 @@ function CreateCountryData(country) {
         wikiLink : country.wikiLink,
         flagAlt : country.flagAlt,
         continent: {
-            value: country.continent,
-            isEqual: country.continent === countryToGuess.continent
+            value: continentsToDisplay,
+            isEqual: continentsInCommon.length > 0
         },
         language: {
             value: languagesToDisplay,
-            isEqual: languagesInCommon.length
+            isEqual: languagesInCommon.length > 0
         },
         populationCount: {
             value: country.populationCount,
