@@ -166,14 +166,23 @@ function GetLocalStorageExpirationDate() {
     const desiredMinute = 59;
     const desiredSecond = 59
     const now = new Date();
+    let expirationDate;
+    let localHour;
 
 
     const clientTimeZoneOffset = now.getTimezoneOffset();
     const clientTimeZoneOffsetHours = clientTimeZoneOffset / 60;
     const timeShift = isSummerTime() ? 2 : 1
     const timeZoneDifferenceHours = clientTimeZoneOffsetHours + timeShift
-    const localHour = desiredHour + (-timeZoneDifferenceHours);
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), localHour, desiredMinute, desiredSecond);
+    if(timeZoneDifferenceHours < 0) {
+        localHour = desiredHour + Math.abs(timeZoneDifferenceHours)
+        expirationDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), localHour, desiredMinute, desiredSecond);
+    } else {
+        localHour = desiredHour - Math.abs(timeZoneDifferenceHours)
+        expirationDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, localHour, desiredMinute, desiredSecond);
+    }
+
+    return expirationDate;
 }
 
 function InitiateShapeClue(data) {
