@@ -432,7 +432,7 @@ function CreateArrowSquare(answerNumber, rowNode, textValue, ratio, equals, isDi
     squareContentNode.classList.add("answerContent")
     squareContentNode.innerText = numberWithSpaces(textValue)
     let distanceColorThresholds = [0.575, 0.75, 0.85]
-    let borderColorThresholds = [0.25, 0.5, 0.75]
+    let borderColorThresholds = [0.25, 0.5, 1]
     let basicColorThresholds = [0.55, 0.75, 1]
     if(isDistance) {
         PickColor(squareNode, ratio, distanceColorThresholds)
