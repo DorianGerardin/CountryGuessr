@@ -223,18 +223,6 @@ function ComputeRatio(tryValue, valueToGuess) {
             return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)
         }
     }
-
-    /*if(valueToGuess !== 0) {
-        if(tryValue >= valueToGuess * 2 || tryValue <= 0) {
-            return 0
-        }
-    } else {
-        if(tryValue >= 4 || tryValue <= 0) {
-            return 0
-        }
-        return (Math.abs(tryValue - 4) / 4)
-    }
-    return 1 - (Math.abs(tryValue - valueToGuess) / valueToGuess)*/
 }
 
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -389,8 +377,11 @@ app.get('/welcome', (req, res) => {
     res.sendFile('welcome.html', {root: __dirname});
 });
 
-
 app.use("/static", express.static('./static/'));
+
+app.use((req, res) => {
+    res.redirect('/');
+});
 
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`);
