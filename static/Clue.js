@@ -50,6 +50,10 @@ class Clue {
                     this.contentNodeText = data.content
                 }
                 this.contentNode = Clue.parser.parseFromString(this.contentNodeText, 'text/html').body.firstChild;
+                this.contentNode.style.display = "none"
+                let clueContent = document.getElementById("clueContent")
+                clueContent.appendChild(this.contentNode)
+
                 this.isUnlocked = true
                 this.remainAttempts = 0
                 this.clueTextNode.innerHTML = this.clueText
@@ -61,13 +65,6 @@ class Clue {
                     if(Clue.currentVisibleClueID === this.clueID) {
                         this.ToggleContent()
                         return
-                    }
-
-                    let clueContent = document.getElementById("clueContent")
-                    if(clueContent.childNodes.length === 0) {
-                        clueContent.appendChild(this.contentNode)
-                    } else {
-                        clueContent.childNodes[0].replaceWith(this.contentNode)
                     }
                     if(!this.hasBeenUsed && !game.HasWon()) {
                         this.hasBeenUsed = true
@@ -95,16 +92,20 @@ class Clue {
     ToggleContent() {
         let clueContentContainer = document.getElementById("clueContentContainer")
         let cluePointer = document.getElementById("cluePointer")
-        let isDisplayed = getComputedStyle(clueContentContainer).display === "flex"
+        let isContainerDisplayed = getComputedStyle(clueContentContainer).display === "flex"
         cluePointer.style.left = this.cluePointerLeft
-        if(!isDisplayed) {
+        if(!isContainerDisplayed) {
+            this.contentNode.style.display = "flex"
             clueContentContainer.style.display = "flex"
             Clue.currentVisibleClueID = this.clueID
         }
-        else if(isDisplayed && Clue.currentVisibleClueID === this.clueID) {
+        else if(isContainerDisplayed && Clue.currentVisibleClueID === this.clueID) {
+            this.contentNode.style.display = "none"
             clueContentContainer.style.display = "none"
             Clue.currentVisibleClueID = -1
         } else {
+            Clue.allClues[Clue.currentVisibleClueID].contentNode.style.display = "none"
+            this.contentNode.style.display = "flex"
             Clue.currentVisibleClueID = this.clueID
         }
     }
