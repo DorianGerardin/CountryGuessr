@@ -338,35 +338,32 @@ app.get('/AllCountriesName', function (req, res) {
 })
 
 app.get('/countryShape', function (req, res) {
-    let response = {
-        code : countryToGuess.code
-    }
-    res.json(JSON.stringify(response))
+    const content = `<img src="./static/images/shapes/${countryToGuess.code}.svg" class="countryShape clueContentNode" alt="shape clue">`;
+    res.json({ content });
 })
 
 app.get('/randomBorder', function (req, res) {
-    let response
+    let content
     if(countryToGuess.borderCount === 0) {
         let nearestCountryName = GetNearestCountry(countryToGuess).name
-        response = {
-            value : `Aucun pays frontalier \n (Le plus proche : ${nearestCountryName})`
-        }
+        content = `<div class="clueContentNode">Aucun pays frontalier<br>(Le plus proche : ${nearestCountryName})</div>`;
     } else {
         let randomBorderCode = countryToGuess.borders[Math.floor(Math.random()*countryToGuess.borderCount)]
         let countryName = GetCountryData(randomBorderCode).name
-        response = {
-            value : countryName
-        }
+        content = `<div class="clueContentNode">${countryName}</div>`;
     }
-    res.json(JSON.stringify(response))
+    res.json({ content })
 })
 
 app.get('/capital', function (req, res) {
+    let content
     const capital = countryToGuess.capital
-    let response = {
-        capital : capital.length === 0 ? "Aucune capitale" : countryToGuess.capital.join(",\n")
+    if(capital.length === 0) {
+        content = `<div class="clueContentNode">Aucune capitale</div>`;
+    } else {
+        content = `<div class="clueContentNode">${countryToGuess.capital.join(",\n")}</div>`;
     }
-    res.json(JSON.stringify(response))
+    res.json({ content })
 })
 
 app.get('/rules', (req, res) => {

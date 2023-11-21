@@ -130,6 +130,7 @@ function CheckForHistory() {
             });
     }
 }
+CheckForHistory()
 
 countrySubmit.addEventListener('click', () => {
     if(isLoadingCountry || isLoadingCountries) {

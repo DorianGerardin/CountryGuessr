@@ -1,5 +1,5 @@
 class Clue {
-    constructor(clueID, remainAttempts, clueNode, clueImgContainer, clueImg, clueImgUnlocked, clueTextNode, clueText, cluePointerLeft, remainAttemptsTextNode, contentNode) {
+    constructor(clueID, remainAttempts, clueNode, clueImgContainer, clueImg, clueImgUnlocked, clueTextNode, clueText, cluePointerLeft, remainAttemptsTextNode, apiURL) {
         this.clueID = clueID
         this.clueNode = clueNode
         this.clueImgContainer = clueImgContainer
@@ -11,7 +11,9 @@ class Clue {
         this.remainAttempts = remainAttempts
         this.remainAttemptsTextNode = remainAttemptsTextNode
         this.InitiateRemainAttempts()
-        this.contentNode = contentNode
+        this.contentNodeText = null
+        this.contentNode = null
+        this.apiURL = apiURL
 
         this.isUnlocked = false
         this.hasBeenUsed = false
@@ -19,7 +21,7 @@ class Clue {
 
     static currentVisibleClueID = -1
     static allClues = []
-
+    static parser = new DOMParser();
 
     InitiateRemainAttempts() {
         this.remainAttemptsTextNode.innerText = this.remainAttempts
@@ -39,45 +41,53 @@ class Clue {
             direction: "alternate",
             easing:"ease-in-out"
         };
-        this.isUnlocked = true
-        this.remainAttempts = 0
-        this.clueTextNode.innerHTML = this.clueText
-        this.clueNode.classList.add("clueHover", "clueUnlocked")
-        this.clueImgContainer.classList.add("clueImgUnlocked")
-        this.clueImg.src = `./static/images/${this.clueImgUnlocked}.svg`
-        this.clueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
-        this.clueNode.addEventListener("click", () => {
-            if(Clue.currentVisibleClueID === this.clueID) {
-                this.ToggleContent()
-                return
-            }
-
-            let clueContent = document.getElementById("clueContent")
-            if(clueContent.childNodes.length === 0) {
-                clueContent.appendChild(this.contentNode)
-            } else {
-                clueContent.childNodes[0].replaceWith(this.contentNode)
-            }
-            this.ToggleContent()
-            if(!this.hasBeenUsed && !game.HasWon()) {
-                this.hasBeenUsed = true
-            }
-            localStorage.setItem('clues', JSON.stringify(Clue.GetDataForLocalStorage()));
-            Clue.allClues[this.clueID] = this
-
-            if(this.clueID === 1) {
-                let border = {
-                    value : this.contentNode.innerText
+        WaitForClue(this.apiURL)
+            .then(data => {
+                let border = localStorage.getItem('border');
+                if(this.clueID === 1 && border !== null) {
+                    this.contentNodeText = border
+                } else {
+                    this.contentNodeText = data.content
                 }
-                localStorage.setItem('border', JSON.stringify(border))
-            }
-        })
+                this.contentNode = Clue.parser.parseFromString(this.contentNodeText, 'text/html').body.firstChild;
+                this.isUnlocked = true
+                this.remainAttempts = 0
+                this.clueTextNode.innerHTML = this.clueText
+                this.clueNode.classList.add("clueHover", "clueUnlocked")
+                this.clueImgContainer.classList.add("clueImgUnlocked")
+                this.clueImg.src = `./static/images/${this.clueImgUnlocked}.svg`
+                this.clueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
+                this.clueNode.addEventListener("click", () => {
+                    if(Clue.currentVisibleClueID === this.clueID) {
+                        this.ToggleContent()
+                        return
+                    }
+
+                    let clueContent = document.getElementById("clueContent")
+                    if(clueContent.childNodes.length === 0) {
+                        clueContent.appendChild(this.contentNode)
+                    } else {
+                        clueContent.childNodes[0].replaceWith(this.contentNode)
+                    }
+                    if(!this.hasBeenUsed && !game.HasWon()) {
+                        this.hasBeenUsed = true
+                    }
+                    localStorage.setItem('clues', JSON.stringify(Clue.GetDataForLocalStorage()));
+                    Clue.allClues[this.clueID] = this
+
+                    if(this.clueID === 1) {
+                        localStorage.setItem('border', this.contentNodeText)
+                    }
+                    this.ToggleContent()
+                })
+            })
     }
 
     DecrementAttempts() {
         if(this.remainAttempts <= 0) {
             return
         }
+
         this.remainAttempts--
         this.remainAttempts === 0 ? this.Unlock() : this.remainAttemptsTextNode.innerText = this.remainAttempts
     }
@@ -134,20 +144,7 @@ class Clue {
     }
 }
 
-async function WaitForCountryShape() {
-    const apiURL = `/countryShape`
-    const response = await fetch(apiURL);
-    return await response.json();
-}
-
-async function WaitForBorderName() {
-    const apiURL = `/randomBorder`
-    const response = await fetch(apiURL);
-    return await response.json();
-}
-
-async function WaitForCapital() {
-    const apiURL = `/capital`
+async function WaitForClue(apiURL) {
     const response = await fetch(apiURL);
     return await response.json();
 }
@@ -193,13 +190,8 @@ function InitiateShapeClue(data) {
     let shapeClueAttemptsText = document.getElementById("shapeClueAttempts")
     let clueShape = null
 
-    let parsedData = JSON.parse(data)
-    let contentNode = document.createElement("img")
-    contentNode.classList.add('countryShape')
-    contentNode.src = `./static/images/shapes/${parsedData.code}.svg`
-    contentNode.alt = "shape clue"
     clueShape = new Clue(0, 5, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
-        shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, contentNode)
+        shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, `/countryShape`)
     if(saveClues !== null) {
         clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
     }
@@ -208,7 +200,6 @@ function InitiateShapeClue(data) {
 
 function InitiateBorderClue(data) {
     let saveClues = JSON.parse(localStorage.getItem('clues'));
-    let border = JSON.parse(localStorage.getItem('border'));
     let borderClueNode = document.getElementById("clueBorder")
     let borderClueImgContainer = document.getElementById("clueBorderImgContainer")
     let borderClueImg = document.getElementById("clueBorderImg")
@@ -216,18 +207,8 @@ function InitiateBorderClue(data) {
     let borderClueAttemptsText = document.getElementById("borderClueAttempts")
     let borderClue = null
 
-    let borderName
-    if(border !== null) {
-        borderName = border.value
-    } else {
-        let parsedData = JSON.parse(data)
-        borderName = parsedData.value
-    }
-
-    let contentNode = document.createElement("div")
-    contentNode.innerText = borderName
     borderClue = new Clue(1, 8, borderClueNode, borderClueImgContainer, borderClueImg, "borderClue_unlocked",
-        borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, contentNode)
+        borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, `/randomBorder`)
     if(saveClues !== null) {
         borderClue.hasBeenUsed = saveClues[1].hasBeenUsed
     }
@@ -243,12 +224,8 @@ function InitiateCapitalClue(data) {
     let capitalClueAttemptsText = document.getElementById("capitalClueAttempts")
     let capitalClue = null
 
-    let parsedData = JSON.parse(data)
-    let capital = parsedData.capital
-    let contentNode = document.createElement("div")
-    contentNode.innerText = capital
     capitalClue = new Clue(2, 11, capitalClueNode, capitalClueImgContainer, capitalClueImg, "capitalClue_unlocked",
-        capitalClueTextNode, "Indice capitale", "86%", capitalClueAttemptsText, contentNode)
+        capitalClueTextNode, "Indice capitale", "86%", capitalClueAttemptsText, `/capital`)
     if(saveClues !== null) {
         capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
     }
@@ -289,18 +266,8 @@ function InitiateClues() {
         localStorage.setItem('isFirstTime', JSON.stringify(false));
     }
 
-    WaitForCountryShape().then(shapeData => {
-            InitiateShapeClue(shapeData)
-            WaitForBorderName().then((borderData) => {
-                InitiateBorderClue(borderData)
-                WaitForCapital().then((capitalData) => {
-                    InitiateCapitalClue(capitalData)
-                    CheckForHistory()
-                })
-            })
-        })
-        .catch(error => {
-            console.log("Erreur : " + error);
-        })
+    InitiateShapeClue()
+    InitiateBorderClue()
+    InitiateCapitalClue()
 }
 InitiateClues()
