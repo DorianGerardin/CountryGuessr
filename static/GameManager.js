@@ -70,6 +70,7 @@ let hasAlreadyAnswered = false
 let currentCountry = null
 let countrySuggestionList
 let countriesName = [];
+let dayCount
 GetAllCountriesName()
 
 let countdownInterval
@@ -108,10 +109,13 @@ function GetCountryPromises(submittedCountries) {
 }
 
 function GetDayCount() {
-    let launchDate = new Date('2023-10-03');
-    let msDifference = new Date() - launchDate;
-    return Math.floor(msDifference / (1000 * 60 * 60 * 24))
+    fetch(`/dayCount`)
+        .then(response => response.json())
+        .then(data => {
+            dayCount = data.dayCount;
+        });
 }
+GetDayCount()
 
 function CheckForHistory() {
     let submittedCountries = JSON.parse(localStorage.getItem('submittedCountries'));
@@ -313,7 +317,7 @@ function WinGame(countryData) {
         attemptsElements[i].innerText = attemptCount
     }
 
-    document.getElementById("dayCount").innerText = GetDayCount().toString()
+    document.getElementById("dayCount").innerText = dayCount.toString()
 
     let clueUsedCountNode = document.getElementById("clueUsedCount")
     clueUsedCountNode.innerText = Clue.UsedClueCount().toString()

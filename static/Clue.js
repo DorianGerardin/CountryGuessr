@@ -182,7 +182,7 @@ function GetLocalStorageExpirationDate() {
     return expirationDate;
 }
 
-function InitiateShapeClue(data) {
+function InitiateShapeClue() {
     let saveClues = JSON.parse(localStorage.getItem('clues'));
     let shapeClueNode = document.getElementById("clueShape")
     let shapeClueImgContainer = document.getElementById("clueShapeImgContainer")
@@ -199,7 +199,7 @@ function InitiateShapeClue(data) {
     Clue.allClues.push(clueShape)
 }
 
-function InitiateBorderClue(data) {
+function InitiateBorderClue() {
     let saveClues = JSON.parse(localStorage.getItem('clues'));
     let borderClueNode = document.getElementById("clueBorder")
     let borderClueImgContainer = document.getElementById("clueBorderImgContainer")
@@ -216,7 +216,7 @@ function InitiateBorderClue(data) {
     Clue.allClues.push(borderClue)
 }
 
-function InitiateCapitalClue(data) {
+function InitiateCapitalClue() {
     let saveClues = JSON.parse(localStorage.getItem('clues'));
     let capitalClueNode = document.getElementById("clueCapital")
     let capitalClueImgContainer = document.getElementById("clueCapitalImgContainer")

@@ -53,7 +53,28 @@ async function UpdateCurrentCountry(newCountryCode) {
         console.error('Erreur lors de la mise à jour de la variable d\'environnement sur Heroku :', error);
         throw error;
     }
+}
 
+async function UpdateDayCount(newDayCount) {
+    try {
+        const data = {
+            DAY_COUNT : newDayCount
+        }
+        await axios({
+            method: 'patch',
+            url: `https://api.heroku.com/apps/country-guessr/config-vars`,
+            headers: {
+                'Authorization': `Bearer ${process.env.HEROKU_API_KEY}`,
+                'Accept': 'application/vnd.heroku+json; version=3',
+                'Content-Type': 'application/json',
+            },
+            data: data
+        });
+    }
+    catch (error) {
+        console.error('Erreur lors de la mise à jour de la variable d\'environnement sur Heroku :', error);
+        throw error;
+    }
 }
 
 function getCurrency(currency, currencyCode) {
@@ -164,6 +185,7 @@ function SetAllCountries() {
                 UpdateCurrentCountry(GetRandomCountryCode()).then(() => {
                     countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
                 })
+                UpdateDayCount(parseInt(process.env.DAY_COUNT) + 1)
                 console.log(`reset country : ${countryToGuess.name}`)
             },
             null,
@@ -364,6 +386,10 @@ app.get('/capital', function (req, res) {
         content = `<div class="clueContentNode">${countryToGuess.capital.join(",\n")}</div>`;
     }
     res.json({ content })
+})
+
+app.get('/dayCount', function (req, res) {
+   res.json( {dayCount:process.env.DAY_COUNT} )
 })
 
 app.get('/rules', (req, res) => {
