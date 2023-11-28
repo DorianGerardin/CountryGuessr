@@ -136,10 +136,27 @@ function CheckForHistory() {
 }
 CheckForHistory()
 
+function GetTriedCountryBySuggestion(suggestion) {
+    let regExpSuggestion = new RegExp(`^(${suggestion})$`, 'giu')
+    return countriesName.filter(country =>  {
+        let normalizedCountryName = country.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        return country.name.match(regExpSuggestion) ||
+            country.name.replace(/-/g, ' ').match(regExpSuggestion) ||
+            normalizedCountryName.match(regExpSuggestion) ||
+            normalizedCountryName.replace(/-/g, ' ').match(regExpSuggestion)
+    });
+}
+
 countrySubmit.addEventListener('click', () => {
     if(isLoadingCountry || isLoadingCountries) {
         return
     }
+    let inputValue = countryInput.value
+    let countries = GetTriedCountryBySuggestion(inputValue)
+    if(countries.length === 1) {
+        currentCountry = countries[0].code
+    }
+
     SubmitCountry(currentCountry).then((countryData) => {
         ResolveCountry(countryData)
     })
