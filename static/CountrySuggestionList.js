@@ -87,7 +87,7 @@ class CountrySuggestionList {
         let newCountryNode = this.container.childNodes[newIndex]
         this.ToggleFocus(newCountryNode, true)
         this.countryInput.value = newCountryNode.innerText
-        this.container.childNodes[newIndex].scrollIntoViewIfNeeded(false)
+        this.container.children[newIndex].scrollIntoViewIfNeeded(false)
         this.currentFocusIndex = newIndex
     }
 
