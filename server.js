@@ -10,7 +10,7 @@ import Https from 'https'
 import path from 'path';
 import {fileURLToPath} from 'url';
 import express from 'express'; //Import the express dependency
-import Country from './static/Country.js' //Save the port number where your server will be listening
+import Country from './static/js/Country.js' //Save the port number where your server will be listening
 import { CronJob } from 'cron';
 const app = express();              //Instantiate an express app, the main work horse of this server
 import axios from 'axios'

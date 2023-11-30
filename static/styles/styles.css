@@ -126,7 +126,7 @@ main {
 
 .loading {
 	background-color: #F4EEE0;
-	background-image: url(./images/loading.svg);
+	background-image: url(../images/loading.svg);
 	background-size: 40%;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -334,7 +334,7 @@ input[type=text]:disabled {
 	height: 3em;
 	border-radius: 0.7em;
 	border: 0.15em solid #F4EEE0;
-	background-image: url("./images/zoomIn_w.png");
+	background-image: url("../images/zoomIn_w.png");
 	background-size: 95%;
 	background-repeat: no-repeat;
 	background-position: center;
