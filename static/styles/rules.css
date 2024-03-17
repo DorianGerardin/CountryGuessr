@@ -293,6 +293,7 @@ li {
     }
     header {
         font-size: 16px;
+        width: 70%;
     }
     h1 {
         font-size: 1.75em;
@@ -310,6 +311,7 @@ li {
     }
     header {
         font-size: 16px;
+        width: 95%;
     }
     .answerRow{
         font-size: 10px;
@@ -322,6 +324,7 @@ li {
     }
     header {
         font-size: 16px;
+        width: 95%;
     }
     h1 {
         font-size: 1.75em;
@@ -339,6 +342,7 @@ li {
 
     header {
         font-size: 16px;
+        width: 95%;
     }
 
     h1 {

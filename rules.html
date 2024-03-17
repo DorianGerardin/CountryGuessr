@@ -176,6 +176,18 @@
         localStorage.setItem('theme', newTheme);
     }
 
+    function detectSystemThemeChange(callback) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const currentTheme = mediaQuery.matches ? 'dark' : 'light';
+        SetTheme(currentTheme)
+        mediaQuery.addEventListener('change', callback);
+    }
+
+    function updateTheme(event) {
+        const currentTheme = event.matches ? 'dark' : 'light';
+        SetTheme(currentTheme)
+    }
+
 </script>
 
 </body>
