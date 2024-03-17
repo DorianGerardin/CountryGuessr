@@ -74,6 +74,15 @@ let dayCount
 GetAllCountriesName()
 
 let countdownInterval
+document.addEventListener("DOMContentLoaded", () => {
+    SetPreferredTheme()
+    document.body.classList.replace("hidden", "visible")
+})
+
+window.onload = () => {
+    console.log("load")
+    SetPreferredTheme()
+}
 function UpdateCountdownUntilNextCountry() {
     let now = new Date();
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
@@ -641,7 +650,7 @@ function ZoomIn() {
     answersGrid.style.width = "175%"
     answersGrid.style.marginBottom = "2em"
     adjustTextSize()
-    zoomButton.style.backgroundImage = "url(./static/images/zoomOut_w.png)"
+    zoomButton.classList.replace("zoomInButton", "zoomOutButton")
     zoomedIn = true
 }
 
@@ -654,7 +663,7 @@ function ZoomOut() {
     answersGrid.style.removeProperty("width")
     answersGrid.style.removeProperty("margin-bottom")
     adjustTextSize()
-    zoomButton.style.backgroundImage = "url(./static/images/zoomIn_w.png)"
+    zoomButton.classList.replace("zoomOutButton", "zoomInButton")
     zoomedIn = false;
 }
 
@@ -670,4 +679,36 @@ function HideZoomButton() {
         zoomContainer.style.display = "none"
         isZoomDisplayed = false;
     }
+}
+
+function ToggleDarkMode() {
+    let theme = GetTheme()
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    SetTheme(newTheme)
+    localStorage.setItem('theme', newTheme);
+}
+
+function SetPreferredTheme() {
+    const preferredTheme = localStorage.getItem('theme');
+    preferredTheme ? SetTheme(preferredTheme) : detectSystemThemeChange(updateTheme);
+}
+
+function SetTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+}
+
+function GetTheme() {
+    return document.documentElement.getAttribute('data-theme')
+}
+
+function detectSystemThemeChange(callback) {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const currentTheme = mediaQuery.matches ? 'dark' : 'light';
+    SetTheme(currentTheme)
+    mediaQuery.addEventListener('change', callback);
+}
+
+function updateTheme(event) {
+    const currentTheme = event.matches ? 'dark' : 'light';
+    SetTheme(currentTheme)
 }

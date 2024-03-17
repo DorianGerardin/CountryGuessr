@@ -1,3 +1,20 @@
+:root {
+    --main-bg-color: rgb(16 16 16);
+    --main-text-color: #F4EEE0;
+    --main-button-color:#6ae8ff;
+    --header-border:2px solid #2b2b2b;
+    --answer-grid-color: #F4EEE0;
+    --theme-url:url(../images/sun.svg);
+}
+
+[data-theme="light"] {
+    --main-bg-color: rgb(229 229 229);
+    --main-text-color: #252525;
+    --main-button-color:#00d8ff;
+    --header-border: 2px solid var(--main-text-color);
+    --theme-url:url(../images/moon.svg);
+}
+
 * {
     margin: 0;
     box-sizing: border-box;
@@ -45,9 +62,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(32, 33, 35, 1);
+    background: var(--main-bg-color);
     font-size: 16px;
-    color : #F4EEE0;
+    color : var(--main-text-color);
     font-family: 'Prompt', sans-serif;
 }
 
@@ -63,8 +80,8 @@ header {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    border-bottom: 2px solid #F4EEE0;
+    width: 60%;
+    border-bottom: var(--header-border);
 }
 
 main {
@@ -80,7 +97,7 @@ p {
 hr {
     border: none;
     height: 2px;
-    background-color:#F4EEE0;
+    background-color:var(--main-text-color);
 }
 
 li {
@@ -106,7 +123,7 @@ li {
 #backButton {
     border-radius: 0.5em;
     padding: 0.5em 1.5em 0.5em 1.5em;
-    background-color: #6ae8ff;
+    background-color: var(--main-button-color);
     color: #171313;
     cursor: pointer;
     transition: 0.2s;
@@ -129,7 +146,7 @@ li {
     border-radius: 0.5em;
     font-weight: bold;
     padding: 0.5em 1.5em 0.5em 1.5em;
-    background-color: #6ae8ff;
+    background-color: var(--main-button-color);
     color: #171313;
     cursor: pointer;
     transition: 0.2s;
@@ -143,7 +160,7 @@ li {
 
 #toggleRules {
     cursor: pointer;
-    color: #6ae8ff;
+    color: var(--main-button-color);
 }
 
 #rulesContent {
@@ -158,6 +175,7 @@ li {
 
 
 .answerRow {
+    color: var(--answer-grid-color);
     display: flex;
     justify-content: space-around;
 }
@@ -247,6 +265,26 @@ li {
 #rulesButton:hover {
     cursor: pointer;
     scale: 1.15;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+#themeButton {
+    background-image: var(--theme-url);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 2em;
+    aspect-ratio: 1;
+}
+
+#themeButton:hover {
+    cursor: pointer;
 }
 
 @media screen and (min-width: 601px) and (max-width: 768px) {

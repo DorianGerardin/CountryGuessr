@@ -13,12 +13,13 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
-<body>
+<body class="hidden">
 
     <div id="container">
         <header>
+            <div id="themeButton" onclick="ToggleDarkMode()"></div>
             <h1>COUNTRY GUESSR</h1>
-            <img id="rulesButton" src="static/images/question-mark.svg" height="32" width="32" alt="rules">
+            <div id="rulesButton"></div>
         </header>
 
         <main>
@@ -31,20 +32,20 @@
                 <div id="clues">
                     <div id="clueShape" class="clue">
                         <div id="clueShapeImgContainer" class="clueImg">
-                            <img id="clueShapeImg" src="static/images/shapeClue_locked.svg">
+                            <div id="clueShapeImg" class="clueShapeImg"></div>
                         </div>
                         <div id="clueTextShape" class="clueText">Indice forme du pays dans <span id="shapeClueAttempts"></span> essais</div>
                     </div>
 
                     <div id="clueBorder" class="clue">
                         <div id="clueBorderImgContainer" class="clueImg">
-                            <img id="clueBorderImg" src="static/images/borderClue_locked.svg">
+                            <div id="clueBorderImg" class="clueBorderImg"></div>
                         </div>
                         <div id="clueTextBorder" class="clueText">Indice pays frontalier dans <span id="borderClueAttempts"></span> essais</div>
                     </div>
                     <div id="clueCapital" class="clue">
                         <div id="clueCapitalImgContainer" class="clueImg">
-                            <img id="clueCapitalImg" src="static/images/capitalClue_locked.svg">
+                            <div id="clueCapitalImg" class="clueCapitalImg"></div>
                         </div>
                         <div id="clueTextCapital" class="clueText">Indice capitale dans <span id="capitalClueAttempts"></span> essais</div>
                     </div>
@@ -106,7 +107,7 @@
             </div>
 
             <div id="zoomContainer">
-                <div id="zoomButton">
+                <div id="zoomButton" class="zoomInButton">
                 </div>
             </div>
 

@@ -59,7 +59,7 @@ class Clue {
                 this.clueTextNode.innerHTML = this.clueText
                 this.clueNode.classList.add("clueHover", "clueUnlocked")
                 this.clueImgContainer.classList.add("clueImgUnlocked")
-                this.clueImg.src = `./static/images/${this.clueImgUnlocked}.svg`
+                this.clueImg.classList.replace(this.clueImg.id, this.clueImgUnlocked)
                 this.clueNode.animate(scaleUpAndDown, scaleUpAndDownTiming)
                 this.clueNode.addEventListener("click", () => {
                     if(Clue.currentVisibleClueID === this.clueID) {
@@ -191,7 +191,7 @@ function InitiateShapeClue() {
     let shapeClueAttemptsText = document.getElementById("shapeClueAttempts")
     let clueShape = null
 
-    clueShape = new Clue(0, 5, shapeClueNode, shapeClueImgContainer, shapeClueImg, "shapeClue_unlocked",
+    clueShape = new Clue(0, 5, shapeClueNode, shapeClueImgContainer, shapeClueImg, "clueShapeImgUnlocked",
         shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, `/countryShape`)
     if(saveClues !== null) {
         clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
@@ -208,7 +208,7 @@ function InitiateBorderClue() {
     let borderClueAttemptsText = document.getElementById("borderClueAttempts")
     let borderClue = null
 
-    borderClue = new Clue(1, 8, borderClueNode, borderClueImgContainer, borderClueImg, "borderClue_unlocked",
+    borderClue = new Clue(1, 8, borderClueNode, borderClueImgContainer, borderClueImg, "clueBorderImgUnlocked",
         borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, `/randomBorder`)
     if(saveClues !== null) {
         borderClue.hasBeenUsed = saveClues[1].hasBeenUsed
@@ -225,7 +225,7 @@ function InitiateCapitalClue() {
     let capitalClueAttemptsText = document.getElementById("capitalClueAttempts")
     let capitalClue = null
 
-    capitalClue = new Clue(2, 11, capitalClueNode, capitalClueImgContainer, capitalClueImg, "capitalClue_unlocked",
+    capitalClue = new Clue(2, 11, capitalClueNode, capitalClueImgContainer, capitalClueImg, "clueCapitalImgUnlocked",
         capitalClueTextNode, "Indice capitale", "86%", capitalClueAttemptsText, `/capital`)
     if(saveClues !== null) {
         capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
