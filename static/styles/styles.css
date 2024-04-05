@@ -277,11 +277,11 @@ input[type=text]:disabled {
 	display: flex;
 	align-items: center;
 	padding: 0.5em 0.25em 0.5em 1em;
+	column-gap: 1em;
 }
 
 .flagList {
 	height: 1.5em;
-	margin-right: 1em;
 	border-radius: 0.25em;
 }
 
