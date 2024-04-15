@@ -51,9 +51,9 @@
 	--clue-img-border : 0.2em solid var(--clue-text-color);
 	--clue-img-border-unlocked : 0.2em solid var(--clue-text-color-unlocked);
 	--clue-content-bg-color: white;
-	--clues-bg-gradient: linear-gradient(180deg, #ffffff 0%, rgb(233 233 233) 100%);
-	--clues-bg-webkit-gradient: -webkit-linear-gradient(180deg, #ffffff 0%, rgb(233 233 233) 100%);
-	--clues-bg-moz-gradient: -moz-linear-gradient(180deg, #ffffff 0%, rgb(233 233 233) 100%);
+	--clues-bg-gradient: linear-gradient(180deg, #ffffff 0%, rgb(237 237 237) 100%);
+	--clues-bg-webkit-gradient: -webkit-linear-gradient(180deg, #ffffff 0%, rgb(237 237 237) 100%);
+	--clues-bg-moz-gradient: -moz-linear-gradient(180deg, #ffffff 0%, rgb(237 237 237) 100%);
 	--input-border-color: rgb(0 0 0 / 24%);
 	--submit-hover-bg-color: var(--main-text-color);
 	--submit-hover-color: var(--white-text-color);
@@ -392,7 +392,7 @@ input[type=text]:disabled {
 }
 
 .answer0 {
-	border: 0.15em solid #f4eee078;
+	border: 0.15em solid #dfdfdf;
 	animation-name: fadeIn;
 	animation-duration: 0.6s;
 	animation-fill-mode: forwards;
@@ -503,7 +503,6 @@ input[type=text]:disabled {
 }
 
 #ggContent {
-	padding: 0 1em 0 1em;
 	height: 65%;
 	width: 100%;
 	display: flex;
@@ -713,12 +712,6 @@ input[type=text]:disabled {
 	border: var(--clue-img-border-unlocked);
 }
 
-.clueHover:hover{
-	transition: 0.2s;
-	cursor: pointer;
-	scale: 1.1;
-}
-
 #clueContentContainer {
 	display: none;
 	position: relative;
@@ -731,6 +724,7 @@ input[type=text]:disabled {
 	height: 100%;
 	width: 100%;
 	font-size: 1.5em;
+	filter: drop-shadow(2px 4px 6px #0000002f);
 }
 
 #clueContent {
@@ -767,6 +761,24 @@ input[type=text]:disabled {
 
 .visible {
 	visibility: visible;
+}
+
+.clueHover:active {
+    transform: scale(1.1);
+    transition: .15s;
+}
+
+.clueHover {
+	cursor: pointer;
+	transition: transform 0.25s ease-in-out;
+}
+
+@media (hover: hover) {
+	/* .clueHover:hover{
+		transition: 0.2s;
+		cursor: pointer;
+		scale: 1.1;
+	} */
 }
 
 @keyframes fadeIn {
