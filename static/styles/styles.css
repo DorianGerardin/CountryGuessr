@@ -753,7 +753,7 @@ input[type=text]:disabled {
 
 .countryShape {
 	filter: var(--country-shape-brightness);
-	width: 60%;
+	width: 80%;
 }
 
 .hidden {
