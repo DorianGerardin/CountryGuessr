@@ -57,8 +57,10 @@ class CountrySuggestionList {
             this.Hide()
             return
         }
-        this.ToggleFocus(this.container.childNodes[0], true)
-        this.container.childNodes[0].scrollIntoViewIfNeeded(false)
+        this.ToggleFocus(this.container.children[0], true)
+        this.container.children[0].scrollIntoViewIfNeeded ? 
+        this.container.children[0].scrollIntoViewIfNeeded(false) : 
+        this.container.children[0].scrollIntoView({block: "nearest", inline: "nearest"})
     }
 
     SelectCountry(index) {
@@ -77,17 +79,21 @@ class CountrySuggestionList {
 
     UnfocusCurrent() {
         if(this.currentFocusIndex >= 0 && this.currentFocusIndex < this.list.length) {
-            let currentFocus = this.container.childNodes[this.currentFocusIndex]
+            let currentFocus = this.container.children[this.currentFocusIndex]
             this.ToggleFocus(currentFocus, false)
         }
     }
 
     SetNewFocus(newIndex) {
         this.UnfocusCurrent();
-        let newCountryNode = this.container.childNodes[newIndex]
+        let newCountryNode = this.container.children[newIndex]
         this.ToggleFocus(newCountryNode, true)
         this.countryInput.value = newCountryNode.innerText
-        this.container.children[newIndex].scrollIntoViewIfNeeded(false)
+
+        this.container.children[newIndex].scrollIntoViewIfNeeded ? 
+        this.container.children[newIndex].scrollIntoViewIfNeeded(false) : 
+        this.container.children[newIndex].scrollIntoView({block: "nearest", inline: "nearest"})
+
         this.currentFocusIndex = newIndex
     }
 
