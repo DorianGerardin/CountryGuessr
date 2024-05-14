@@ -30,6 +30,8 @@
 <div id="container">
     <header>
         <div id="themeButton" onclick="ToggleDarkMode()"></div>
+        <div id="historyButton" onclick="GoToPage('history')"></div>
+        <div id="rulesButton" onclick="GoToPage('rules')"></div>
         <h1>COUNTRY GUESSR</h1>
     </header>
 
@@ -172,6 +174,10 @@
     backButton.addEventListener("click", () => {
         window.location.href = window.location.href.replace("/rules", "")
     })
+
+    function GoToPage(page) {
+        window.location.href = `${window.location.origin}/${page}`
+    }
 
     function SetTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);

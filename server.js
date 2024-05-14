@@ -15,11 +15,33 @@ import { CronJob } from 'cron';
 const app = express();              //Instantiate an express app, the main work horse of this server
 import axios from 'axios'
 import dotenv from 'dotenv'
-const port = process.env.PORT || 8080;
+import admin from 'firebase-admin';
+import { initializeApp } from "firebase-admin/app";
+import { getDatabase } from "firebase-admin/database";
+
+const port = process.env.PORT || 8000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
+
+const firebaseConfig = {
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  };
+
+const date = new Date().toISOString();
+const data = "FRA";
+const firebaseapp = initializeApp({
+    credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY
+      }),
+    databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.europe-west1.firebasedatabase.app`
+});
+const database = getDatabase(firebaseapp);
 
 let noUseCountries = ["UMI"]
 
@@ -182,10 +204,15 @@ function SetAllCountries() {
         job = new CronJob(
             '00 00 * * *',
             function () {
+                if(process.env.NODE_ENV === "debug") {
+                    return
+                }
                 UpdateCurrentCountry(GetRandomCountryCode()).then(() => {
                     countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
+                    UpdateDayCount(parseInt(process.env.DAY_COUNT) + 1).then(() => {
+                        addHistoryGame(process.env.DAY_COUNT, countryToGuess.code);
+                    })
                 })
-                UpdateDayCount(parseInt(process.env.DAY_COUNT) + 1)
                 console.log(`reset country : ${countryToGuess.name}`)
             },
             null,
@@ -194,6 +221,7 @@ function SetAllCountries() {
         );
         countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
         console.log(countryToGuess.name)
+        addHistoryGame(process.env.DAY_COUNT, countryToGuess.code);
     });
 }
 
@@ -251,24 +279,19 @@ function getDistance(lat1, lon1, lat2, lon2) {
     // Rayon de la Terre en mètres
     const earthRadius = 6371000;
 
-    // Conversion des latitudes et longitudes en radians
     const radLat1 = (Math.PI * lat1) / 180;
     const radLon1 = (Math.PI * lon1) / 180;
     const radLat2 = (Math.PI * lat2) / 180;
     const radLon2 = (Math.PI * lon2) / 180;
 
-    // Différences de latitudes et de longitudes en radians
     const dLat = radLat2 - radLat1;
     const dLon = radLon2 - radLon1;
 
-    // Formule Haversine
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(radLat1) * Math.cos(radLat2) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    // Distance en km
     return Math.round((earthRadius * c) / 1000);
 }
 
@@ -285,18 +308,21 @@ function GetContinentsInCommon(continents1, continents2) {
     return continents1.filter(element => continents2.includes(element));
 }
 
-function CreateCountryData(country) {
-    let populationCompare = country.populationCount > countryToGuess.populationCount ? "-" : country.populationCount < countryToGuess.populationCount ? "+" : "="
-    let borderCompare = country.borderCount > countryToGuess.borderCount ? "-" : country.borderCount < countryToGuess.borderCount ? "+" : "="
-    let areaCompare = country.area > countryToGuess.area ? "-" : country.area < countryToGuess.area ? "+" : "="
-    let distance = getDistance(country.latlng[0], country.latlng[1], countryToGuess.latlng[0], countryToGuess.latlng[1])
-    let languagesInCommon = GetLanguagesInCommon(country.language, countryToGuess.language)
+function CreateCountryData(country, requiredCountry = null) {
+
+    let countryToCompare = requiredCountry ? GetCountryData(requiredCountry) : countryToGuess
+
+    let populationCompare = country.populationCount > countryToCompare.populationCount ? "-" : country.populationCount < countryToCompare.populationCount ? "+" : "="
+    let borderCompare = country.borderCount > countryToCompare.borderCount ? "-" : country.borderCount < countryToCompare.borderCount ? "+" : "="
+    let areaCompare = country.area > countryToCompare.area ? "-" : country.area < countryToCompare.area ? "+" : "="
+    let distance = getDistance(country.latlng[0], country.latlng[1], countryToCompare.latlng[0], countryToCompare.latlng[1])
+    let languagesInCommon = GetLanguagesInCommon(country.language, countryToCompare.language)
     let languagesToDisplay = languagesInCommon.length > 0 ? languagesInCommon.slice(0,3).join(",\n") : country.language.slice(0,3).join(",\n")
-    let continentsInCommon = GetContinentsInCommon(country.continent, countryToGuess.continent)
+    let continentsInCommon = GetContinentsInCommon(country.continent, countryToCompare.continent)
     let continentsToDisplay = continentsInCommon.length > 0 ? continentsInCommon.join(", \n") : country.continent.join(", \n")
 
     return {
-        isAnswer : country.code === countryToGuess.code,
+        isAnswer : country.code === countryToCompare.code,
         name: country.name,
         code: country.code,
         maps : country.maps,
@@ -312,21 +338,21 @@ function CreateCountryData(country) {
         },
         populationCount: {
             value: country.populationCount,
-            ratio: ComputeRatio(country.populationCount, countryToGuess.populationCount),
+            ratio: ComputeRatio(country.populationCount, countryToCompare.populationCount),
             isEqual: populationCompare
         },
         currency: {
             value: currencyToString(country.currency),
-            isEqual: hasSameCurrency(country.currency, countryToGuess.currency)
+            isEqual: hasSameCurrency(country.currency, countryToCompare.currency)
         },
         borderCount: {
             value: country.borderCount,
-            ratio: ComputeRatio(country.borderCount, countryToGuess.borderCount),
+            ratio: ComputeRatio(country.borderCount, countryToCompare.borderCount),
             isEqual: borderCompare
         },
         area: {
             value: country.area,
-            ratio: ComputeRatio(country.area, countryToGuess.area),
+            ratio: ComputeRatio(country.area, countryToCompare.area),
             isEqual: areaCompare
         },
         distance: {
@@ -338,19 +364,65 @@ function CreateCountryData(country) {
 
 app.get('/', (req, res) => {        //get requests to the root ("/") will route here
     res.sendFile('index.html', {root: __dirname});      //server responds by sending the index.html file to the client's browser
-                                                        //the .sendFile method needs the absolute path to the file, see: https://expressjs.com/en/4x/api.html#res.sendFile 
+                                                        //the .sendFile method needs the absolute path to the file, see: https://expressjs.com/en/4x/api.html#res.sendFile
 });
 
-app.get('/guess', function (req, res) {
-  res.header("Content-Type",'application/json');
+app.get('/game', async function (req, res) {
+    let gameID = req.query.id;
+    if(!gameID) {
+        res.redirect('/');
+        return
+    }
+    try {
+        const requiredCountry = await getCountryByGame(gameID);
+        if (requiredCountry) {
+            res.sendFile(`index.html`, {root: __dirname});
+        } else {
+            res.status(400).json({error: "No game available with ID : " + gameID});
+        }
+    } catch (error) {
+        console.error("Error fetching country with game", error);
+        res.status(400).json({error: "Error fetching country with game"});
+    }
+});
+
+app.get('/guess', async function (req, res) {
+    //res.header("Content-Type",'application/json');
+    const validParams = ['code', 'game'];
+    for (const param in req.query) {
+        if (!validParams.includes(param)) {
+            res.status(400).json({error: "invalid url parameter : " + param});
+            return;
+        }
+    }
+
     let guessCode = req.query.code
+    let gameID = req.query.game
+
     let country = GetCountryData(guessCode)
     if(!country) {
         res.status(404).json({error: "Country not found"});
         return
     }
-    let countryData = CreateCountryData(country)
-    res.json(JSON.stringify(countryData))
+
+    let countryData
+    if(gameID) {
+        try {
+            const requiredCountry = await getCountryByGame(gameID);
+            if (requiredCountry) {
+                countryData = CreateCountryData(country, requiredCountry);
+                res.json(JSON.stringify(countryData));
+            } else {
+                res.status(400).json({error: "No game available with ID : " + gameID});
+            }
+        } catch (error) {
+            console.error("Error fetching country with game", error);
+            res.status(400).json({error: "Error fetching country with game"});
+        }
+    } else {
+        countryData = CreateCountryData(country);
+        res.json(JSON.stringify(countryData));
+    }
 })
 
 app.get('/AllCountriesName', function (req, res) {
@@ -359,37 +431,100 @@ app.get('/AllCountriesName', function (req, res) {
     res.json(JSON.stringify(countriesName))
 })
 
-app.get('/countryShape', function (req, res) {
-    const content = `<img src="./static/images/shapes/${countryToGuess.code}.svg" class="countryShape clueContentNode" alt="shape clue">`;
+app.get('/countryShape', async function (req, res) {
+    res.header("Content-Type",'application/json');
+
+    let gameID = req.query.game
+    let refCountryCode
+
+    if(gameID) {
+        try {
+            const requiredCountry = await getCountryByGame(gameID);
+            if (requiredCountry) {
+                refCountryCode = requiredCountry
+            } else {
+                res.status(400).json({error: "No game available with ID : " + gameID});
+            }
+        } catch (error) {
+            console.error("Error fetching country with game", error);
+            res.status(400).json({error: "Error fetching country with game"});
+        }
+    } else {
+        refCountryCode = countryToGuess.code
+    }
+
+    const content = `<img src="./static/images/shapes/${refCountryCode}.svg" class="countryShape clueContentNode" alt="shape clue">`;
     res.json({ content });
 })
 
-app.get('/randomBorder', function (req, res) {
+app.get('/randomBorder', async function (req, res) {
+    res.header("Content-Type",'application/json');
+
+    let gameID = req.query.game
+    let refCountry
+
+    if(gameID) {
+        try {
+            const requiredCountry = await getCountryByGame(gameID);
+            if (requiredCountry) {
+                refCountry = GetCountryData(requiredCountry)
+            } else {
+                res.status(400).json({error: "No game available with ID : " + gameID});
+            }
+        } catch (error) {
+            console.error("Error fetching country with game", error);
+            res.status(400).json({error: "Error fetching country with game"});
+        }
+    } else {
+        refCountry = countryToGuess
+    }
+
     let content
-    if(countryToGuess.borderCount === 0) {
-        let nearestCountryName = GetNearestCountry(countryToGuess).name
+    if(refCountry.borderCount === 0) {
+        let nearestCountryName = GetNearestCountry(refCountry).name
         content = `<div class="clueContentNode">Aucun pays frontalier<br>(Le plus proche : ${nearestCountryName})</div>`;
     } else {
-        let randomBorderCode = countryToGuess.borders[Math.floor(Math.random()*countryToGuess.borderCount)]
+        let randomBorderCode = refCountry.borders[Math.floor(Math.random()*refCountry.borderCount)]
         let countryName = GetCountryData(randomBorderCode).name
         content = `<div class="clueContentNode">${countryName}</div>`;
     }
     res.json({ content })
 })
 
-app.get('/capital', function (req, res) {
+app.get('/capital', async function (req, res) {
+    res.header("Content-Type",'application/json');
+
+    let gameID = req.query.game
+    let refCountry
+    if(gameID) {
+        try {
+            const requiredCountry = await getCountryByGame(gameID);
+            if (requiredCountry) {
+                refCountry = GetCountryData(requiredCountry)
+            } else {
+                res.status(400).json({error: "No game available with ID : " + gameID});
+            }
+        } catch (error) {
+            console.error("Error fetching country with game", error);
+            res.status(400).json({error: "Error fetching country with game"});
+        }
+    } else {
+        refCountry = countryToGuess
+    }
+
     let content
-    const capital = countryToGuess.capital
+    const capital = refCountry.capital
     if(capital.length === 0) {
         content = `<div class="clueContentNode">Aucune capitale</div>`;
     } else {
-        content = `<div class="clueContentNode">${countryToGuess.capital.join(",\n")}</div>`;
+        content = `<div class="clueContentNode">${refCountry.capital.join(",\n")}</div>`;
     }
     res.json({ content })
 })
 
 app.get('/dayCount', function (req, res) {
-   res.json( {dayCount:process.env.DAY_COUNT} )
+    res.header("Content-Type",'application/json');
+    res.json( {dayCount:process.env.DAY_COUNT} )
 })
 
 app.get('/rules', (req, res) => {
@@ -399,6 +534,20 @@ app.get('/rules', (req, res) => {
 app.get('/welcome', (req, res) => {
     res.sendFile('welcome.html', {root: __dirname});
 });
+
+app.get('/history', function (req, res) {
+    res.sendFile('history.html', {root: __dirname});
+})
+
+app.get('/gameHistory', function (req, res) {
+    waitForHistory()
+    .then(games => {
+        res.json({ games })
+    })
+    .catch(error => {
+        res.status(400).json({error: "No history"});
+    });
+})
 
 app.use("/static", express.static('./static/'));
 
@@ -410,12 +559,59 @@ app.listen(port, () => {
     console.log(`Now listening on port ${port}`);
 });
 
+function waitForHistory() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const dbRef = database.ref();
+            const snapshot = await dbRef.get();
+            if (snapshot.exists()) {
+                const keys = Object.keys(snapshot.val());
+                resolve(keys);
+            } else {
+                console.log("No data available");
+                resolve(null);
+            }
+        } catch (error) {
+            console.error(error);
+            reject(new Error('Error reading json file : ' + error.message));
+        }
+    });
+}
+async function getCountryByGame(gameID) {
+    try {
+        const dbRef = database.ref(gameID);
+        const snapshot = await dbRef.get();
+        if (snapshot.exists()) {
+            return snapshot.val();
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error("Error with database when fetching country", error);
+        return null;
+    }
+}
+
+async function addHistoryGame(gameID, countryCode) {
+    try {
+        const dbRef = database.ref(gameID);
+        await dbRef.set(countryCode);
+    } catch (error) {
+        console.error("Error with database when adding game id", error);
+    }
+}
+
+
+// =====================================================================================================================
+// =====================================================================================================================
+
 
 function downloadSVG(url, filename) {
     fetch(url)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`Une erreur s'est produite lors du téléchargement du fichier. Code de statut : ${response.status}`);
+                throw new Error(`Une erreur s'est produite lors du téléchargement du fichier. 
+                Code de statut : ${response.status}`);
             }
             return response.arrayBuffer();
         })
@@ -445,5 +641,24 @@ function updateSVG(filename) {
     else {
         console.log('Le fichier SVG n\'existe pas. Aucune modification effectuée.');
     }
-
 }
+
+// database.ref(new Date().toDateString()).set(data)
+// .then(() => {
+//     console.log('Données écrites avec succès.');
+//     const dbRef = database.ref();
+//     dbRef.get().then((snapshot) => {
+//         if (snapshot.exists()) {
+//             //console.log("value get : " + snapshot.val());
+//             const keys = Object.keys(snapshot.val());
+//             console.log("keys : ", keys);
+//         } else {
+//             console.log("No data available");
+//         }
+//       }).catch((error) => {
+//         console.error(error);
+//       });
+// })
+// .catch((error) => {
+//     console.error('Erreur lors de l\'écriture des données : ', error);
+// });

@@ -7,6 +7,7 @@ const answersGrid = document.getElementById('answersGrid');
 const zoomContainer = document.getElementById('zoomContainer')
 const zoomButton = document.getElementById('zoomButton')
 const rulesButton = document.getElementById('rulesButton')
+const historyButton = document.getElementById('historyButton')
 
 let incrementAttempt, getAttemptCount;
 (function () {
@@ -37,7 +38,16 @@ let SetSubmittedCountriesToLocalStorage, GetSubmittedCountries, SetSubmittedCoun
 (function () {
     let submittedCountries = [];
     SetSubmittedCountriesToLocalStorage = function() {
-        localStorage.setItem('submittedCountries', JSON.stringify(GetSubmittedCountries()));
+        let history = JSON.parse(localStorage.getItem("history"))
+        let key = gameID ? gameID : dayCount
+        if(key in history && history[key].hasWon) {
+            return
+        }
+        history[key] = {
+            hasWon: false,
+            submittedCountries: GetSubmittedCountries()
+        }
+        localStorage.setItem('history', JSON.stringify(history));
     };
     GetSubmittedCountries = function() {
         return submittedCountries
@@ -82,7 +92,18 @@ document.addEventListener("DOMContentLoaded", () => {
 window.onload = () => {
     console.log("load")
     SetPreferredTheme()
+    detectGame()
 }
+
+function detectGame() {
+    if(!gameID) {
+        CheckForHistory();
+    }
+    else {
+        CheckForHistory(gameID)
+    }
+}
+
 function UpdateCountdownUntilNextCountry() {
     let now = new Date();
     let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
@@ -108,29 +129,44 @@ function UpdateCountdownUntilNextCountry() {
         RefreshGame()
     }
 }
-UpdateCountdownUntilNextCountry()
-countdownInterval = setInterval(UpdateCountdownUntilNextCountry, 1000);
+if(!gameID) {
+    UpdateCountdownUntilNextCountry()
+    countdownInterval = setInterval(UpdateCountdownUntilNextCountry, 1000);
+}
 
 function GetCountryPromises(submittedCountries) {
-    ToggleLoading(true)
-    isLoadingCountries = true
     return submittedCountries.map(countryCode => SubmitCountry(countryCode));
 }
 
-function GetDayCount() {
-    fetch(`/dayCount`)
-        .then(response => response.json())
-        .then(data => {
-            dayCount = data.dayCount;
-        });
+async function GetDayCount() {
+    try {
+        const response = await fetch(`/dayCount`);
+        const data = await response.json();
+        dayCount = data.dayCount;
+    } catch (error) {
+        console.error(error);
+    }
 }
-GetDayCount()
 
-function CheckForHistory() {
-    let submittedCountries = JSON.parse(localStorage.getItem('submittedCountries'));
+function CheckForHistory(gameID = null) {
+    ToggleLoading(true)
+    isLoadingCountries = true
+    GetDayCount().then(() => {
+        let history = JSON.parse(localStorage.getItem('history'));
+        if(!history) {
+            localStorage.setItem("history", JSON.stringify({}))
+            history = {}
+        }
+        let submittedCountries
+        if(gameID) {
+            submittedCountries = gameID in history ? history[gameID].submittedCountries : [];
+        }
+        else {
+            submittedCountries = dayCount in history ? history[dayCount].submittedCountries : [];
+        }
 
-    if(submittedCountries !== null) {
-        Promise.all(GetCountryPromises(submittedCountries))
+        if(submittedCountries !== null) {
+            Promise.all(GetCountryPromises(submittedCountries))
             .then(results => {
                 for (const countryData of results) {
                     ResolveCountry(countryData)
@@ -141,9 +177,9 @@ function CheckForHistory() {
             .catch(error => {
                 console.error(error);
             });
-    }
+        }
+    })
 }
-CheckForHistory()
 
 function GetTriedCountryBySuggestion(suggestion) {
     suggestion = suggestion.trim()
@@ -194,7 +230,6 @@ document.body.addEventListener("click", (e) => {
 zoomButton.addEventListener('click', () => {
     zoomedIn ? ZoomOut() : ZoomIn()
 })
-rulesButton.addEventListener('click', () => GoToPage("rules"))
 
 function GetCountriesBySuggestion(suggestion) {
     suggestion = suggestion.trim()
@@ -310,8 +345,13 @@ async function SubmitCountry(countryCode) {
     countryInput.value = ""
     ToggleLoading(true)
 
+    let defaultFetchURL = `/guess?code=${countryCode}`
+    if(gameID) {
+        defaultFetchURL += `&game=${gameID}`
+    }
+
     return new Promise((resolve, reject) => {
-        fetch(`/guess?code=${countryCode}`)
+        fetch(defaultFetchURL)
             .then(response => response.json())
             .then(data => {
                 ToggleLoading(false)
@@ -345,7 +385,8 @@ function WinGame(countryData) {
         attemptsElements[i].innerText = attemptCount
     }
 
-    document.getElementById("dayCount").innerText = dayCount.toString()
+    let game
+    document.getElementById("dayCount").innerText = gameID ? gameID : dayCount.toString()
 
     let clueUsedCountNode = document.getElementById("clueUsedCount")
     clueUsedCountNode.innerText = Clue.UsedClueCount().toString()
@@ -408,6 +449,13 @@ function WinGame(countryData) {
     wikiLink.addEventListener("click", () => {
         window.open(countryData.wikiLink, "_blank")
     })
+
+    let history = JSON.parse(localStorage.getItem('history'));
+    let gameKey = gameID ? gameID : dayCount
+    let gameValue = history[gameKey]
+    gameValue.hasWon = true;
+    localStorage.setItem("history", JSON.stringify(history))
+
 }
 
 function DisplayToast(text, avatar) {

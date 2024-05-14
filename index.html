@@ -34,8 +34,9 @@
     <div id="container">
         <header>
             <div id="themeButton" onclick="ToggleDarkMode()"></div>
+            <div id="historyButton" onclick="GoToPage('history')"></div>
             <h1>COUNTRY GUESSR</h1>
-            <div id="rulesButton"></div>
+            <div id="rulesButton" onclick="GoToPage('rules')"></div>
         </header>
 
         <main>
@@ -182,6 +183,7 @@
 <script src="https://cdn.jsdelivr.net/npm/i18next@21.2.3/dist/umd/i18next.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script type="module" src="static/js/Country.min.js"></script>
+<script src="static/js/Util.min.js"></script>
 <script src="static/js/Clue.min.js"></script>
 <script src="static/js/CountrySuggestionList.min.js"></script>
 <script src="static/js/GameManager.min.js"></script>

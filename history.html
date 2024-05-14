@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VVYB49HBV9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-VVYB49HBV9');
+    </script>
+    <meta name="google-adsense-account" content="ca-pub-8818149298407718">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="icon" type="image/png" href="static/images/countryGuessrLogo.png" sizes="32x32"/>
+    <!--<link rel="stylesheet" type="text/css" href="static/styles/styles.css">-->
+    <link rel="stylesheet" type="text/css" href="static/styles/rules.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="canonical" href="https://countryguessr.mrdo.fr/">
+</head>
+
+<body>
+
+<div id="container">
+    <header>
+        <div id="themeButton" onclick="ToggleDarkMode()"></div>
+        <div id="historyButton" onclick=""></div>
+        <div id="rulesButton" onclick="GoToPage('rules')"></div>
+        <h1>COUNTRY GUESSR</h1>
+    </header>
+
+    <main>
+        <div id="backButtonContainer">
+            <div id="backButton" onclick="GoToPage('/')">Aujourd'hui</div>
+        </div>
+
+        <div id="gameListContainer"></div>
+        <div id="loading"></div>
+    </main>
+
+</div>
+
+<footer></footer>
+
+<script>
+    const preferredTheme = localStorage.getItem('theme');
+    preferredTheme ? SetTheme(preferredTheme) : detectSystemThemeChange(updateTheme);
+    document.body.classList.replace("hidden", "visible")
+
+    function SetTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    function GetTheme() {
+        return document.documentElement.getAttribute('data-theme')
+    }
+
+    function GoToPage(page) {
+        window.location.href = `${window.location.origin}/${page}`
+    }
+
+    function ToggleDarkMode() {
+        let theme = GetTheme()
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        SetTheme(newTheme)
+        localStorage.setItem('theme', newTheme);
+    }
+
+    function detectSystemThemeChange(callback) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const currentTheme = mediaQuery.matches ? 'dark' : 'light';
+        SetTheme(currentTheme)
+        mediaQuery.addEventListener('change', callback);
+    }
+
+    function updateTheme(event) {
+        const currentTheme = event.matches ? 'dark' : 'light';
+        SetTheme(currentTheme)
+    }
+
+    function getGameHistory() {
+        document.getElementById("loading").style.display = "flex"
+        fetch(`/gameHistory`)
+            .then(response => response.json())
+            .then(history => {
+                document.getElementById("loading").style.display = "none"
+                createHistoryList(history.games)
+            });
+    }
+    getGameHistory();
+
+    function createHistoryList(gameIds) {
+        gameIds.reverse()
+        gameIds.forEach((gameId) => {
+            let gameListElement = document.createElement("div")
+            gameListElement.classList.add("gameListElement")
+            let gameListElementLink = document.createElement("a")
+            let gameListElementText = document.createElement("span")
+            //gameListElementText.innerText = getGameHistoryText(gameId)
+            setGameHistoryStatus(gameListElementText, gameId)
+
+            gameListElementLink.href = `${window.location.origin}/game?id=${gameId}`
+            gameListElementLink.innerText = `Country Guessr #${gameId}`
+            gameListElement.appendChild(gameListElementLink)
+            gameListElement.appendChild(gameListElementText)
+            document.getElementById("gameListContainer").appendChild(gameListElement);
+        })
+    }
+
+    function getGameHistoryText(gameID) {
+        let history = JSON.parse(localStorage.getItem('history'));
+        let gameValue = history[gameID]
+        if(!gameValue) {
+            return "🔴 A faire"
+        }
+        let attemptsCount = gameValue.submittedCountries.length
+        let attemptsWord = attemptsCount > 1 ? "essais" : "essai"
+        if(gameValue.hasWon) {
+            return `🟢 ${attemptsCount} ${attemptsWord}`
+        } else {
+            return `🟡 ${attemptsCount} ${attemptsWord}`
+        }
+    }
+
+    function setGameHistoryStatus(span, gameID) {
+        let text
+        let history = JSON.parse(localStorage.getItem('history'));
+        let gameValue = history[gameID]
+        if(!gameValue) {
+            text = "A faire"
+            span.classList.add("statusToDo")
+            span.innerText = text
+            return
+        }
+        let attemptsCount = gameValue.submittedCountries.length
+        let attemptsWord = attemptsCount > 1 ? "essais" : "essai"
+        if(gameValue.hasWon) {
+            text = `GG : ${attemptsCount} ${attemptsWord}`
+            span.classList.add("statusWon")
+        } else {
+            text = `En cours`
+            span.classList.add("statusWIP")
+        }
+        span.innerText = text
+    }
+
+</script>
+<script src="static/js/Util.min.js"></script>
+
+</body>
+
+</html>

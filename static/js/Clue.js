@@ -43,11 +43,16 @@ class Clue {
         };
         WaitForClue(this.apiURL)
             .then(data => {
-                let border = localStorage.getItem('border');
-                if(this.clueID === 1 && border !== null) {
-                    this.contentNodeText = border
+                let borders = JSON.parse(localStorage.getItem('borders'));
+                if(!borders) {
+                    localStorage.setItem("borders", JSON.stringify({}))
+                }
+                if (this.clueID === 1 && gameID && borders[gameID]) {
+                    this.contentNodeText = borders[gameID];
+                } else if (this.clueID === 1 && borders["current"]) {
+                    this.contentNodeText = borders["current"];
                 } else {
-                    this.contentNodeText = data.content
+                    this.contentNodeText = data.content;
                 }
                 this.contentNode = Clue.parser.parseFromString(this.contentNodeText, 'text/html').body.firstChild;
                 this.contentNode.style.display = "none"
@@ -72,8 +77,15 @@ class Clue {
                     localStorage.setItem('clues', JSON.stringify(Clue.GetDataForLocalStorage()));
                     Clue.allClues[this.clueID] = this
 
+
                     if(this.clueID === 1) {
-                        localStorage.setItem('border', this.contentNodeText)
+                        let borders = JSON.parse(localStorage.getItem('borders'));
+                        if(gameID) {
+                            borders[gameID] = this.contentNodeText
+                        } else {
+                            borders["current"] = this.contentNodeText
+                        }
+                        localStorage.setItem('borders', JSON.stringify(borders))
                     }
                     this.ToggleContent()
                 })
@@ -191,8 +203,10 @@ function InitiateShapeClue() {
     let shapeClueAttemptsText = document.getElementById("shapeClueAttempts")
     let clueShape = null
 
+    let apiURL = gameID ? `/countryShape?game=${gameID}` : `/countryShape`
+
     clueShape = new Clue(0, 5, shapeClueNode, shapeClueImgContainer, shapeClueImg, "clueShapeImgUnlocked",
-        shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, `/countryShape`)
+        shapeClueTextNode, "Indice forme du pays", "14%", shapeClueAttemptsText, apiURL)
     if(saveClues !== null) {
         clueShape.hasBeenUsed = saveClues[0].hasBeenUsed
     }
@@ -208,8 +222,15 @@ function InitiateBorderClue() {
     let borderClueAttemptsText = document.getElementById("borderClueAttempts")
     let borderClue = null
 
+    let apiURL = gameID ? `/randomBorder?game=${gameID}` : `/randomBorder`
+
+    /*let borders = JSON.parse(localStorage.getItem('borders'));
+    if(!borders) {
+        localStorage.setItem("borders", JSON.stringify({}))
+    }*/
+
     borderClue = new Clue(1, 8, borderClueNode, borderClueImgContainer, borderClueImg, "clueBorderImgUnlocked",
-        borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, `/randomBorder`)
+        borderClueTextNode, "Indice pays frontalier", "50%", borderClueAttemptsText, apiURL)
     if(saveClues !== null) {
         borderClue.hasBeenUsed = saveClues[1].hasBeenUsed
     }
@@ -225,30 +246,18 @@ function InitiateCapitalClue() {
     let capitalClueAttemptsText = document.getElementById("capitalClueAttempts")
     let capitalClue = null
 
+    let apiURL = gameID ? `/capital?game=${gameID}` : `/capital`
+
     capitalClue = new Clue(2, 11, capitalClueNode, capitalClueImgContainer, capitalClueImg, "clueCapitalImgUnlocked",
-        capitalClueTextNode, "Indice capitale", "86%", capitalClueAttemptsText, `/capital`)
+        capitalClueTextNode, "Indice capitale", "86%", capitalClueAttemptsText, apiURL)
     if(saveClues !== null) {
         capitalClue.hasBeenUsed = saveClues[2].hasBeenUsed
     }
     Clue.allClues.push(capitalClue)
 }
 
-function ClearLocalStorage() {
-    const keysToDelete = [];
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key !== "isFirstTime") {
-            keysToDelete.push(key);
-        }
-    }
-
-    for (const key of keysToDelete) {
-        localStorage.removeItem(key);
-    }
-}
-
 function GoToPage(page) {
-    window.location.href = `${window.location.href}${page}`
+    window.location.href = `${window.location.origin}/${page}`
 }
 
 function InitiateClues() {
