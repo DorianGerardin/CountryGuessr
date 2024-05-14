@@ -50,7 +50,7 @@ class Clue {
                 }
                 if (this.clueID === 1 && gameID && borders[gameID]) {
                     this.contentNodeText = borders[gameID];
-                } else if (this.clueID === 1 && borders["current"]) {
+                } else if (this.clueID === 1 && !gameID && borders["current"]) {
                     this.contentNodeText = borders["current"];
                 } else {
                     this.contentNodeText = data.content;
