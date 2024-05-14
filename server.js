@@ -213,7 +213,6 @@ function SetAllCountries() {
         );
         countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
         console.log(countryToGuess.name)
-        addHistoryGame(process.env.DAY_COUNT, countryToGuess.code);
     });
 }
 
