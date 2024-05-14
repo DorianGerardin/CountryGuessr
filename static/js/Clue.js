@@ -46,6 +46,7 @@ class Clue {
                 let borders = JSON.parse(localStorage.getItem('borders'));
                 if(!borders) {
                     localStorage.setItem("borders", JSON.stringify({}))
+                    borders = {}
                 }
                 if (this.clueID === 1 && gameID && borders[gameID]) {
                     this.contentNodeText = borders[gameID];
