@@ -100,6 +100,7 @@ header {
 main {
     display: flex;
     flex-direction: column;
+    align-items: center;
     width: 95%;
 }
 
@@ -383,8 +384,8 @@ li {
         width: 70%;
     }
     h1 {
-        font-size: 1.75em;
-        padding: 0.5em 1em 0.35em 1em;
+        font-size: 1.6em;
+        padding: 0.5em 0 0.35em 0;
     }
     .answerRow{
         font-size: 12px;
@@ -403,6 +404,10 @@ li {
     .answerRow{
         font-size: 10px;
     }
+    h1 {
+        font-size: 1.4em;
+        padding: 0.5em 0 0.35em 0;
+    }
 }
 
 @media screen and (min-width: 334px) and (max-width: 480px) {
@@ -414,8 +419,8 @@ li {
         width: 100%;
     }
     h1 {
-        font-size: 1.5em;
-        padding: 0.5em 1em 0.35em 1em;
+        font-size: 1.35em;
+        padding: 0.5em 0 0.35em 0;
     }
     .answerRow{
         font-size: 8px;
@@ -433,8 +438,8 @@ li {
     }
 
     h1 {
-        font-size: 1.25em;
-        padding: 0.5em 1em 0.35em 1em;
+        font-size: 1.05em;
+        padding: 0.5em 0 0.35em 0;
     }
     .answerRow{
         font-size: 8px;

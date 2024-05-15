@@ -829,8 +829,8 @@ input[type=text]:disabled {
 		height: 6em;
 	}
 	h1 {
-		font-size: 1.75em;
-		padding: 0.5em 1em 0.35em 1em;
+		font-size: 1.6em;
+		padding: 0.5em 0 0.35em 0;
 	}
 }
 
@@ -872,6 +872,10 @@ input[type=text]:disabled {
 		width: 5em;
 		height: 5em;
 	}
+	h1 {
+		font-size: 1.4em;
+		padding: 0.5em 0 0.35em 0;
+	}
 }
 
 @media screen and (min-width: 334px) and (max-width: 480px) {
@@ -895,8 +899,8 @@ input[type=text]:disabled {
 		font-size: 8px;
 	}
 	h1 {
-		font-size: 1.5em;
-		padding: 0.5em 1em 0.35em 1em;
+		font-size: 1.35em;
+		padding: 0.5em 0 0.35em 0;
 	}
 	.category {
 		height: 5em;
@@ -938,8 +942,8 @@ input[type=text]:disabled {
 		font-size: 8px;
 	}
 	h1 {
-		font-size: 1.25em;
-		padding: 0.5em 1em 0.35em 1em;
+		font-size: 1.05em;
+		padding: 0.5em 0 0.35em 0;
 	}
 	.category {
 		height: 5em;
