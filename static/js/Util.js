@@ -9,13 +9,18 @@ function getGameId() {
 
 function ClearLocalStorage() {
     const keysToSave = ["isFirstTime", "history"];
+    let keysToRemove = []
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         console.log(key)
         if (!keysToSave.includes(key)) {
-            console.log("should remove key")
-            localStorage.removeItem(key);
+            //console.log("should remove key")
+            keysToRemove.push(key);
         }
+    }
+
+    for (const key of keysToRemove) {
+        localStorage.removeItem(key)
     }
 }
 

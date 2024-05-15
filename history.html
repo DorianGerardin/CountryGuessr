@@ -31,9 +31,9 @@
 <div id="container">
     <header>
         <div id="themeButton" onclick="ToggleDarkMode()"></div>
-        <div id="historyButton" onclick=""></div>
-        <div id="rulesButton" onclick="GoToPage('rules')"></div>
+        <div id="historyButton" onclick="GoToPage('history')"></div>
         <h1>COUNTRY GUESSR</h1>
+        <div id="rulesButton" onclick="GoToPage('rules')"></div>
     </header>
 
     <main>
@@ -116,6 +116,10 @@
 
     function getGameHistoryText(gameID) {
         let history = JSON.parse(localStorage.getItem('history'));
+        if(!history) {
+            localStorage.setItem("history", JSON.stringify({}))
+            history = {}
+        }
         let gameValue = history[gameID]
         if(!gameValue) {
             return "🔴 A faire"
@@ -132,6 +136,10 @@
     function setGameHistoryStatus(span, gameID) {
         let text
         let history = JSON.parse(localStorage.getItem('history'));
+        if(!history) {
+            localStorage.setItem("history", JSON.stringify({}))
+            history = {}
+        }
         let gameValue = history[gameID]
         if(!gameValue) {
             text = "A faire"

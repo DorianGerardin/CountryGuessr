@@ -50,7 +50,8 @@ SetAllCountries();
 async function UpdateCurrentCountry(newCountryCode) {
     try {
         const data = {
-            CURRENT_COUNTRY : newCountryCode
+            CURRENT_COUNTRY : newCountryCode,
+            DAY_COUNT : parseInt(process.env.DAY_COUNT) + 1,
         }
         await axios({
             method: 'patch',
@@ -199,11 +200,9 @@ function SetAllCountries() {
                 if(process.env.NODE_ENV === "debug") {
                     return
                 }
+                addHistoryGame(process.env.DAY_COUNT, countryToGuess.code);
                 UpdateCurrentCountry(GetRandomCountryCode()).then(() => {
                     countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
-                    UpdateDayCount(parseInt(process.env.DAY_COUNT) + 1).then(() => {
-                        addHistoryGame(process.env.DAY_COUNT, countryToGuess.code);
-                    })
                 })
                 console.log(`reset country : ${countryToGuess.name}`)
             },

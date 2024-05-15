@@ -143,14 +143,12 @@ header {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-evenly;
 	width: 60%;
 	border-bottom: var(--header-border);
 }
 
 #themeButton {
-	position: absolute;
-	left: 0;
 	background-image: var(--theme-url);
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -163,8 +161,6 @@ header {
 }
 
 #rulesButton {
-	position: absolute;
-	right: 0;
 	background-image: var(--rules-img-url);
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -177,8 +173,6 @@ header {
 }
 
 #historyButton {
-	position: absolute;
-	right: 2.25em;
 	background-image: var(--history-icon-url);
 	background-repeat: no-repeat;
 	background-size: contain;

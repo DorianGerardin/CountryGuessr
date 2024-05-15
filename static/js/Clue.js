@@ -43,16 +43,14 @@ class Clue {
         };
         WaitForClue(this.apiURL)
             .then(data => {
-                let borders = JSON.parse(localStorage.getItem('borders'));
-                if(!borders) {
-                    localStorage.setItem("borders", JSON.stringify({}))
-                    borders = {}
-                }
-                if (this.clueID === 1 && gameID && borders[gameID]) {
-                    this.contentNodeText = borders[gameID];
-                } else if (this.clueID === 1 && !gameID && borders["current"]) {
-                    this.contentNodeText = borders["current"];
-                } else {
+                let border = JSON.parse(localStorage.getItem('border'));
+                let history = JSON.parse(localStorage.getItem('history'));
+                if(this.clueID === 1 && !gameID && border) {
+                    this.contentNodeText = border;
+                } else if(this.clueID === 1 && gameID) {
+                    this.contentNodeText = history[gameID].border || data.content;
+                } 
+                else {
                     this.contentNodeText = data.content;
                 }
                 this.contentNode = Clue.parser.parseFromString(this.contentNodeText, 'text/html').body.firstChild;
@@ -75,18 +73,32 @@ class Clue {
                     if(!this.hasBeenUsed && !game.HasWon()) {
                         this.hasBeenUsed = true
                     }
-                    localStorage.setItem('clues', JSON.stringify(Clue.GetDataForLocalStorage()));
+
+                    history = JSON.parse(localStorage.getItem("history"))
+                    let cluesData = Clue.GetDataForLocalStorage()
+                    if(gameID && !game.HasWon()) {
+                        history[gameID].UsedClueCount = Clue.UsedClueCount()
+                    } else if(!gameID) {
+                        history[dayCount].clues = cluesData
+                        localStorage.setItem('clues', JSON.stringify(cluesData));
+                    }
+                    localStorage.setItem('history', JSON.stringify(history));
+
                     Clue.allClues[this.clueID] = this
 
 
                     if(this.clueID === 1) {
-                        let borders = JSON.parse(localStorage.getItem('borders'));
-                        if(gameID) {
-                            borders[gameID] = this.contentNodeText
-                        } else {
-                            borders["current"] = this.contentNodeText
+                        if(!gameID) {
+                            border = JSON.parse(localStorage.getItem('border'));
+                            if(!border) {
+                                let borderValue = data.content
+                                localStorage.setItem("border", JSON.stringify(borderValue))
+                                history[dayCount].border = borderValue
+                            }
+                        } else if(!history[gameID].border) {
+                            history[gameID].border = data.content
                         }
-                        localStorage.setItem('borders', JSON.stringify(borders))
+                        localStorage.setItem('history', JSON.stringify(history));   
                     }
                     this.ToggleContent()
                 })
@@ -262,9 +274,9 @@ function GoToPage(page) {
 }
 
 function InitiateClues() {
-    let expirationDate = new Date(JSON.parse(localStorage.getItem('expirationDate')));
-    if(expirationDate !== null) {
-        if(expirationDate < new Date()) {
+    let expiration = JSON.parse(localStorage.getItem('expirationDate'))
+    if(expiration !== null) {
+        if(new Date(expiration) < new Date()) {
             ClearLocalStorage()
         }
     }

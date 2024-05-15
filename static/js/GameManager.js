@@ -39,15 +39,18 @@ let SetSubmittedCountriesToLocalStorage, GetSubmittedCountries, SetSubmittedCoun
     let submittedCountries = [];
     SetSubmittedCountriesToLocalStorage = function() {
         let history = JSON.parse(localStorage.getItem("history"))
-        let key = gameID ? gameID : dayCount
+        let key = gameID || dayCount
         if(key in history && history[key].hasWon) {
             return
         }
-        history[key] = {
-            hasWon: false,
-            submittedCountries: GetSubmittedCountries()
-        }
+        history[key] ??= { hasWon: false, submittedCountries: submittedCountries };
+        history[key].hasWon = false;
+        history[key].submittedCountries = submittedCountries;
+        
         localStorage.setItem('history', JSON.stringify(history));
+        if(!gameID) {
+            localStorage.setItem('submittedCountries', JSON.stringify(submittedCountries))
+        }
     };
     GetSubmittedCountries = function() {
         return submittedCountries
@@ -162,7 +165,8 @@ function CheckForHistory(gameID = null) {
             submittedCountries = gameID in history ? history[gameID].submittedCountries : [];
         }
         else {
-            submittedCountries = dayCount in history ? history[dayCount].submittedCountries : [];
+            let todaySubmittedCountries = JSON.parse(localStorage.getItem('submittedCountries'));
+            submittedCountries = todaySubmittedCountries || [];
         }
 
         if(submittedCountries !== null) {
@@ -385,12 +389,20 @@ function WinGame(countryData) {
         attemptsElements[i].innerText = attemptCount
     }
 
-    let game
-    document.getElementById("dayCount").innerText = gameID ? gameID : dayCount.toString()
+    let history = JSON.parse(localStorage.getItem('history'));
+    let gameKey = gameID || dayCount
+
+    document.getElementById("dayCount").innerText = gameKey
 
     let clueUsedCountNode = document.getElementById("clueUsedCount")
-    clueUsedCountNode.innerText = Clue.UsedClueCount().toString()
-    document.getElementById("indices").innerText = Clue.UsedClueCount() > 1 ? "indices" : "indice"
+    let usedClueCount
+    if(gameID) {
+        usedClueCount = history[gameID].UsedClueCount || 0
+    } else {
+        usedClueCount = Clue.UsedClueCount()
+    }
+    clueUsedCountNode.innerText = usedClueCount
+    document.getElementById("indices").innerText = usedClueCount > 1 ? "indices" : "indice"
 
     document.getElementById("essai").innerText = attemptCount > 1 ? "essais" : "essai"
     let shareContent = getShareContent()
@@ -450,8 +462,6 @@ function WinGame(countryData) {
         window.open(countryData.wikiLink, "_blank")
     })
 
-    let history = JSON.parse(localStorage.getItem('history'));
-    let gameKey = gameID ? gameID : dayCount
     let gameValue = history[gameKey]
     gameValue.hasWon = true;
     localStorage.setItem("history", JSON.stringify(history))
