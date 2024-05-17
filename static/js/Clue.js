@@ -78,8 +78,8 @@ class Clue {
                     let cluesData = Clue.GetDataForLocalStorage()
                     if(gameID && !game.HasWon()) {
                         history[gameID].UsedClueCount = Clue.UsedClueCount()
-                    } else if(!gameID) {
-                        history[dayCount].clues = cluesData
+                    } else if(!gameID && !game.HasWon()) {
+                        history[dayCount].UsedClueCount = Clue.UsedClueCount()
                         localStorage.setItem('clues', JSON.stringify(cluesData));
                     }
                     localStorage.setItem('history', JSON.stringify(history));
