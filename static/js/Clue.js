@@ -274,7 +274,7 @@ function GoToPage(page) {
 }
 
 function InitiateClues() {
-    let expiration = localStorage.getItem('expirationDate')
+    let expiration = JSON.parse(localStorage.getItem('expirationDate'))
     if(expiration) {
         if(new Date(expiration) < new Date()) {
             ClearLocalStorage()
