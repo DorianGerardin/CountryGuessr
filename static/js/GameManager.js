@@ -339,9 +339,11 @@ async function SubmitCountry(countryCode) {
     }
 
     if(game.HasWon()) {
+        currentCountry = null
         return Promise.resolve(null)
     }
     if(!countryCode) {
+        currentCountry = null
         DisplayToast('Pays introuvable !', './static/images/alert.svg')
         return Promise.resolve(null);
     }
