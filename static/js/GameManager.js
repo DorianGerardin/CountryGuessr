@@ -88,13 +88,14 @@ GetAllCountriesName()
 
 let countdownInterval
 document.addEventListener("DOMContentLoaded", () => {
+    if(gameID) {
+        document.getElementById("clueContainerHeader").innerText = `Devine le pays #${gameID}`
+    }
     SetPreferredTheme()
     document.body.classList.replace("hidden", "visible")
 })
 
 window.onload = () => {
-    console.log("load")
-    SetPreferredTheme()
     detectGame()
 }
 
@@ -124,11 +125,11 @@ function UpdateCountdownUntilNextCountry() {
         return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     };
 
-    countdownNode.innerText = `(Il te reste ${formatTimer(hours, minutes, seconds)})`
+    countdownNode.innerText = `(Prochain pays dans ${formatTimer(hours, minutes, seconds)})`
 
     if(hours <= 0 && minutes <= 0 && seconds <= 0) {
         clearInterval(countdownInterval)
-        countdownNode.innerText = `(Il te reste ${formatTimer(0, 0, 0)})`
+        countdownNode.innerText = `(Prochain pays dans ${formatTimer(0, 0, 0)})`
         RefreshGame()
     }
 }
@@ -276,6 +277,9 @@ function GetAllCountriesName() {
 }
 
 function TrySubmitCountry(event) {
+    if(isLoadingCountry || isLoadingCountries) {
+        return
+    }
     if(event.key !== "Enter" || !countrySuggestionList.IsEmpty()) {
         return
     }

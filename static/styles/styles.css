@@ -658,6 +658,7 @@ input[type=text]:disabled {
 }
 
 #clueContainerHeader {
+	text-align: center;
 	font-size: 1.3em;
 }
 
