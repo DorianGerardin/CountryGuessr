@@ -11,6 +11,7 @@
 	--clues-bg-gradient: linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
 	--clues-bg-webkit-gradient: -webkit-linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
 	--clues-bg-moz-gradient: -moz-linear-gradient(180deg, #202020 0%, rgba(9,9,9,1) 100%);
+    --clues-bg-box-shadow: none;
 	--input-border-color:#2e2e2e;
 	--input-border-width: 0.1em 0 0.1em 0.1em;
 	--input-border-radius: 0.35em 0 0 0.35em;
@@ -42,41 +43,42 @@
 	--dark-text-color:#121212;
 }
 
+
 [data-theme="light"] {
-	--main-bg-color: rgb(229 229 229);
-	--main-text-color: #252525;
-	--header-border: 2px solid var(--main-text-color);
-	--clue-text-color: #b2b2b2;
-	--clue-text-color-unlocked: #3bc03b;
-	--clue-border : none;
-	--clue-img-border : 0.2em solid var(--clue-text-color);
-	--clue-img-border-unlocked : 0.2em solid var(--clue-text-color-unlocked);
-	--clue-content-bg-color: white;
-	--clues-bg-gradient: linear-gradient(180deg, #ffffff 0%, rgb(237 237 237) 100%);
-	--clues-bg-webkit-gradient: -webkit-linear-gradient(180deg, #ffffff 0%, rgb(237 237 237) 100%);
-	--clues-bg-moz-gradient: -moz-linear-gradient(180deg, #ffffff 0%, rgb(237 237 237) 100%);
-	--input-border-color: rgb(0 0 0 / 24%);
-	--submit-hover-bg-color: var(--main-text-color);
-	--submit-hover-color: var(--white-text-color);
-	--submit-border: 0.1em solid #595959;
-	--suggestions-bg-color:#f3f3f3;
-	--suggestion-focus-bg-color:#d5d5d5;
-	--country-shape-brightness: brightness(0);
+    --main-bg-color: #f9f9f9;
+    --main-text-color: #252525;
+    --header-border: 2px solid var(--main-text-color);
+    --clue-text-color: #b2b2b2;
+    --clue-text-color-unlocked: #3bc03b;
+    --clue-border : 0.16em solid #e9e9e9;
+    --clue-img-border : 0.2em solid var(--clue-text-color);
+    --clue-img-border-unlocked : 0.2em solid var(--clue-text-color-unlocked);
+    --clue-content-bg-color: white;
+    --clues-bg-gradient: linear-gradient(180deg, #ffffff 0%, rgb(247 247 247) 100%);
+    --clues-bg-webkit-gradient:linear-gradient(180deg, #ffffff 0%, rgb(247 247 247) 100%);
+    --clues-bg-moz-gradient: linear-gradient(180deg, #ffffff 0%, rgb(247 247 247) 100%);
+    --clues-bg-box-shadow: none;
+    --input-border-color: rgb(0 0 0 / 24%);
+    --submit-hover-bg-color: var(--main-text-color);
+    --submit-hover-color: var(--white-text-color);
+    --submit-border: 0.1em solid #595959;
+    --suggestions-bg-color:#f3f3f3;
+    --suggestion-focus-bg-color:#d5d5d5;
+    --country-shape-brightness: brightness(0);
 
-	--rules-img-url:url('../images/question-mark_dark.svg');
-	--zoomIn-img-url:url('../images/zoomIn_dark.svg');
-	--zoomOut-img-url:url('../images/zoomOut_dark.svg');
-	--border-locked-img-url:url('../images/borderClue_locked_light.svg');
-	--border-unlocked-img-url:url('../images/borderClue_unlocked_light.svg');
-	--captial-locked-img-url:url('../images/capitalClue_locked_light.svg');
-	--captial-unlocked-img-url:url('../images/capitalClue_unlocked_light.svg');
-	--shape-locked-img-url:url('../images/shapeClue_locked_light.svg');
-	--shape-unlocked-img-url:url('../images/shapeClue_unlocked_light.svg');
-	--loading-url:url('../images/loading_light.svg');
-	--history-icon-url:url(../images/history_dark.svg);
-	--theme-url:url(../images/moon.svg);
+    --rules-img-url:url('../images/question-mark_dark.svg');
+    --zoomIn-img-url:url('../images/zoomIn_dark.svg');
+    --zoomOut-img-url:url('../images/zoomOut_dark.svg');
+    --border-locked-img-url:url('../images/borderClue_locked_light.svg');
+    --border-unlocked-img-url:url('../images/borderClue_unlocked_light.svg');
+    --captial-locked-img-url:url('../images/capitalClue_locked_light.svg');
+    --captial-unlocked-img-url:url('../images/capitalClue_unlocked_light.svg');
+    --shape-locked-img-url:url('../images/shapeClue_locked_light.svg');
+    --shape-unlocked-img-url:url('../images/shapeClue_unlocked_light.svg');
+    --loading-url:url('../images/loading_light.svg');
+    --history-icon-url:url(../images/history_dark.svg);
+    --theme-url:url(../images/moon.svg);
 }
-
 * {
 	margin: 0;
 	padding: 0;
@@ -650,7 +652,7 @@ input[type=text]:disabled {
 	padding: 1em;
 	border-radius: 0.75em;
 	border: var(--clue-border);
-	box-shadow: 0 10px 13px -7px #00000014;
+	box-shadow: var(--clues-bg-box-shadow);
 	background: var(--clues-bg-moz-gradient);
 	background: var(--clues-bg-webkit-gradient);
 	background: var(--clues-bg-gradient);

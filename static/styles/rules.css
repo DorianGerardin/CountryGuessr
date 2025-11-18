@@ -13,7 +13,7 @@
 }
 
 [data-theme="light"] {
-    --main-bg-color: rgb(229 229 229);
+    --main-bg-color: #f9f9f9;
     --main-text-color: #252525;
     --main-button-color:#00d8ff;
     --header-border: 2px solid var(--main-text-color);
@@ -337,7 +337,7 @@ li {
     padding: 1em 0 1em 0;
     display: flex;
     justify-content: space-between;
-    border-bottom: 0.15em solid var(--game-list-separator-color);
+    border-bottom: 1px solid var(--game-list-separator-color);
 }
 
 #gameListContainer > :last-child {
