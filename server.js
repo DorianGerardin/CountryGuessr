@@ -6,14 +6,12 @@
  |_____/|______|_|  \_\  \/   |______|_|  \_\  */
 
 import Fs from 'fs'
-import Https from 'https'
 import path from 'path';
 import {fileURLToPath} from 'url';
 import express from 'express'; //Import the express dependency
 import Country from './static/js/Country.js' //Save the port number where your server will be listening
 import { CronJob } from 'cron';
 const app = express();              //Instantiate an express app, the main work horse of this server
-import axios from 'axios'
 import dotenv from 'dotenv'
 import admin from 'firebase-admin';
 import { initializeApp } from "firebase-admin/app";
@@ -25,7 +23,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
 
-const firebaseapp = initializeApp({
+const firebaseApp = initializeApp({
     credential: admin.credential.cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -33,7 +31,13 @@ const firebaseapp = initializeApp({
       }),
     databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.europe-west1.firebasedatabase.app`
 });
-const database = getDatabase(firebaseapp);
+const database = getDatabase(firebaseApp);
+
+const configJsonFilename = process.env.NODE_ENV === "debug" ? "config-debug.json" : "config.json";
+const configJsonFile = path.join(__dirname, configJsonFilename)
+
+let logFilename = process.env.NODE_ENV === "debug" ? "countryguessr-debug.log" : "countryguessr.log";
+const logFile = path.join(__dirname, logFilename)
 
 let noUseCountries = ["UMI"]
 
@@ -47,48 +51,36 @@ let countryToGuess = null
 let job = null
 SetAllCountries();
 
-async function UpdateCurrentCountry(newCountryCode) {
-    try {
-        const data = {
-            CURRENT_COUNTRY : newCountryCode,
-            DAY_COUNT : parseInt(process.env.DAY_COUNT) + 1,
+function logToFile(message) {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] ${message}\n`;
+
+    Fs.appendFile(logFile, logMessage, (err) => {
+        if (err) {
+            console.error('Error while writing to log file:', err);
         }
-        await axios({
-            method: 'patch',
-            url: `https://api.heroku.com/apps/country-guessr/config-vars`,
-            headers: {
-                'Authorization': `Bearer ${process.env.HEROKU_API_KEY}`,
-                'Accept': 'application/vnd.heroku+json; version=3',
-                'Content-Type': 'application/json',
-            },
-            data: data
-        });
-    }
-    catch (error) {
-        console.error('Erreur lors de la mise à jour de la variable d\'environnement sur Heroku :', error);
-        throw error;
-    }
+    });
 }
 
-async function UpdateDayCount(newDayCount) {
+function GetConfigData(key) {
+    const data = Fs.readFileSync(configJsonFile, 'utf-8')
+    const json = JSON.parse(data)
+    return json[key]
+}
+
+function UpdateCurrentCountry(newCountryCode) {
     try {
-        const data = {
-            DAY_COUNT : newDayCount
-        }
-        await axios({
-            method: 'patch',
-            url: `https://api.heroku.com/apps/country-guessr/config-vars`,
-            headers: {
-                'Authorization': `Bearer ${process.env.HEROKU_API_KEY}`,
-                'Accept': 'application/vnd.heroku+json; version=3',
-                'Content-Type': 'application/json',
-            },
-            data: data
-        });
-    }
-    catch (error) {
-        console.error('Erreur lors de la mise à jour de la variable d\'environnement sur Heroku :', error);
-        throw error;
+        const data = Fs.readFileSync(configJsonFile, 'utf-8');
+        const json = JSON.parse(data);
+        const currentDayCount = json["DAY_COUNT"]
+        json["CURRENT_COUNTRY"] = newCountryCode;
+        json["DAY_COUNT"] = currentDayCount + 1;
+        Fs.writeFileSync(configJsonFile, JSON.stringify(json, null, 2), 'utf-8');
+        logToFile(`Config file update successful.`);
+        logToFile(`DAY_COUNT: ${json["DAY_COUNT"]}`);
+        logToFile(`CURRENT_COUNTRY: ${newCountryCode}`);
+    } catch (err) {
+        logToFile(`Config file update error: ${err}.`);
     }
 }
 
@@ -200,18 +192,18 @@ function SetAllCountries() {
                 if(process.env.NODE_ENV === "debug") {
                     return
                 }
-                addHistoryGame(process.env.DAY_COUNT, countryToGuess.code);
-                UpdateCurrentCountry(GetRandomCountryCode()).then(() => {
-                    countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
-                })
-                console.log(`reset country : ${countryToGuess.name}`)
+                addHistoryGame(GetConfigData("DAY_COUNT"), countryToGuess.code)
+                let newCountryCode = GetRandomCountryCode()
+                UpdateCurrentCountry(newCountryCode)
+                countryToGuess = SelectCountry(newCountryCode) // Set country data
             },
             null,
             true,
             'Europe/Paris'
         );
-        countryToGuess = SelectCountry(process.env.CURRENT_COUNTRY)
+        countryToGuess = SelectCountry(GetConfigData("CURRENT_COUNTRY"))
         console.log(countryToGuess.name)
+        logToFile(`CURRENT_COUNTRY: ${countryToGuess.code}`);
     });
 }
 
@@ -514,7 +506,7 @@ app.get('/capital', async function (req, res) {
 
 app.get('/dayCount', function (req, res) {
     res.header("Content-Type",'application/json');
-    res.json( {dayCount:process.env.DAY_COUNT} )
+    res.json( {dayCount:GetConfigData("DAY_COUNT")} )
 })
 
 app.get('/rules', (req, res) => {
@@ -632,23 +624,3 @@ function updateSVG(filename) {
         console.log('Le fichier SVG n\'existe pas. Aucune modification effectuée.');
     }
 }
-
-// database.ref(new Date().toDateString()).set(data)
-// .then(() => {
-//     console.log('Données écrites avec succès.');
-//     const dbRef = database.ref();
-//     dbRef.get().then((snapshot) => {
-//         if (snapshot.exists()) {
-//             //console.log("value get : " + snapshot.val());
-//             const keys = Object.keys(snapshot.val());
-//             console.log("keys : ", keys);
-//         } else {
-//             console.log("No data available");
-//         }
-//       }).catch((error) => {
-//         console.error(error);
-//       });
-// })
-// .catch((error) => {
-//     console.error('Erreur lors de l\'écriture des données : ', error);
-// });
