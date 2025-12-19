@@ -189,8 +189,12 @@ function SetAllCountries() {
         job = new CronJob(
             '00 00 * * *',
             function () {
+                logToFile(`NODE_ENV: ${process.env.NODE_ENV}`);
+                logToFile(`NODE_ENV === production: ${process.env.NODE_ENV === "production"}`);
                 if(process.env.NODE_ENV === "production") {
-                    addHistoryGame(GetConfigData("DAY_COUNT"), countryToGuess.code)
+                    let currentDayCount = GetConfigData("DAY_COUNT")
+                    logToFile(`Adding to history: ${currentDayCount} | ${countryToGuess.code}`);
+                    addHistoryGame(currentDayCount, countryToGuess.code)
                 }
                 let newCountryCode = GetRandomCountryCode()
                 UpdateCurrentCountry(newCountryCode)
@@ -578,7 +582,7 @@ async function addHistoryGame(gameID, countryCode) {
         const dbRef = database.ref(gameID);
         await dbRef.set(countryCode);
     } catch (error) {
-        console.error("Error with database when adding game id", error);
+        logToFile(`Error with database when adding game id: ${error}`);
     }
 }
 
