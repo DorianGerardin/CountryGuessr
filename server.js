@@ -72,9 +72,9 @@ function UpdateCurrentCountry(newCountryCode) {
     try {
         const data = Fs.readFileSync(configJsonFile, 'utf-8');
         const json = JSON.parse(data);
-        const currentDayCount = parseInt(json["DAY_COUNT"])
+        const currentDayCount = Number(json["DAY_COUNT"])
         json["CURRENT_COUNTRY"] = newCountryCode;
-        json["DAY_COUNT"] = currentDayCount + 1;
+        json["DAY_COUNT"] = String(currentDayCount + 1);
         Fs.writeFileSync(configJsonFile, JSON.stringify(json, null, 2), 'utf-8');
         logToFile(`Config file update successful.`);
         logToFile(`DAY_COUNT: ${json["DAY_COUNT"]}`);
